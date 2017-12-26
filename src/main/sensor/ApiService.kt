@@ -15,9 +15,6 @@ interface ApiService {
     @GET("calibrate/ref_point/{point}/")
     fun calibrateRef(@Path("point") point: Int): Observable<BaseResponse>
 
-    @GET("q={q}")
-    fun search(@Query("q") q: String): Observable<String>
-
     /**
      * Factory class for convenient creation of the Api Service interface
      */
@@ -27,8 +24,7 @@ interface ApiService {
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
-                    .baseUrl("https://www.google.co.in/")
-                    //.baseUrl("http://10.7.170.6:8080/")
+                    .baseUrl("http://10.7.170.6:8080/")
                     .build()
 
             return retrofit.create(ApiService::class.java)
