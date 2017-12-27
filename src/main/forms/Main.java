@@ -15,6 +15,7 @@ public class Main {
     private JLabel lbPoint2;
     private JLabel lbPoint3;
     private JLabel lbPoint4;
+    private JPanel ballsPanel;
 
     private Main() {
         setButton1.addActionListener(e -> {
