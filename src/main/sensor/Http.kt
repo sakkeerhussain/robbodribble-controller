@@ -17,5 +17,22 @@ class Http {
                         lbMessage.text = "Failed: ${error.message}"
                     })
         }
+
+        fun getReferencePoint(point: Int, lbMessage: JLabel, lbPoint: JLabel) {
+            lbMessage.text = "Loading..."
+            ApiService.Factory.create().getReferencePoint(point)
+                    .subscribe({ result ->
+                        if (result.status.equals("ok")) {
+                            lbMessage.text = "Success: ${result.message}"
+                            lbPoint.text = result.data.value.toString()
+                        }else{
+                            lbMessage.text = "Failed: ${result.message}"
+                            lbPoint.text = "----"
+                        }
+                    }, { error ->
+                        lbMessage.text = "Failed: ${error.message}"
+                        lbPoint.text = "----"
+                    })
+        }
     }
 }

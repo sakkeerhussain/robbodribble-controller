@@ -11,48 +11,6 @@
     </properties>
     <border type="none"/>
     <children>
-      <grid id="1d086" layout-manager="GridLayoutManager" row-count="2" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
-        <margin top="0" left="0" bottom="0" right="0"/>
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties/>
-        <border type="none"/>
-        <children>
-          <component id="c3bd0" class="javax.swing.JButton" binding="setButton3">
-            <constraints>
-              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Set [18,0]"/>
-            </properties>
-          </component>
-          <component id="daf4c" class="javax.swing.JButton" binding="setButton2">
-            <constraints>
-              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Set [0,28]"/>
-            </properties>
-          </component>
-          <component id="1242a" class="javax.swing.JButton" binding="setButton4">
-            <constraints>
-              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Set [18,28]"/>
-            </properties>
-          </component>
-          <component id="dd1ea" class="javax.swing.JButton" binding="setButton1">
-            <constraints>
-              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-            </constraints>
-            <properties>
-              <text value="Set [0,0]"/>
-            </properties>
-          </component>
-        </children>
-      </grid>
       <hspacer id="1e940">
         <constraints>
           <grid row="0" column="0" row-span="1" col-span="2" vsize-policy="1" hsize-policy="6" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
@@ -78,6 +36,82 @@
             <properties>
               <foreground color="-2228216"/>
               <text value=""/>
+            </properties>
+          </component>
+        </children>
+      </grid>
+      <grid id="1d086" layout-manager="GridLayoutManager" row-count="4" column-count="2" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+        <margin top="0" left="0" bottom="0" right="0"/>
+        <constraints>
+          <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties/>
+        <border type="none"/>
+        <children>
+          <component id="c3bd0" class="javax.swing.JButton" binding="setButton3">
+            <constraints>
+              <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Set 3"/>
+            </properties>
+          </component>
+          <component id="daf4c" class="javax.swing.JButton" binding="setButton2">
+            <constraints>
+              <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Set 2"/>
+            </properties>
+          </component>
+          <component id="1242a" class="javax.swing.JButton" binding="setButton4">
+            <constraints>
+              <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Set 4"/>
+            </properties>
+          </component>
+          <component id="dd1ea" class="javax.swing.JButton" binding="setButton1">
+            <constraints>
+              <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="Set 1"/>
+            </properties>
+          </component>
+          <component id="90f74" class="javax.swing.JLabel" binding="lbPoint1">
+            <constraints>
+              <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <horizontalAlignment value="10"/>
+              <horizontalTextPosition value="10"/>
+              <text value="------"/>
+            </properties>
+          </component>
+          <component id="66d73" class="javax.swing.JLabel" binding="lbPoint2">
+            <constraints>
+              <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="------"/>
+            </properties>
+          </component>
+          <component id="d2c14" class="javax.swing.JLabel" binding="lbPoint4">
+            <constraints>
+              <grid row="2" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="------"/>
+            </properties>
+          </component>
+          <component id="b8a33" class="javax.swing.JLabel" binding="lbPoint3">
+            <constraints>
+              <grid row="2" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+            </constraints>
+            <properties>
+              <text value="------"/>
             </properties>
           </component>
         </children>

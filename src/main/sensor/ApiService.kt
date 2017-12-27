@@ -2,6 +2,7 @@ package main.sensor
 
 import com.squareup.okhttp.OkHttpClient
 import main.sensor.response.BaseResponse
+import main.sensor.response.CalibrationResponse
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
 import retrofit.RxJavaCallAdapterFactory
@@ -15,6 +16,9 @@ interface ApiService {
 
     @GET("calibrate/ref_point/{point}/")
     fun calibrateRef(@Path("point") point: Int): Observable<BaseResponse>
+
+    @GET("calibrate/ref_point/{point}/value/")
+    fun getReferencePoint(@Path("point") point: Int): Observable<CalibrationResponse>
 
     /**
      * Factory class for convenient creation of the Api Service interface
