@@ -1,5 +1,6 @@
 package main.sensor
 
+import com.squareup.okhttp.OkHttpClient
 import main.sensor.response.BaseResponse
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
@@ -21,9 +22,16 @@ interface ApiService {
     object Factory {
 
         fun create(): ApiService {
+
+            val logging = HttpLoggingInterceptor()
+            logging.setLevel(HttpLoggingInterceptor.Level.BODY)
+            val client = OkHttpClient()
+            client.interceptors().add(logging)
+
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
+                    .client(client)
                     .baseUrl("http://10.7.170.6:8080/")
                     .build()
 

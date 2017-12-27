@@ -10,12 +10,13 @@ public class Main {
     private JButton setButton2;
     private JButton setButton3;
     private JButton setButton4;
+    private JLabel lbMessage;
 
     private Main() {
-        setButton1.addActionListener(e -> Http.Companion.calibrateRef(1));
-        setButton2.addActionListener(e -> Http.Companion.calibrateRef(2));
-        setButton3.addActionListener(e -> Http.Companion.calibrateRef(3));
-        setButton4.addActionListener(e -> Http.Companion.calibrateRef(4));
+        setButton1.addActionListener(e -> Http.Companion.calibrateRef(1, lbMessage));
+        setButton2.addActionListener(e -> Http.Companion.calibrateRef(2, lbMessage));
+        setButton3.addActionListener(e -> Http.Companion.calibrateRef(3, lbMessage));
+        setButton4.addActionListener(e -> Http.Companion.calibrateRef(4, lbMessage));
     }
 
     public static void main(String[] args) {

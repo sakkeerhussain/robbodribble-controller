@@ -1,13 +1,20 @@
 package main.sensor
 
+import javax.swing.JLabel
+
 class Http {
     companion object {
-        fun calibrateRef(point: Int) {
+        fun calibrateRef(point: Int, lbMessage: JLabel) {
+            lbMessage.text = "Loading..."
             ApiService.Factory.create().calibrateRef(point)
                     .subscribe({ result ->
-                        System.out.println("Result ==> ${result.status}-${result.message}")
+                        if (result.status.equals("ok")) {
+                            lbMessage.text = "Success: ${result.message}"
+                        }else{
+                            lbMessage.text = "Failed: ${result.message}"
+                        }
                     }, { error ->
-                        System.out.println("Result ==> ${error.localizedMessage}")
+                        lbMessage.text = "Failed: ${error.message}"
                     })
         }
     }
