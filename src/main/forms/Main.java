@@ -6,35 +6,66 @@ import javax.swing.*;
 
 public class Main {
     private JPanel rootPanel;
-    private JButton setButton1;
-    private JButton setButton2;
-    private JButton setButton3;
-    private JButton setButton4;
+    private JButton detButton1;
+    private JButton detButton2;
+    private JButton detButton3;
+    private JButton detButton4;
     private JLabel lbMessage;
-    private JLabel lbPoint1;
-    private JLabel lbPoint2;
-    private JLabel lbPoint3;
-    private JLabel lbPoint4;
-    private JPanel ballsPanel;
+    private JTextField tfPoint1x;
+    private JTextField tfPoint1y;
+    private JTextField tfPoint2x;
+    private JTextField tfPoint2y;
+    private JTextField tfPoint3x;
+    private JTextField tfPoint3y;
+    private JTextField tfPoint4x;
+    private JTextField tfPoint4y;
+    private JButton setButton1;
+    private JButton setButton3;
+    private JButton setButton2;
+    private JButton setButton4;
+    private JButton btRefresh;
+    private JButton btClear;
 
     private Main() {
+        detButton1.addActionListener(e -> {
+            Http.Companion.calibrateRef(1, lbMessage, () -> updateRefPointData(1));
+        });
+        detButton2.addActionListener(e -> {
+            Http.Companion.calibrateRef(2, lbMessage, () -> updateRefPointData(2));
+        });
+        detButton3.addActionListener(e -> {
+            Http.Companion.calibrateRef(3, lbMessage, () -> updateRefPointData(3));
+        });
+        detButton4.addActionListener(e -> {
+            Http.Companion.calibrateRef(4, lbMessage, () -> updateRefPointData(4));
+        });
         setButton1.addActionListener(e -> {
-            Http.Companion.calibrateRef(1, lbMessage);
-            updateRefPointData();
+            float x = Float.valueOf(tfPoint1x.getText());
+            float y = Float.valueOf(tfPoint1y.getText());
+            Http.Companion.setReferencePoint(1, lbMessage, x, y, () -> updateRefPointData(1));
         });
         setButton2.addActionListener(e -> {
-            Http.Companion.calibrateRef(2, lbMessage);
-            updateRefPointData();
+            float x = Float.valueOf(tfPoint2x.getText());
+            float y = Float.valueOf(tfPoint2y.getText());
+            Http.Companion.setReferencePoint(2, lbMessage, x, y, () -> updateRefPointData(2));
         });
         setButton3.addActionListener(e -> {
-            Http.Companion.calibrateRef(3, lbMessage);
-            updateRefPointData();
+            float x = Float.valueOf(tfPoint3x.getText());
+            float y = Float.valueOf(tfPoint3y.getText());
+            Http.Companion.setReferencePoint(3, lbMessage, x, y, () -> updateRefPointData(3));
         });
         setButton4.addActionListener(e -> {
-            Http.Companion.calibrateRef(4, lbMessage);
-            updateRefPointData();
+            float x = Float.valueOf(tfPoint4x.getText());
+            float y = Float.valueOf(tfPoint4y.getText());
+            Http.Companion.setReferencePoint(4, lbMessage, x, y, () -> updateRefPointData(4));
         });
-        updateRefPointData();
+        btClear.addActionListener(e ->{
+            lbMessage.setText("Messages");
+        });
+        btRefresh.addActionListener(e ->{
+            updateRefPointData(-1);
+        });
+        updateRefPointData(-1);
     }
 
     public static void main(String[] args) {
@@ -45,12 +76,14 @@ public class Main {
         frame.setVisible(true);
     }
 
-    private void updateRefPointData(){
-        Http.Companion.getReferencePoint(1, lbMessage, lbPoint1);
-        Http.Companion.getReferencePoint(2, lbMessage, lbPoint2);
-        Http.Companion.getReferencePoint(3, lbMessage, lbPoint3);
-        Http.Companion.getReferencePoint(4, lbMessage, lbPoint4);
+    private void updateRefPointData(int point) {
+        if (point == 1 || point == -1)
+            Http.Companion.getReferencePoint(1, lbMessage, tfPoint1x, tfPoint1y);
+        if (point == 2 || point == -1)
+            Http.Companion.getReferencePoint(2, lbMessage, tfPoint2x, tfPoint2y);
+        if (point == 3 || point == -1)
+            Http.Companion.getReferencePoint(3, lbMessage, tfPoint3x, tfPoint3y);
+        if (point == 4 || point == -1)
+            Http.Companion.getReferencePoint(4, lbMessage, tfPoint4x, tfPoint4y);
     }
-
-
 }

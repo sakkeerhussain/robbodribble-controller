@@ -7,6 +7,7 @@ import retrofit.GsonConverterFactory
 import retrofit.Retrofit
 import retrofit.RxJavaCallAdapterFactory
 import retrofit.http.GET
+import retrofit.http.POST
 import retrofit.http.Path
 import retrofit.http.Query
 import rx.Observable
@@ -19,6 +20,9 @@ interface ApiService {
 
     @GET("calibrate/ref_point/{point}/value/")
     fun getReferencePoint(@Path("point") point: Int): Observable<CalibrationResponse>
+
+    @POST("calibrate/ref_point/{point}/value/")
+    fun setReferencePoint(@Path("point") point: Int, @Query("x") x: Float, @Query("y") y: Float): Observable<BaseResponse>
 
     /**
      * Factory class for convenient creation of the Api Service interface
