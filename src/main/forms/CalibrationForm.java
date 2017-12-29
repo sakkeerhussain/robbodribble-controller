@@ -69,7 +69,7 @@ public class CalibrationForm {
         btRefresh.addActionListener(e ->{
             updateRefPointData(-1);
         });
-        Executors.newCachedThreadPool().submit(() -> updateRefPointData(-1));
+        updateRefPointData(-1);
     }
 
     private void updateRefPointData(int point) {

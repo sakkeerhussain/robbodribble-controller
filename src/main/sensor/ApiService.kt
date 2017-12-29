@@ -22,9 +22,9 @@ interface ApiService {
     fun getReferencePoint(@Path("point") point: Int): Observable<CalibrationResponse>
 
     @POST("calibrate/ref_point/{point}/value/")
-    fun setReferencePoint(@Query("xImage") xImage: Float, @Query("yImage") yImage: Float,
-                          @Query("xBord") xBord: Float, @Query("yBord") yBord: Float,
-                          @Path("point") point: Int) : Observable<BaseResponse>
+    fun setReferencePoint(@Path("point") point: Int, @Query("xImage") xImage: Float,
+                          @Query("yImage") yImage: Float, @Query("xBoard") xBord: Float,
+                          @Query("yBoard") yBord: Float) : Observable<BaseResponse>
 
     /**
      * Factory class for convenient creation of the Api Service interface
