@@ -9,7 +9,7 @@ public class Main {
 
     private Main() {
         addCalibrationForm("10.7.170.6");
-        addCalibrationForm("10.7.170.7");
+        //addCalibrationForm("10.7.170.7");
     }
 
     private void addCalibrationForm(String ip) {

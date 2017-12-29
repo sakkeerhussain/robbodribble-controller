@@ -26,8 +26,8 @@ class Http {
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             lbMessage.text = "Success: ${result.message}"
-                            tfX.text = result.data.value.x.toString()
-                            tfY.text = result.data.value.y.toString()
+                            tfX.text = result.data.pointImage.x.toString()
+                            tfY.text = result.data.pointImage.y.toString()
                         }else{
                             lbMessage.text = "Failed: ${result.message}"
                             tfX.text = ""
@@ -40,9 +40,10 @@ class Http {
                     })
         }
 
-        fun setReferencePoint(ip: String, point: Int, lbMessage: JLabel, x: Float, y: Float, runnable: Runnable) {
+        fun setReferencePoint(ip: String, point: Int, lbMessage: JLabel, xImage: Float, yImage: Float,
+                              xBord: Float, yBord: Float, runnable: Runnable) {
             lbMessage.text = "Loading..."
-            ApiService.Factory.create(ip).setReferencePoint(point, x, y)
+            ApiService.Factory.create(ip).setReferencePoint(xImage, yImage, xBord, yBord, point)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             lbMessage.text = "Success: ${result.message}"
