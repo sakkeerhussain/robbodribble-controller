@@ -5,9 +5,9 @@ import javax.swing.JTextField
 
 class Http {
     companion object {
-        fun calibrateRef(point: Int, lbMessage: JLabel, runnable: Runnable) {
+        fun calibrateRef(ip: String, point: Int, lbMessage: JLabel, runnable: Runnable) {
             lbMessage.text = "Loading..."
-            ApiService.Factory.create().calibrateRef(point)
+            ApiService.Factory.create(ip).calibrateRef(point)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             lbMessage.text = "Success: ${result.message}"
@@ -20,9 +20,9 @@ class Http {
                     })
         }
 
-        fun getReferencePoint(point: Int, lbMessage: JLabel, tfX: JTextField, tfY: JTextField) {
+        fun getReferencePoint(ip: String, point: Int, lbMessage: JLabel, tfX: JTextField, tfY: JTextField) {
             lbMessage.text = "Loading..."
-            ApiService.Factory.create().getReferencePoint(point)
+            ApiService.Factory.create(ip).getReferencePoint(point)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             lbMessage.text = "Success: ${result.message}"
@@ -40,9 +40,9 @@ class Http {
                     })
         }
 
-        fun setReferencePoint(point: Int, lbMessage: JLabel, x: Float, y: Float, runnable: Runnable) {
+        fun setReferencePoint(ip: String, point: Int, lbMessage: JLabel, x: Float, y: Float, runnable: Runnable) {
             lbMessage.text = "Loading..."
-            ApiService.Factory.create().setReferencePoint(point, x, y)
+            ApiService.Factory.create(ip).setReferencePoint(point, x, y)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             lbMessage.text = "Success: ${result.message}"
