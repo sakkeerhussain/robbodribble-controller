@@ -1,5 +1,5 @@
 package main.sensor.response
 
-data class BallsResponse(val balls:List<Ball>)
+data class BallsResponse(val data:List<Ball>): BaseResponse(null, null)
 
-data class Ball(val x: Int)
+data class Ball(val x: Int, val y: Int)

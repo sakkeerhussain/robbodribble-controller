@@ -1,5 +1,6 @@
 package main.sensor
 
+import main.sensor.response.Ball
 import java.util.concurrent.Executors
 import javax.swing.JLabel
 import javax.swing.JTextField
@@ -62,5 +63,29 @@ class Http {
                         })
             })
         }
+
+        fun getBalls(ip: String, lbMessage: JLabel?, listener: BallsListResponse) {
+            Executors.newCachedThreadPool().submit({
+                lbMessage?.text = "Loading balls..."
+                ApiService.Factory.create(ip).getBalls()
+                        .subscribe({ result ->
+                            if (result.status.equals("ok")) {
+                                lbMessage?.text = "Success: ${result.message}"
+                                listener.ballsListReceived(ip, result.data)
+                            } else {
+                                listener.ballsListFailed(ip)
+                                lbMessage?.text = "Failed: ${result.message}"
+                            }
+                        }, { error ->
+                            listener.ballsListFailed(ip)
+                            lbMessage?.text = "Failed: ${error.message}"
+                        })
+            })
+        }
     }
+}
+
+interface BallsListResponse {
+    fun ballsListReceived(ip: String, data: List<Ball>)
+    fun ballsListFailed(ip: String)
 }

@@ -1,6 +1,7 @@
 package main.sensor
 
 import com.squareup.okhttp.OkHttpClient
+import main.sensor.response.BallsResponse
 import main.sensor.response.BaseResponse
 import main.sensor.response.CalibrationResponse
 import retrofit.GsonConverterFactory
@@ -25,6 +26,9 @@ interface ApiService {
     fun setReferencePoint(@Path("point") point: Int, @Query("xImage") xImage: Float,
                           @Query("yImage") yImage: Float, @Query("xBoard") xBord: Float,
                           @Query("yBoard") yBord: Float) : Observable<BaseResponse>
+
+    @GET("balls/")
+    fun getBalls() : Observable<BallsResponse>
 
     /**
      * Factory class for convenient creation of the Api Service interface

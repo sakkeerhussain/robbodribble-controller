@@ -1,15 +1,26 @@
 package main.forms;
 
+import main.sensor.Sensor;
+import main.sensor.SensorsManager;
+
 import javax.swing.*;
 
 public class Main {
     private JTabbedPane tabbedPane1;
     private JPanel pRoot;
     private JTabbedPane tpCalibration;
+    private JPanel pBalls;
 
     private Main() {
-        addCalibrationForm("10.7.170.6");
-        //addCalibrationForm("10.7.170.7");
+        for (Sensor sensor: SensorsManager.Companion.getSENSORS_LIST()) {
+            addCalibrationForm(sensor.getIp());
+        }
+
+        setupBallsForm();
+    }
+
+    private void setupBallsForm() {
+        pBalls.add(new BallsForm().pRoot);
     }
 
     private void addCalibrationForm(String ip) {
