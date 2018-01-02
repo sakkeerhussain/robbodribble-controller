@@ -15,8 +15,11 @@ public class BallsForm implements BallsListResponse {
     JPanel pRoot;
     private JButton btRefresh;
     private JPanel pBallsDiagram;
+    private BallsUI mBallsUI;
 
     BallsForm(){
+        mBallsUI = new BallsUI();
+        pBallsDiagram.add(mBallsUI);
         startBallsRequestForAllSensors();
         btRefresh.addActionListener(e -> {
             startBallsRequestForAllSensors();
@@ -41,7 +44,9 @@ public class BallsForm implements BallsListResponse {
         ballsTest.add(new Ball(0, 280));
         ballsTest.add(new Ball(180, 280));
         ballsTest.add(new Ball(50, 50));
-        pBallsDiagram.add(new BallsUI(balls));
+        mBallsUI.setBalls(balls);
+        pBallsDiagram.revalidate();
+        pBallsDiagram.repaint();
     }
 
     @Override
@@ -52,7 +57,7 @@ public class BallsForm implements BallsListResponse {
 
     @Override
     public void ballsListFailed(@NotNull String ip) {
-        //getBallsList(ip);
-        updateBallsList(null);
+        getBallsList(ip);
+//        updateBallsList(null);
     }
 }

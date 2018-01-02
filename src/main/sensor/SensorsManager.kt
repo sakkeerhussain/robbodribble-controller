@@ -9,7 +9,8 @@ class SensorsManager{
         var sensors = ArrayList<Sensor>();
 
         init {
-            sensors.add(Sensor("192.168.1.50"))
+//            sensors.add(Sensor("192.168.1.50"))
+            sensors.add(Sensor("10.7.170.6"))
         }
     }
 
