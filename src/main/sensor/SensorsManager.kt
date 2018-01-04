@@ -3,6 +3,13 @@ package main.sensor
 class SensorsManager{
     companion object {
         val SENSORS_LIST:ArrayList<Sensor> by lazy { DataInitializer.sensors }
+        private var instance: SensorsManager? = null
+
+        fun get(): SensorsManager {
+            if (instance == null)
+                instance = SensorsManager()
+            return instance!!
+        }
     }
 
     private object DataInitializer {

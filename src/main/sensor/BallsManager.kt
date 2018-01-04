@@ -3,10 +3,10 @@ package main.sensor
 import kotlin.math.absoluteValue
 
 
-class BallsManager {
+class BallsManager : BallsListResponse {
     companion object {
-        val BALL_LOCATION_TOLERANCE = 0.5
-        val BALL_NOT_FOUND_TOLERANCE = 3
+        val BALL_LOCATION_TOLERANCE = 3
+        val BALL_NOT_FOUND_TOLERANCE = 2
         private var instance: BallsManager? = null
 
         fun get(): BallsManager {
@@ -15,15 +15,30 @@ class BallsManager {
             return instance!!
         }
     }
-    private val ballList = ArrayList<BallModel>()
+    private var listeners = ArrayList<Listener>()
+    fun addListener(listener: Listener){
+        if (listener !in listeners)
+            listeners.add(listener)
+        listener.ballListChanged(ballList)
+    }
 
+    fun removeListener(listener: Listener){
+        listeners.remove(listener)
+    }
+
+    private fun notifyListeners(){
+        listeners.forEach { it.ballListChanged(ballList) }
+    }
+
+    private val ballList = ArrayList<BallModel>()
     fun getBallList(): List<BallModel> {
         return ballList;
     }
 
-    fun updateBallsList(balls: List<Ball>) {
+    fun updateBallsList(balls: List<Ball>?) {
         ballList.forEach { it.present = false }
-        balls.forEach { ball -> detectBallFromList(ball) }
+        if (balls != null)
+            balls.forEach { ball -> detectBallFromList(ball) }
         ballList.filter { !it.present }.forEach {
             if (it.notFoundCount >= BallsManager.BALL_NOT_FOUND_TOLERANCE) {
                 ballList.remove(it)
@@ -31,6 +46,7 @@ class BallsManager {
                 it.notFoundCount++
             }
         }
+        notifyListeners()
     }
 
     private fun detectBallFromList(ball: Ball) {
@@ -44,6 +60,30 @@ class BallsManager {
                 }
         val ballModel = BallModel(ball, 1, 0, true)
         ballList.add(ballModel)
+    }
+
+    fun startBallsRequestForAllSensors() {
+        for ((ip) in SensorsManager.SENSORS_LIST) {
+            Runnable { getBallsList(ip) }.run()
+        }
+    }
+
+    private fun getBallsList(ip: String) {
+        Http.getBalls(ip, null, this)
+    }
+
+    override fun ballsListReceived(ip: String, data: List<Ball>) {
+        updateBallsList(data)
+        getBallsList(ip)
+    }
+
+    override fun ballsListFailed(ip: String) {
+        getBallsList(ip)
+        updateBallsList(null);
+    }
+
+    interface Listener {
+        fun ballListChanged(balls: List<BallModel>)
     }
 }
 
