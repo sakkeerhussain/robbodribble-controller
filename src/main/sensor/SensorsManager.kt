@@ -2,7 +2,7 @@ package main.sensor
 
 class SensorsManager{
     companion object {
-        public val SENSORS_LIST:ArrayList<Sensor> by lazy { DataInitializer.sensors }
+        val SENSORS_LIST:ArrayList<Sensor> by lazy { DataInitializer.sensors }
     }
 
     private object DataInitializer {
@@ -13,6 +13,5 @@ class SensorsManager{
             sensors.add(Sensor("10.7.170.6"))
         }
     }
-
 }
 data class Sensor(val ip: String){}

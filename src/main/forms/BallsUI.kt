@@ -1,5 +1,6 @@
 package main.forms
 
+import main.sensor.BallModel
 import main.sensor.response.Ball
 import java.awt.Color
 import java.awt.Graphics
@@ -10,11 +11,11 @@ import javax.swing.JPanel
 class BallsUI : JPanel() {
     val BALL_WIDTH: Int = 15
     val BALL_HEIGHT: Int = 15
-    private var balls: List<Ball>
+    private var balls: List<BallModel>
 
     init {
-        this.balls = ArrayList<Ball>()
-        this.isOpaque = false;
+        this.balls = ArrayList<BallModel>()
+        this.isOpaque = false
     }
 
     private fun draw(g: Graphics) {
@@ -28,7 +29,7 @@ class BallsUI : JPanel() {
         }
         g2d.color = Color.YELLOW
         for (ball in balls) {
-            g2d.fillOval(convertBallX(ball.x), convertBallY(ball.y), BALL_WIDTH, BALL_HEIGHT)
+            g2d.fillOval(convertBallX(ball.ball.x), convertBallY(ball.ball.y), BALL_WIDTH, BALL_HEIGHT)
         }
     }
 
@@ -52,7 +53,7 @@ class BallsUI : JPanel() {
         return (x * (this.width - BALL_WIDTH) / 180).toInt()
     }
 
-    fun setBalls(balls: List<Ball>){
+    fun setBalls(balls: java.util.ArrayList<BallModel>){
         this.balls = balls
     }
 

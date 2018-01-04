@@ -1,9 +1,6 @@
 package main.forms;
 
-import main.sensor.BallsListResponse;
-import main.sensor.Http;
-import main.sensor.Sensor;
-import main.sensor.SensorsManager;
+import main.sensor.*;
 import main.sensor.response.Ball;
 import org.jetbrains.annotations.NotNull;
 
@@ -15,6 +12,7 @@ public class BallsForm implements BallsListResponse {
     JPanel pRoot;
     private JButton btRefresh;
     private JPanel pBallsDiagram;
+    private JList ltBalls;
     private BallsUI mBallsUI;
 
     BallsForm(){
@@ -37,14 +35,13 @@ public class BallsForm implements BallsListResponse {
     }
 
     private void updateBallsList(List<Ball> balls){
+        ArrayList<BallModel> ballModels = new ArrayList<>();
+        for (Ball ball: balls){
+            ballModels.add(new BallModel(ball, 1, 0));
+        }
 
-        ArrayList<Ball> ballsTest = new ArrayList<>();
-        ballsTest.add(new Ball(0, 0));
-        ballsTest.add(new Ball(180, 0));
-        ballsTest.add(new Ball(0, 280));
-        ballsTest.add(new Ball(180, 280));
-        ballsTest.add(new Ball(50, 50));
-        mBallsUI.setBalls(balls);
+        ltBalls.setListData(ballModels.toArray());
+        mBallsUI.setBalls(ballModels);
         pBallsDiagram.revalidate();
         pBallsDiagram.repaint();
     }
