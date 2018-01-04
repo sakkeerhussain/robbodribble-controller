@@ -1,6 +1,5 @@
 package main.sensor
 
-import main.sensor.response.Ball
 import java.util.concurrent.Executors
 import javax.swing.JLabel
 import javax.swing.JTextField

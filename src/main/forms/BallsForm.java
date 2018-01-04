@@ -1,7 +1,6 @@
 package main.forms;
 
 import main.sensor.*;
-import main.sensor.response.Ball;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
@@ -37,7 +36,7 @@ public class BallsForm implements BallsListResponse {
     private void updateBallsList(List<Ball> balls){
         ArrayList<BallModel> ballModels = new ArrayList<>();
         for (Ball ball: balls){
-            ballModels.add(new BallModel(ball, 1, 0));
+            ballModels.add(new BallModel(ball, 1, 0, false));
         }
 
         ltBalls.setListData(ballModels.toArray());

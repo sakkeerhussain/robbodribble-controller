@@ -1,11 +1,9 @@
 package main.forms
 
 import main.sensor.BallModel
-import main.sensor.response.Ball
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
-import java.awt.geom.Ellipse2D
 import javax.swing.JPanel
 
 class BallsUI : JPanel() {
@@ -53,7 +51,7 @@ class BallsUI : JPanel() {
         return (x * (this.width - BALL_WIDTH) / 180).toInt()
     }
 
-    fun setBalls(balls: java.util.ArrayList<BallModel>){
+    fun setBalls(balls: List<BallModel>){
         this.balls = balls
     }
 
