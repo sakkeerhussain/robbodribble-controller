@@ -1,10 +1,12 @@
 package main.forms;
 
-import main.sensor.BallModel;
-import main.sensor.BallsManager;
+import main.controllers.BallModel;
+import main.controllers.BallsManager;
 import org.jetbrains.annotations.NotNull;
 
 import javax.swing.*;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 import java.util.List;
 
 public class BallsForm implements BallsManager.Listener {
@@ -22,6 +24,14 @@ public class BallsForm implements BallsManager.Listener {
             BallsManager.Companion.get().startBallsRequestForAllSensors();
         });
         BallsManager.Companion.get().addListener(BallsForm.this);
+
+        pRoot.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentHidden(ComponentEvent e) {
+                super.componentHidden(e);
+                BallsManager.Companion.get().removeListener(BallsForm.this);
+            }
+        });
     }
 
     @Override

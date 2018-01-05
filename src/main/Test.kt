@@ -1,7 +1,7 @@
 package main
 
-import main.sensor.Ball
-import main.sensor.BallsManager
+import main.controllers.Ball
+import main.controllers.BallsManager
 
 fun main(args : Array<String>) {
     println("\nBall manager update ball test")

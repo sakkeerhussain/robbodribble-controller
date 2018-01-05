@@ -1,6 +1,6 @@
 package main.forms
 
-import main.sensor.BallModel
+import main.controllers.BallModel
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D

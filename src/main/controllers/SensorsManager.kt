@@ -1,4 +1,4 @@
-package main.sensor
+package main.controllers
 
 class SensorsManager{
     companion object {

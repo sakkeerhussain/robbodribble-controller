@@ -1,5 +1,7 @@
-package main.sensor
+package main.controllers
 
+import main.sensor.BallsListResponse
+import main.sensor.Http
 import kotlin.math.absoluteValue
 
 
@@ -40,7 +42,7 @@ class BallsManager : BallsListResponse {
         if (balls != null)
             balls.forEach { ball -> detectBallFromList(ball) }
         ballList.filter { !it.present }.forEach {
-            if (it.notFoundCount >= BallsManager.BALL_NOT_FOUND_TOLERANCE) {
+            if (it.notFoundCount >= BALL_NOT_FOUND_TOLERANCE) {
                 ballList.remove(it)
             } else {
                 it.notFoundCount++

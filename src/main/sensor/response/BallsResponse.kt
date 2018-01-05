@@ -1,5 +1,5 @@
 package main.sensor.response
 
-import main.sensor.Ball
+import main.controllers.Ball
 
 data class BallsResponse(val data:List<Ball>): BaseResponse(null, null)

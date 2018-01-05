@@ -1,5 +1,6 @@
 package main.sensor
 
+import main.controllers.Ball
 import java.util.concurrent.Executors
 import javax.swing.JLabel
 import javax.swing.JTextField
@@ -87,4 +88,14 @@ class Http {
 interface BallsListResponse {
     fun ballsListReceived(ip: String, data: List<Ball>)
     fun ballsListFailed(ip: String)
+}
+
+interface BotLocationResponse {
+    fun botLocationReceived(ip: String, data: List<Ball>)
+    fun botLocationFailed(ip: String)
+}
+
+interface OpponentLocationResponse {
+    fun opponentLocationReceived(ip: String, data: List<Ball>)
+    fun opponentLocationFailed(ip: String)
 }
