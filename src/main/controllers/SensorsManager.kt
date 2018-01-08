@@ -17,8 +17,8 @@ class SensorsManager{
 
         init {
 //            sensors.add(Sensor("192.168.1.50"))
-//            sensors.add(Sensor("10.7.170.6"))
-            sensors.add(Sensor("10.7.120.22"))
+            sensors.add(Sensor("10.7.170.6"))
+//            sensors.add(Sensor("10.7.120.22"))
         }
     }
 }
