@@ -13,6 +13,7 @@ import retrofit.http.POST
 import retrofit.http.Path
 import retrofit.http.Query
 import rx.Observable
+import java.util.concurrent.TimeUnit
 
 
 interface ApiService {
@@ -45,6 +46,8 @@ interface ApiService {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient()
             client.interceptors().add(logging)
+            client.setReadTimeout(650, TimeUnit.SECONDS)
+            client.setWriteTimeout(650, TimeUnit.SECONDS)
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

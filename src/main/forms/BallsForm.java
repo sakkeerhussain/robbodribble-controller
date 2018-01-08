@@ -14,9 +14,10 @@ import java.util.List;
 
 public class BallsForm implements BallsManager.Listener, BotLocationManager.Listener {
     JPanel pRoot;
-    private JButton btRefresh;
+    private JButton btRefreshBalls;
     private JPanel pBallsDiagram;
     private JList ltBalls;
+    private JButton btRefreshBot;
     private BallsUI mBallsUI;
 
     BallsForm(){
@@ -24,10 +25,6 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
         pBallsDiagram.add(mBallsUI);
         BallsManager.Companion.get().startBallsRequestForAllSensors();
         BotLocationManager.Companion.get().startBotLocationRequestForAllSensors();
-        btRefresh.addActionListener(e -> {
-            BallsManager.Companion.get().startBallsRequestForAllSensors();
-            BotLocationManager.Companion.get().startBotLocationRequestForAllSensors();
-        });
         BallsManager.Companion.get().addListener(BallsForm.this);
         BotLocationManager.Companion.get().addListener(BallsForm.this);
 
@@ -39,6 +36,8 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
                 BotLocationManager.Companion.get().removeListener(BallsForm.this);
             }
         });
+        btRefreshBalls.addActionListener(e -> BallsManager.Companion.get().startBallsRequestForAllSensors());
+        btRefreshBot.addActionListener(e -> BotLocationManager.Companion.get().startBotLocationRequestForAllSensors());
     }
 
     @Override
