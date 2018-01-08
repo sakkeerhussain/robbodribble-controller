@@ -77,7 +77,8 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
             /** A [Logger] defaults output appropriate for the current platform.  */
             val DEFAULT: Logger = object : Logger {
                 override fun log(message: String) {
-                    System.out.println(message)
+                    listener?.log(message)
+                    //System.out.println(message)
                 }
             }
         }
@@ -237,6 +238,7 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
     }
 
     companion object {
+        var listener: LoggingListener? = null
         private val UTF8 = Charset.forName("UTF-8")
 
         /**
@@ -264,4 +266,8 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
 
         }
     }
+}
+
+interface LoggingListener{
+    public fun log(msg: String)
 }
