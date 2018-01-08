@@ -3,6 +3,7 @@ package main.sensor
 import com.squareup.okhttp.OkHttpClient
 import main.sensor.response.BallsResponse
 import main.sensor.response.BaseResponse
+import main.sensor.response.BotLocationResponse
 import main.sensor.response.CalibrationResponse
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
@@ -29,6 +30,9 @@ interface ApiService {
 
     @GET("balls/")
     fun getBalls() : Observable<BallsResponse>
+
+    @GET("bot/")
+    fun getBotLocation() : Observable<BotLocationResponse>
 
     /**
      * Factory class for convenient creation of the Api Service interface

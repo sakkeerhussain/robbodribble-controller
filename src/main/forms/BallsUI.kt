@@ -1,6 +1,7 @@
 package main.forms
 
 import main.controllers.BallModel
+import main.controllers.BotLocation
 import java.awt.Color
 import java.awt.Graphics
 import java.awt.Graphics2D
@@ -10,9 +11,11 @@ class BallsUI : JPanel() {
     val BALL_WIDTH: Int = 15
     val BALL_HEIGHT: Int = 15
     private var balls: List<BallModel>
+    private var bot: BotLocation?
 
     init {
         this.balls = ArrayList<BallModel>()
+        this.bot = null
         this.isOpaque = false
     }
 
@@ -29,6 +32,9 @@ class BallsUI : JPanel() {
         for (ball in balls) {
             g2d.fillOval(convertBallX(ball.ball.x), convertBallY(ball.ball.y), BALL_WIDTH, BALL_HEIGHT)
         }
+        if (bot != null)
+            g2d.drawLine(convertX(bot!!.frontLeft.x), convertY(bot!!.frontLeft.y),
+                    convertX(bot!!.frontRight.x), convertY(bot!!.frontRight.y))
     }
 
     override fun paint(g: Graphics) {
@@ -53,6 +59,10 @@ class BallsUI : JPanel() {
 
     fun setBalls(balls: List<BallModel>){
         this.balls = balls
+    }
+
+    fun setBot(bot: BotLocation?){
+        this.bot = bot
     }
 
 }

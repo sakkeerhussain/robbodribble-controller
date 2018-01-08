@@ -1,10 +1,12 @@
 package main.controllers
 
-import main.sensor.BotLocationResponse
-import main.sensor.OpponentLocationResponse
+import main.sensor.BotLocationListener
+import main.sensor.Http
+import main.sensor.OpponentLocationListener
+import main.sensor.response.Point
 
 
-class BotLocationManager : BotLocationResponse, OpponentLocationResponse {
+class BotLocationManager : BotLocationListener, OpponentLocationListener {
 
     companion object {
         private var instance: BotLocationManager? = null
@@ -20,7 +22,7 @@ class BotLocationManager : BotLocationResponse, OpponentLocationResponse {
     fun addListener(listener: Listener) {
         if (listener !in listeners)
             listeners.add(listener)
-        listener.ballListChanged(ballList)
+        listener.botLocationChanged(botLocation)
     }
 
     fun removeListener(listener: Listener) {
@@ -28,57 +30,49 @@ class BotLocationManager : BotLocationResponse, OpponentLocationResponse {
     }
 
     private fun notifyListeners() {
-        listeners.forEach { it.ballListChanged(ballList) }
+        listeners.forEach { it.botLocationChanged(botLocation) }
     }
 
-    private val ballList = ArrayList<BallModel>()
-    fun getBallList(): List<BallModel> {
-        return ballList;
+    private var botLocation: BotLocation? = null
+    fun getBotLocation(): BotLocation? {
+        return botLocation;
     }
 
-    fun updateBotLocation(balls: List<Ball>?) {
+    fun updateBotLocation(botLocation: BotLocation?) {
+        this.botLocation = botLocation
         notifyListeners()
     }
 
-//    fun startBallsRequestForAllSensors() {
-//        for ((ip) in SensorsManager.SENSORS_LIST) {
-//            Runnable { getBallsList(ip) }.run()
-//        }
-//    }
+    fun startBotLocationRequestForAllSensors() {
+        for ((ip) in SensorsManager.SENSORS_LIST) {
+            Runnable { getBotLocation(ip) }.run()
+        }
+    }
 
-    //    private fun getBallsList(ip: String) {
-//        Http.getBalls(ip, null, this)
-//    }
-//
-//    override fun ballsListReceived(ip: String, data: List<Ball>) {
-//        updateBallsList(data)
-//        getBallsList(ip)
-//    }
-//
-//    override fun ballsListFailed(ip: String) {
-//        getBallsList(ip)
-//        updateBallsList(null);
-//    }
-//
-    override fun botLocationReceived(ip: String, data: List<Ball>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    private fun getBotLocation(ip: String) {
+        Http.getBotLocation(ip, null, this)
+    }
+
+    override fun botLocationReceived(ip: String, data: BotLocation?) {
+        updateBotLocation(data)
+        getBotLocation(ip)
     }
 
     override fun botLocationFailed(ip: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        updateBotLocation(null)
     }
 
     override fun opponentLocationReceived(ip: String, data: List<Ball>) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO have to do
     }
 
     override fun opponentLocationFailed(ip: String) {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO have to do
     }
 
     interface Listener {
-        fun ballListChanged(balls: List<BallModel>)
+        fun botLocationChanged(botLocation: BotLocation?)
     }
 }
 
-data class BotModel(val frontLeft: Float, val frontRight: Float, val backLeft: Float, val backRight: Float)
+data class BotLocation(val angle: Double, val backLeft: Point, val backRight: Point, val frontLeft: Point, val frontRight: Point)

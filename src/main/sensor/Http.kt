@@ -1,6 +1,7 @@
 package main.sensor
 
 import main.controllers.Ball
+import main.controllers.BotLocation
 import java.util.concurrent.Executors
 import javax.swing.JLabel
 import javax.swing.JTextField
@@ -64,7 +65,7 @@ class Http {
             })
         }
 
-        fun getBalls(ip: String, lbMessage: JLabel?, listener: BallsListResponse) {
+        fun getBalls(ip: String, lbMessage: JLabel?, listener: BallsListListener) {
             Executors.newCachedThreadPool().submit({
                 lbMessage?.text = "Loading balls..."
                 ApiService.Factory.create(ip).getBalls()
@@ -73,7 +74,7 @@ class Http {
                                 lbMessage?.text = "Success: ${result.message}"
                                 listener.ballsListReceived(ip, result.data)
                             } else {
-                                listener.ballsListFailed(ip)
+                                listener.ballsListReceived(ip, null)
                                 lbMessage?.text = "Failed: ${result.message}"
                             }
                         }, { error ->
@@ -82,20 +83,39 @@ class Http {
                         })
             })
         }
+
+        fun getBotLocation(ip: String, lbMessage: JLabel?, listener: BotLocationListener) {
+            Executors.newCachedThreadPool().submit({
+                lbMessage?.text = "Loading bot location..."
+                ApiService.Factory.create(ip).getBotLocation()
+                        .subscribe({ result ->
+                            if (result.status.equals("ok")) {
+                                lbMessage?.text = "Success: ${result.message}"
+                                listener.botLocationReceived(ip, result.data)
+                            } else {
+                                listener.botLocationReceived(ip, null)
+                                lbMessage?.text = "Failed: ${result.message}"
+                            }
+                        }, { error ->
+                            listener.botLocationFailed(ip)
+                            lbMessage?.text = "Failed: ${error.message}"
+                        })
+            })
+        }
     }
 }
 
-interface BallsListResponse {
-    fun ballsListReceived(ip: String, data: List<Ball>)
+interface BallsListListener {
+    fun ballsListReceived(ip: String, data: List<Ball>?)
     fun ballsListFailed(ip: String)
 }
 
-interface BotLocationResponse {
-    fun botLocationReceived(ip: String, data: List<Ball>)
+interface BotLocationListener {
+    fun botLocationReceived(ip: String, data: BotLocation?)
     fun botLocationFailed(ip: String)
 }
 
-interface OpponentLocationResponse {
+interface OpponentLocationListener {
     fun opponentLocationReceived(ip: String, data: List<Ball>)
     fun opponentLocationFailed(ip: String)
 }
