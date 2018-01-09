@@ -9,12 +9,6 @@
       <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.4/gson-2.4.jar!/" />
     </CLASSES>
     <JAVADOC />
-    <SOURCES>
-      <root url="jar://$MAVEN_REPOSITORY$/com/squareup/retrofit/converter-gson/2.0.0-SNAPSHOT/converter-gson-2.0.0-SNAPSHOT-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/squareup/retrofit/retrofit/2.0.0-SNAPSHOT/retrofit-2.0.0-SNAPSHOT-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/squareup/okhttp/okhttp/2.5.0/okhttp-2.5.0-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/squareup/okio/okio/1.6.0/okio-1.6.0-sources.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/com/google/code/gson/gson/2.4/gson-2.4-sources.jar!/" />
-    </SOURCES>
+    <SOURCES />
   </library>
 </component>
