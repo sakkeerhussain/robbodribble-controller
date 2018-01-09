@@ -1,11 +1,11 @@
 package main.controllers
 
-import main.sensor.BallsListResponse
+import main.sensor.BallsListListener
 import main.sensor.Http
 import kotlin.math.absoluteValue
 
 
-class BallsManager : BallsListResponse {
+class BallsManager : BallsListListener {
     companion object {
         val BALL_LOCATION_TOLERANCE = 3
         val BALL_NOT_FOUND_TOLERANCE = 2
@@ -74,13 +74,12 @@ class BallsManager : BallsListResponse {
         Http.getBalls(ip, null, this)
     }
 
-    override fun ballsListReceived(ip: String, data: List<Ball>) {
+    override fun ballsListReceived(ip: String, data: List<Ball>?) {
         updateBallsList(data)
         getBallsList(ip)
     }
 
     override fun ballsListFailed(ip: String) {
-        getBallsList(ip)
         updateBallsList(null);
     }
 

@@ -10,6 +10,7 @@ public class Main {
     private JPanel pRoot;
     private JTabbedPane tpCalibration;
     private JPanel pBalls;
+    private JPanel pLog;
 
     private Main() {
         for (Sensor sensor: SensorsManager.Companion.getSENSORS_LIST()) {
@@ -17,6 +18,12 @@ public class Main {
         }
 
         setupBallsForm();
+        setupLogForm();
+    }
+
+    private void setupLogForm() {
+        JPanel a = new LogForm().pRoot;
+        pLog.add(a);
     }
 
     private void setupBallsForm() {

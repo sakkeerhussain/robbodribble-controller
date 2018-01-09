@@ -3,6 +3,7 @@ package main.sensor
 import com.squareup.okhttp.OkHttpClient
 import main.sensor.response.BallsResponse
 import main.sensor.response.BaseResponse
+import main.sensor.response.BotLocationResponse
 import main.sensor.response.CalibrationResponse
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
@@ -12,6 +13,7 @@ import retrofit.http.POST
 import retrofit.http.Path
 import retrofit.http.Query
 import rx.Observable
+import java.util.concurrent.TimeUnit
 
 
 interface ApiService {
@@ -30,6 +32,9 @@ interface ApiService {
     @GET("balls/")
     fun getBalls() : Observable<BallsResponse>
 
+    @GET("bot/")
+    fun getBotLocation() : Observable<BotLocationResponse>
+
     /**
      * Factory class for convenient creation of the Api Service interface
      */
@@ -41,6 +46,8 @@ interface ApiService {
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient()
             client.interceptors().add(logging)
+            client.setReadTimeout(650, TimeUnit.SECONDS)
+            client.setWriteTimeout(650, TimeUnit.SECONDS)
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
