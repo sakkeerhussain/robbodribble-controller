@@ -1,15 +1,13 @@
 package main.forms;
 
-import main.controllers.BallModel;
-import main.controllers.BallsManager;
-import main.controllers.BotLocation;
-import main.controllers.BotLocationManager;
+import main.controllers.*;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.util.ArrayList;
 import java.util.List;
 
 public class BallsForm implements BallsManager.Listener, BotLocationManager.Listener {
@@ -43,6 +41,12 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     @Override
     public void ballListChanged(@NotNull List<BallModel> balls) {
         ltBalls.setListData(balls.toArray());
+
+        /*ArrayList<BallModel> list = new ArrayList<>();
+        list.add(new BallModel(new Ball(0, 0), 0, 0, false));
+        list.add(new BallModel(new Ball(50, 50), 0, 0, false));
+        mBallsUI.setBalls(list);*/
+
         mBallsUI.setBalls(balls);
         pBallsDiagram.revalidate();
         pBallsDiagram.repaint();

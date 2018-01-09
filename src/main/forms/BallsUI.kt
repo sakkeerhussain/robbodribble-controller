@@ -23,11 +23,11 @@ class BallsUI : JPanel() {
     private fun draw(g: Graphics) {
         val g2d = g as Graphics2D
         g2d.color = Color.GREEN
-        for (i in 0..18) {
-            g2d.fillRect(convertX(10f * i), convertY(0f), 1, convertBallY(280f))
-        }
         for (i in 0..28) {
-            g2d.fillRect(convertX(0f), convertY(10f * i), convertBallX(180f), 1)
+            g2d.fillRect(convertX(10f * i), convertY(0f), 1, convertBallY(180f))
+        }
+        for (i in 0..18) {
+            g2d.fillRect(convertX(0f), convertY(10f * i), convertBallX(280f), 1)
         }
         g2d.color = Color.YELLOW
         for (ball in balls) {
@@ -51,20 +51,20 @@ class BallsUI : JPanel() {
         this.draw(g)
     }
 
-    private fun convertY(y: Float): Int {
-        return convertBallY(y) + BALL_HEIGHT / 2
+    private fun convertY(v: Float): Int {
+        return convertBallY(v) + BALL_HEIGHT / 2
     }
 
-    private fun convertX(x: Float): Int {
-        return (convertBallX(x) + BALL_WIDTH / 2)
+    private fun convertX(v: Float): Int {
+        return (convertBallX(v) + BALL_WIDTH / 2)
     }
 
-    private fun convertBallY(y: Float): Int {
-        return ((y * (this.height - BALL_HEIGHT) / 280).toInt())
+    private fun convertBallY(v: Float): Int {
+        return ((v * (this.height - BALL_HEIGHT) / 180).toInt())
     }
 
-    private fun convertBallX(x: Float): Int {
-        return (x * (this.width - BALL_WIDTH) / 180).toInt()
+    private fun convertBallX(v: Float): Int {
+        return (v * (this.width - BALL_WIDTH) / 280).toInt()
     }
 
     fun setBalls(balls: List<BallModel>){
