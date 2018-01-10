@@ -1,24 +1,47 @@
 package main.controllers.bot
 
-import com.squareup.okhttp.OkHttpClient
-import main.controllers.Const
-import main.sensor.HttpLoggingInterceptor
-import retrofit.GsonConverterFactory
-import retrofit.Retrofit
-import retrofit.RxJavaCallAdapterFactory
-import retrofit.http.GET
-import rx.Observable
-import java.util.concurrent.TimeUnit
+import main.forms.LogForm
+import java.util.concurrent.Executors
 
 
 class BotControlManager {
     companion object {
-        private var instance: BotControlManager? = null
+        private var instance = BotControlManager()
 
         fun get(): BotControlManager {
-            if (instance == null)
-                instance = BotControlManager()
-            return instance!!
+            return instance
         }
     }
+
+    private var status: BotStatus
+
+    init {
+        status = BotStatus.LAZY
+    }
+
+    fun start() {
+        Executors.newCachedThreadPool().submit({
+            BotCommunicationService.Factory.create().reset()
+                    .subscribe({ result ->
+                        if (result.status.equals("ok")) {
+                            LogForm.logger.println("Success --> " + result.message)
+                            status = BotStatus.LAZY
+                        } else {
+                            LogForm.logger.println("Error --> " + result.message)
+                        }
+                    }, { error ->
+                        LogForm.logger.println("Error --> " + error.message)
+                    })
+        })
+    }
+
+    private fun reStart() {
+        stop()
+        start()
+    }
+
+    fun stop() {
+    }
 }
+
+enum class BotStatus { LAZY, FIND, COLLECT, DUMP }

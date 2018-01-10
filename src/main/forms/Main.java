@@ -2,6 +2,7 @@ package main.forms;
 
 import main.controllers.Sensor;
 import main.controllers.SensorsManager;
+import main.controllers.bot.BotControlManager;
 
 import javax.swing.*;
 
@@ -19,6 +20,8 @@ public class Main {
 
         setupBallsForm();
         setupLogForm();
+
+        BotControlManager.Companion.get().start();
     }
 
     private void setupLogForm() {

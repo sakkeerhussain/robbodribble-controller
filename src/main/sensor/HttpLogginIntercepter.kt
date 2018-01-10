@@ -3,6 +3,7 @@ package main.sensor
 import com.squareup.okhttp.Headers
 import com.squareup.okhttp.Interceptor
 import com.squareup.okhttp.Response
+import main.forms.LogForm
 import okio.Buffer
 import java.io.EOFException
 import java.io.IOException
@@ -77,7 +78,7 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
             /** A [Logger] defaults output appropriate for the current platform.  */
             val DEFAULT: Logger = object : Logger {
                 override fun log(message: String) {
-                    listener?.log(message)
+                    LogForm.logger.println(message)
                     //System.out.println(message)
                 }
             }
@@ -238,7 +239,6 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
     }
 
     companion object {
-        var listener: LoggingListener? = null
         private val UTF8 = Charset.forName("UTF-8")
 
         /**
@@ -266,8 +266,4 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
 
         }
     }
-}
-
-interface LoggingListener{
-    public fun log(msg: String)
 }
