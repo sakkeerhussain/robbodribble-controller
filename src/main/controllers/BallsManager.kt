@@ -18,18 +18,19 @@ class BallsManager : BallsListListener {
             return instance!!
         }
     }
+
     private var listeners = ArrayList<Listener>()
-    fun addListener(listener: Listener){
+    fun addListener(listener: Listener) {
         if (listener !in listeners)
             listeners.add(listener)
         listener.ballListChanged(ballList)
     }
 
-    fun removeListener(listener: Listener){
+    fun removeListener(listener: Listener) {
         listeners.remove(listener)
     }
 
-    private fun notifyListeners(){
+    private fun notifyListeners() {
         listeners.forEach { it.ballListChanged(ballList) }
     }
 
@@ -75,15 +76,15 @@ class BallsManager : BallsListListener {
         Http.getBalls(ip, null, this)
     }
 
-    private fun getBallsListRanked() : List<Ball> {
+    private fun getBallsListRanked(): List<Ball> {
         val result = ArrayList<Ball>()
-        if (ballList.isNotEmpty()){
-
+        if (ballList.isNotEmpty()) {
+            //TODO - Complete feature
         }
         return result
     }
 
-    private fun getRankOneBall() : Ball? {
+    private fun getRankOneBall(): Ball? {
         val ballListRanked = getBallsListRanked()
         return if (ballListRanked.isEmpty()) null else ballListRanked[0]
     }
