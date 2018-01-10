@@ -1,13 +1,14 @@
 package main.controllers
 
+import main.geometry.Line
+import main.geometry.Point
 import main.sensor.BallsListListener
 import main.sensor.Http
-import kotlin.math.absoluteValue
 
 
 class BallsManager : BallsListListener {
     companion object {
-        val BALL_LOCATION_TOLERANCE = 3
+        val BALL_LOCATION_TOLERANCE = 6
         val BALL_NOT_FOUND_TOLERANCE = 2
         private var instance: BallsManager? = null
 
@@ -74,6 +75,19 @@ class BallsManager : BallsListListener {
         Http.getBalls(ip, null, this)
     }
 
+    private fun getBallsListRanked() : List<Ball> {
+        val result = ArrayList<Ball>()
+        if (ballList.isNotEmpty()){
+
+        }
+        return result
+    }
+
+    private fun getRankOneBall() : Ball? {
+        val ballListRanked = getBallsListRanked()
+        return if (ballListRanked.isEmpty()) null else ballListRanked[0]
+    }
+
     override fun ballsListReceived(ip: String, data: List<Ball>?) {
         updateBallsList(data)
         getBallsList(ip)
@@ -94,15 +108,13 @@ data class BallModel(val ball: Ball, var rank: Int, var notFoundCount: Int, var 
     }
 }
 
-data class Ball(val x: Float, val y: Float) {
+data class Ball(private val center: Point) {
     override fun toString(): String {
-        return "X: $x, Y:$y"
+        return "X: ${center.x}, Y:${center.y}"
     }
 
     override fun hashCode(): Int {
-        var result = x.hashCode()
-        result = 31 * result + y.hashCode()
-        return result
+        return center.hashCode()
     }
 
     override fun equals(other: Any?): Boolean {
@@ -111,9 +123,17 @@ data class Ball(val x: Float, val y: Float) {
 
         other as Ball
 
-        if ((x - other.x).absoluteValue > BallsManager.BALL_LOCATION_TOLERANCE) return false
-        if ((y - other.y).absoluteValue > BallsManager.BALL_LOCATION_TOLERANCE) return false
+        if (center.distanceTo(other.center) > BallsManager.BALL_LOCATION_TOLERANCE) return false
 
         return true
+    }
+
+    fun rank(): Double {
+        val botLocation = BotLocationManager.get().getBotLocation() ?: return 0.0;
+        val distancePoint = botLocation.frontSide().mid().distanceTo(this.center) * Const.BALL_RANK_DISTANCE_CONSTANT
+        //TODO  update calculation
+        val anglePoint = 0 * Const.BALL_RANK_ANGLE_CONSTANT
+        val sensorPoint = 0 * Const.BALL_RANK_SENSOR_CONSTANT
+        return distancePoint + anglePoint + sensorPoint;
     }
 }

@@ -24,14 +24,10 @@ class BotControlManager {
             BotCommunicationService.Factory.create().reset()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            LogForm.logger.println("Success --> " + result.message)
+                            LogForm.logger.println("Bot started")
                             status = BotStatus.LAZY
-                        } else {
-                            LogForm.logger.println("Error --> " + result.message)
                         }
-                    }, { error ->
-                        LogForm.logger.println("Error --> " + error.message)
-                    })
+                    }, {})
         })
     }
 

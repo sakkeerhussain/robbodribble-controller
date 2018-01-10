@@ -1,9 +1,10 @@
 package main.controllers
 
+import main.geometry.Line
+import main.geometry.Point
 import main.sensor.BotLocationListener
 import main.sensor.Http
 import main.sensor.OpponentLocationListener
-import main.sensor.response.Point
 
 
 class BotLocationManager : BotLocationListener, OpponentLocationListener {
@@ -75,4 +76,8 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 }
 
-data class BotLocation(val angle: Double, val backLeft: Point, val backRight: Point, val frontLeft: Point, val frontRight: Point)
+data class BotLocation(val angle: Double, val backLeft: Point, val backRight: Point, val frontLeft: Point, val frontRight: Point){
+    fun frontSide(): Line {
+        return Line(frontLeft, frontRight)
+    }
+}
