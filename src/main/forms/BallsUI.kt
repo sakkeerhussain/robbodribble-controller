@@ -31,7 +31,7 @@ class BallsUI : JPanel() {
         }
         g2d.color = Color.YELLOW
         for (ball in balls) {
-            g2d.fillOval(convertBallX(ball.ball.x), convertBallY(ball.ball.y), BALL_WIDTH, BALL_HEIGHT)
+            g2d.fillOval(convertBallX(ball.ball.center.x), convertBallY(ball.ball.center.y), BALL_WIDTH, BALL_HEIGHT)
         }
         g2d.color = Color.BLUE
         g2d.stroke = BasicStroke(5f);

@@ -109,7 +109,7 @@ data class BallModel(val ball: Ball, var rank: Int, var notFoundCount: Int, var 
     }
 }
 
-data class Ball(private val center: Point) {
+data class Ball(val center: Point) {
     override fun toString(): String {
         return "X: ${center.x}, Y:${center.y}"
     }
