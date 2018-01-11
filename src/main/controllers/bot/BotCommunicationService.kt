@@ -1,12 +1,15 @@
 package main.controllers.bot
 
 import com.squareup.okhttp.OkHttpClient
+import com.squareup.okhttp.RequestBody
 import main.controllers.Const
 import main.sensor.HttpLoggingInterceptor
 import retrofit.GsonConverterFactory
 import retrofit.Retrofit
 import retrofit.RxJavaCallAdapterFactory
+import retrofit.http.Body
 import retrofit.http.GET
+import retrofit.http.POST
 import rx.Observable
 import java.util.concurrent.TimeUnit
 
@@ -17,6 +20,9 @@ interface BotCommunicationService{
 
     @GET("/v2/controller/stop/")
     fun stop() : Observable<Response>
+
+    @POST("/v2/controller/path/")
+    fun sendPath(@Body body: List<PathRequestItem>) : Observable<Response>
 
     object Factory {
         fun create(): BotCommunicationService {

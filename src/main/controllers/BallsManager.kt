@@ -62,7 +62,7 @@ class BallsManager : BallsListListener {
                     it.notFoundCount = 0
                     return
                 }
-        val ballModel = BallModel(ball, 1, 0, true)
+        val ballModel = BallModel(ball, 1, 0, true, 0.0, 0.0)
         ballList.add(ballModel)
     }
 
@@ -76,16 +76,14 @@ class BallsManager : BallsListListener {
         Http.getBalls(ip, null, this)
     }
 
-    private fun getBallsListRanked(): List<Ball> {
-        val result = ArrayList<Ball>()
-        if (ballList.isNotEmpty()) {
-            //TODO - Complete feature
-        }
-        return result
+    private fun sortBallsListAccordingToRank(): List<BallModel> {
+        ballList.forEach { it.calculateRank() }
+        ballList.sortBy { it.rank }
+        return ballList
     }
 
-    private fun getRankOneBall(): Ball? {
-        val ballListRanked = getBallsListRanked()
+    fun getRankOneBall(): BallModel? {
+        val ballListRanked = sortBallsListAccordingToRank()
         return if (ballListRanked.isEmpty()) null else ballListRanked[0]
     }
 
@@ -103,9 +101,21 @@ class BallsManager : BallsListListener {
     }
 }
 
-data class BallModel(val ball: Ball, var rank: Int, var notFoundCount: Int, var present: Boolean) {
+data class BallModel(val ball: Ball, var sensorRank: Int, var notFoundCount: Int,
+                     var present: Boolean, var rank: Double, var angleToBot: Double) {
     override fun toString(): String {
-        return "$ball, (rank=$rank), (notFoundCount=$notFoundCount)"
+        return "$ball, (rank=$rank), (sensorRank=$sensorRank), (notFoundCount=$notFoundCount)"
+    }
+
+    fun calculateRank(): Double {
+        val botLocation = BotLocationManager.get().getBotLocation() ?: return 0.0;
+        val botFrontCenterToBallLine = Line(botLocation.frontSide().mid(), this.ball.center)
+        val distancePoint = botFrontCenterToBallLine.length() * Const.BALL_RANK_DISTANCE_CONSTANT
+        angleToBot = (botFrontCenterToBallLine.angle() - botLocation.angle)
+        val anglePoint = angleToBot * Const.BALL_RANK_ANGLE_CONSTANT
+        val sensorPoint = sensorRank * Const.BALL_RANK_SENSOR_CONSTANT
+        rank = distancePoint + anglePoint + sensorPoint
+        return rank
     }
 }
 
@@ -127,14 +137,5 @@ data class Ball(val center: Point) {
         if (center.distanceTo(other.center) > BallsManager.BALL_LOCATION_TOLERANCE) return false
 
         return true
-    }
-
-    fun rank(): Double {
-        val botLocation = BotLocationManager.get().getBotLocation() ?: return 0.0;
-        val distancePoint = botLocation.frontSide().mid().distanceTo(this.center) * Const.BALL_RANK_DISTANCE_CONSTANT
-        //TODO  update calculation
-        val anglePoint = 0 * Const.BALL_RANK_ANGLE_CONSTANT
-        val sensorPoint = 0 * Const.BALL_RANK_SENSOR_CONSTANT
-        return distancePoint + anglePoint + sensorPoint;
     }
 }
