@@ -13,7 +13,6 @@ class Point(val x:Float, val y: Float){
     }
 
     fun isAt(point: Point, width: Int): Boolean {
-        //TODO(implement)
-        return false
+        return Line(point, this).length() < width
     }
 }
