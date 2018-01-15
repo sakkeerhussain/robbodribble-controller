@@ -3,6 +3,10 @@ package main.controllers
 class Const{
     companion object {
         val BOT_ADDRESS = "10.7.120.81"
+//        val BOT_ADDRESS = "127.0.0.1:8080"
+
+        val IP_NEXUS: String = "10.7.120.3"
+        val IP_SAKKEER: String = "10.7.170.6"
 
 
         val BALL_RANK_DISTANCE_CONSTANT = -1

@@ -7,10 +7,8 @@ import main.controllers.Const
 import main.forms.LogForm
 import main.geometry.Line
 import main.geometry.Point
-import java.util.*
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
-import kotlin.concurrent.timerTask
 import kotlin.math.absoluteValue
 
 
@@ -35,67 +33,47 @@ class BotControlManager {
         collectedBallCount = 0
     }
 
-    fun start() {
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create().reset()
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            LogForm.logger.println("Bot started")
-                            status = BotStatus.FIND
-                            awakeBotOperator()
-                        }
-                    }, {})
-        })
-    }
-
-    fun reStart() {
-        stop()
-        start()
-    }
-
-    fun stop() {
-    }
-
-    private fun awakeBotOperator() {
+    fun startBotOperator() {
+        var restartOperator = true
         when (status) {
             BotStatus.LAZY -> {
-                start()
+                println("Lazy")
+                restartOperator = false
+                sendResetToBot()
             }
             BotStatus.FIND -> {
+                println("Find")
                 val ball = BallsManager.get().getRankOneBall()
                 if (ball != null)
                     moveTo(ball)
                 else {
                     LogForm.logger.println("No balls found")
-                    wait(1)
                 }
             }
             BotStatus.COLLECT -> {
+                println("Collect")
                 checkBotInPathToBallOrNot()
             }
             BotStatus.DUMP -> {
-
+                println("Dump")
             }
         }
-    }
-
-    private fun wait(time: Int) {
-        LogForm.logger.println("Waiting for $time seconds")
-        Timer().schedule(timerTask { awakeBotOperator() }, (time * 1000).toLong())
+        if (restartOperator) {
+            Thread.sleep(500)
+            startBotOperator()
+        }
     }
 
     private fun moveTo(ballModel: BallModel) {
         status = BotStatus.COLLECT
         targetBall = ballModel
         moveTo(ballModel.ball.center)
-        wait(4)
     }
 
     private fun checkBotInPathToBallOrNot() {
         val botLocation = BotLocationManager.get().getBotLocation()
         if (targetBall == null || moveStartPoint == null || botLocation == null) {
             setBotModeFind()
-            awakeBotOperator()
         }else {
             if (botLocation.point().isAt(targetBall!!.ball.center, Const.BOT_WIDTH)) {
                 LogForm.logger.println("Bot reached target ball, Bot:${botLocation.point()}, Ball: ${targetBall!!.ball.center}")
@@ -104,14 +82,10 @@ class BotControlManager {
                     setBotModeDump()
                 else
                     setBotModeFind()
-                awakeBotOperator()
-            }else if (botLocation.point().isOnLine(Line(targetBall!!.ball.center, moveStartPoint!!), Const.BOT_WIDTH)) {
+            }else if (botLocation.point().isOnLine(Line(targetBall!!.ball.center, moveStartPoint!!), Const.BOT_WIDTH))
                 LogForm.logger.println("Bot reached at ${botLocation.point()}")
-                wait(4)
-            }else{
+            else
                 setBotModeFind()
-                awakeBotOperator()
-            }
         }
     }
 
@@ -164,6 +138,19 @@ class BotControlManager {
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             LogForm.logger.println("Sent stop to bot successfully")
+                        }
+                    }, {})
+        })
+    }
+
+    fun sendResetToBot() {
+        Executors.newCachedThreadPool().submit({
+            BotCommunicationService.Factory.create().reset()
+                    .subscribe({ result ->
+                        if (result.status.equals("ok")) {
+                            LogForm.logger.println("Bot started")
+                            status = BotStatus.FIND
+                            startBotOperator()
                         }
                     }, {})
         })
