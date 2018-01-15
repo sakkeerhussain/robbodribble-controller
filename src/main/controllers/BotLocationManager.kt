@@ -80,4 +80,16 @@ data class BotLocation(val angle: Double, val backLeft: Point, val backRight: Po
     fun frontSide(): Line {
         return Line(frontLeft, frontRight)
     }
+
+    fun backSide(): Line {
+        return Line(backLeft, backRight)
+    }
+
+    fun midLine(): Line {
+        return Line(frontSide().mid(), backSide().mid())
+    }
+
+    fun point(): Point {
+        return frontSide().mid()
+    }
 }
