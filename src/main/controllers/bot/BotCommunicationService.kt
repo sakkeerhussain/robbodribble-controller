@@ -25,8 +25,8 @@ interface BotCommunicationService{
     fun sendPath(@Body body: List<PathRequestItem>) : Observable<Response>
 
     object Factory {
-        fun create(): BotCommunicationService {
-            val logging = HttpLoggingInterceptor()
+        fun create(tag:String): BotCommunicationService {
+            val logging = HttpLoggingInterceptor(tag)
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient()
             client.interceptors().add(logging)

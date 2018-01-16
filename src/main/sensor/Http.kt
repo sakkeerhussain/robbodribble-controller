@@ -11,7 +11,7 @@ class Http {
         fun calibrateRef(ip: String, point: Int, lbMessage: JLabel, runnable: Runnable) {
             Executors.newCachedThreadPool().submit({
                 lbMessage.text = "Loading..."
-                ApiService.Factory.create(ip).calibrateRef(point)
+                ApiService.Factory.create("SENSOR - CALIBRATE", ip).calibrateRef(point)
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage.text = "Success: ${result.message}"
@@ -28,7 +28,7 @@ class Http {
         fun getReferencePoint(ip: String, point: Int, lbMessage: JLabel, tfX: JTextField, tfY: JTextField) {
             Executors.newCachedThreadPool().submit({
                 lbMessage.text = "Loading..."
-                ApiService.Factory.create(ip).getReferencePoint(point)
+                ApiService.Factory.create("SENSOR - CALIBRATE", ip).getReferencePoint(point)
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage.text = "Success: ${result.message}"
@@ -51,7 +51,7 @@ class Http {
                               xBord: Float, yBord: Float, runnable: Runnable) {
             Executors.newCachedThreadPool().submit({
                 lbMessage.text = "Loading..."
-                ApiService.Factory.create(ip).setReferencePoint(point, xImage, yImage, xBord, yBord)
+                ApiService.Factory.create("SENSOR - CALIBRATE", ip).setReferencePoint(point, xImage, yImage, xBord, yBord)
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage.text = "Success: ${result.message}"
@@ -68,7 +68,7 @@ class Http {
         fun getBalls(ip: String, lbMessage: JLabel?, listener: BallsListListener) {
             Executors.newCachedThreadPool().submit({
                 lbMessage?.text = "Loading balls..."
-                ApiService.Factory.create(ip).getBalls()
+                ApiService.Factory.create("SENSOR - BALLS", ip).getBalls()
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage?.text = "Success: ${result.message}"
@@ -87,7 +87,7 @@ class Http {
         fun getBotLocation(ip: String, lbMessage: JLabel?, listener: BotLocationListener) {
             Executors.newCachedThreadPool().submit({
                 lbMessage?.text = "Loading bot location..."
-                ApiService.Factory.create(ip).getBotLocation()
+                ApiService.Factory.create("SENSOR - BOT LOCATION", ip).getBotLocation()
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage?.text = "Success: ${result.message}"

@@ -40,9 +40,9 @@ interface ApiService {
      */
     object Factory {
 
-        fun create(ip: String): ApiService {
+        fun create(tag: String, ip: String): ApiService {
 
-            val logging = HttpLoggingInterceptor()
+            val logging = HttpLoggingInterceptor(tag)
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient()
             client.interceptors().add(logging)

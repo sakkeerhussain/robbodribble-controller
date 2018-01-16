@@ -124,7 +124,7 @@ class BotControlManager {
 
     private fun sendPathToBot(pathList: ArrayList<PathRequestItem>) {
         Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create().sendPath(pathList)
+            BotCommunicationService.Factory.create("BOT CONTROL - Path").sendPath(pathList)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             LogForm.logger.println(TAG,"Sent path to bot successfully")
@@ -135,7 +135,7 @@ class BotControlManager {
 
     private fun sendStopToBot() {
         Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create().stop()
+            BotCommunicationService.Factory.create("BOT CONTROL - Stop").stop()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             LogForm.logger.println(TAG,"Sent stop to bot successfully")
@@ -146,7 +146,7 @@ class BotControlManager {
 
     fun sendResetToBot() {
         Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create().reset()
+            BotCommunicationService.Factory.create("BOT CONTROL - Reset").reset()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             LogForm.logger.println(TAG,"Bot started")

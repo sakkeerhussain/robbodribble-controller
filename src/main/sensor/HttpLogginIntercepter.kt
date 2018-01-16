@@ -10,7 +10,7 @@ import java.io.IOException
 import java.nio.charset.Charset
 import java.util.concurrent.TimeUnit
 
-class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logger = Logger.DEFAULT) : Interceptor {
+class HttpLoggingInterceptor @JvmOverloads constructor(val tag:String, private val logger: Logger = Logger.DEFAULT) : Interceptor {
     private val LONG_NEG_ONE: Long = -1
     private val LONG_ZERO: Long = 0
 
@@ -71,14 +71,14 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
     }
 
     interface Logger {
-        fun log(message: String)
+        fun log(tag: String, message: String)
 
         companion object {
 
             /** A [Logger] defaults output appropriate for the current platform.  */
             val DEFAULT: Logger = object : Logger {
-                override fun log(message: String) {
-                    LogForm.logger.println("Http Log", message)
+                override fun log(tag:String, message: String) {
+                    LogForm.logger.println(tag, message)
                     //System.out.println(message)
                 }
             }
@@ -119,17 +119,17 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
         if (!logHeaders && hasRequestBody) {
             requestStartMessage += " (" + requestBody!!.contentLength() + "-byte body)"
         }
-        logger.log(requestStartMessage)
+        logger.log(tag, requestStartMessage)
 
         if (logHeaders) {
             if (hasRequestBody) {
                 // Request body headers are only present when installed as a network interceptor. Force
                 // them to be included (when available) so there values are known.
                 if (requestBody!!.contentType() != null) {
-                    logger.log("Content-Type: " + requestBody.contentType()!!)
+                    logger.log(tag,"Content-Type: " + requestBody.contentType()!!)
                 }
                 if (requestBody.contentLength() != LONG_NEG_ONE) {
-                    logger.log("Content-Length: " + requestBody.contentLength())
+                    logger.log(tag,"Content-Length: " + requestBody.contentLength())
                 }
             }
 
@@ -140,15 +140,15 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
                 val name = headers.name(i)
                 // Skip headers from the request body as they are explicitly logged above.
                 if (!"Content-Type".equals(name, ignoreCase = true) && !"Content-Length".equals(name, ignoreCase = true)) {
-                    logger.log(name + ": " + headers.value(i))
+                    logger.log(tag,name + ": " + headers.value(i))
                 }
                 i++
             }
 
             if (!logBody || !hasRequestBody) {
-                logger.log("--> END " + request.method())
+                logger.log(tag,"--> END " + request.method())
             } else if (bodyEncoded(request.headers())) {
-                logger.log("--> END " + request.method() + " (encoded body omitted)")
+                logger.log(tag,"--> END " + request.method() + " (encoded body omitted)")
             } else {
                 val buffer = Buffer()
                 requestBody!!.writeTo(buffer)
@@ -159,13 +159,13 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
                     charset = contentType.charset(UTF8)
                 }
 
-                logger.log("")
+                logger.log(tag,"")
                 if (isPlaintext(buffer)) {
-                    logger.log(buffer.readString(charset!!))
-                    logger.log("--> END " + request.method()
+                    logger.log(tag,buffer.readString(charset!!))
+                    logger.log(tag,"--> END " + request.method()
                             + " (" + requestBody.contentLength() + "-byte body)")
                 } else {
-                    logger.log("--> END " + request.method() + " (binary "
+                    logger.log(tag,"--> END " + request.method() + " (binary "
                             + requestBody.contentLength() + "-byte body omitted)")
                 }
             }
@@ -176,7 +176,7 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
         try {
             response = chain.proceed(request)
         } catch (e: Exception) {
-            logger.log("<-- HTTP FAILED: " + e)
+            logger.log(tag,"<-- HTTP FAILED: " + e)
             throw e
         }
 
@@ -185,7 +185,7 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
         val responseBody = response.body()
         val contentLength = responseBody!!.contentLength()
         val bodySize = if (contentLength != LONG_NEG_ONE) contentLength.toString() + "-byte" else "unknown-length"
-        logger.log("<-- "
+        logger.log(tag,"<-- "
                 + response.code()
                 + (if (response.message().isEmpty()) "" else ' ' + response.message())
                 + ' ' + response.request().url()
@@ -196,14 +196,14 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
             var i = 0
             val count = headers.size()
             while (i < count) {
-                logger.log(headers.name(i) + ": " + headers.value(i))
+                logger.log(tag,headers.name(i) + ": " + headers.value(i))
                 i++
             }
 
             if (!logBody) {
-                logger.log("<-- END HTTP")
+                logger.log(tag,"<-- END HTTP")
             } else if (bodyEncoded(response.headers())) {
-                logger.log("<-- END HTTP (encoded body omitted)")
+                logger.log(tag,"<-- END HTTP (encoded body omitted)")
             } else {
                 val source = responseBody.source()
                 source.request(java.lang.Long.MAX_VALUE) // Buffer the entire body.
@@ -216,17 +216,17 @@ class HttpLoggingInterceptor @JvmOverloads constructor(private val logger: Logge
                 }
 
                 if (!isPlaintext(buffer)) {
-                    logger.log("")
-                    logger.log("<-- END HTTP (binary " + buffer.size() + "-byte body omitted)")
+                    logger.log(tag,"")
+                    logger.log(tag,"<-- END HTTP (binary " + buffer.size() + "-byte body omitted)")
                     return response
                 }
 
                 if (contentLength != LONG_ZERO) {
-                    logger.log("")
-                    logger.log(buffer.clone().readString(charset!!))
+                    logger.log(tag,"")
+                    logger.log(tag, buffer.clone().readString(charset!!))
                 }
 
-                logger.log("<-- END HTTP (" + buffer.size() + "-byte body)")
+                logger.log(tag,"<-- END HTTP (" + buffer.size() + "-byte body)")
             }
         }
 
