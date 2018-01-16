@@ -17,10 +17,10 @@ class SensorsManager{
 
         init {
 //            sensors.add(Sensor("192.168.1.50"))
-//            sensors.add(Sensor("10.7.170.6"))
-            sensors.add(Sensor(Const.IP_NEXUS))
-//            sensors.add(Sensor(Const.IP_SAKKEER))
+//              sensors.add(Sensor("10.7.120.21", false, false))
+//            sensors.add(Sensor(Const.IP_NEXUS, false, false))
+            sensors.add(Sensor(Const.IP_SAKKEER, false, false))
         }
     }
 }
-data class Sensor(val ip: String){}
+data class Sensor(val ip: String, val ballOnly: Boolean, val botOnly: Boolean){}

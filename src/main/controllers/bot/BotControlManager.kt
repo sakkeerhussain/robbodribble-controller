@@ -14,6 +14,7 @@ import kotlin.math.absoluteValue
 
 class BotControlManager {
     companion object {
+        private var TAG = "Bot Controller"
         private var instance = BotControlManager()
 
         fun get(): BotControlManager {
@@ -47,7 +48,7 @@ class BotControlManager {
                 if (ball != null)
                     moveTo(ball)
                 else {
-                    LogForm.logger.println("No balls found")
+                    LogForm.logger.println(TAG, "No balls found")
                 }
             }
             BotStatus.COLLECT -> {
@@ -74,29 +75,29 @@ class BotControlManager {
         val botLocation = BotLocationManager.get().getBotLocation()
         if (targetBall == null || moveStartPoint == null || botLocation == null) {
             setBotModeFind()
-        }else {
+        } else {
             if (botLocation.point().isAt(targetBall!!.ball.center, Const.BOT_WIDTH)) {
-                LogForm.logger.println("Bot reached target ball, Bot:${botLocation.point()}, Ball: ${targetBall!!.ball.center}")
+                LogForm.logger.println(TAG,"Bot reached target ball, Bot:${botLocation.point()}, Ball: ${targetBall!!.ball.center}")
                 collectedBallCount++
                 if (collectedBallCount >= Const.BOT_MAX_BALL_CAPACITY)
                     setBotModeDump()
                 else
                     setBotModeFind()
-            }else if (botLocation.point().isOnLine(Line(targetBall!!.ball.center, moveStartPoint!!), Const.BOT_WIDTH))
-                LogForm.logger.println("Bot reached at ${botLocation.point()}")
+            } else if (botLocation.point().isOnLine(Line(targetBall!!.ball.center, moveStartPoint!!), Const.BOT_WIDTH))
+                LogForm.logger.println(TAG,"Bot reached at ${botLocation.point()}")
             else
                 setBotModeFind()
         }
     }
 
     private fun setBotModeFind() {
-        LogForm.logger.println("Bot mode changed to find")
+        LogForm.logger.println(TAG,"Bot mode changed to find")
         status = BotStatus.FIND
         sendStopToBot()
     }
 
     private fun setBotModeDump() {
-        LogForm.logger.println("Bot mode changed to dump")
+        LogForm.logger.println(TAG,"Bot mode changed to dump")
         status = BotStatus.DUMP
     }
 
@@ -104,7 +105,7 @@ class BotControlManager {
         val pathList = ArrayList<PathRequestItem>()
         val botLocation = BotLocationManager.get().getBotLocation()
         if (botLocation == null) {
-            LogForm.logger.println("Bot not found!")
+            LogForm.logger.println(TAG,"Bot not found!")
             setBotModeFind()
         } else {
             moveStartPoint = botLocation.point()
@@ -126,7 +127,7 @@ class BotControlManager {
             BotCommunicationService.Factory.create().sendPath(pathList)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            LogForm.logger.println("Sent path to bot successfully")
+                            LogForm.logger.println(TAG,"Sent path to bot successfully")
                         }
                     }, {})
         })
@@ -137,7 +138,7 @@ class BotControlManager {
             BotCommunicationService.Factory.create().stop()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            LogForm.logger.println("Sent stop to bot successfully")
+                            LogForm.logger.println(TAG,"Sent stop to bot successfully")
                         }
                     }, {})
         })
@@ -148,11 +149,13 @@ class BotControlManager {
             BotCommunicationService.Factory.create().reset()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            LogForm.logger.println("Bot started")
+                            LogForm.logger.println(TAG,"Bot started")
                             status = BotStatus.FIND
                             startBotOperator()
                         }
-                    }, {})
+                    }, { error ->
+                        LogForm.logger.println(TAG,"Unable to start bot")
+                    })
         })
     }
 }
