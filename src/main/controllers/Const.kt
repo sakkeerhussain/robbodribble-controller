@@ -1,7 +1,11 @@
 package main.controllers
 
+import main.geometry.Point
+
 class Const{
     companion object {
+        val POST = 1
+        //val POST = 2
         val BOT_ADDRESS = "10.7.120.81"
 //        val BOT_ADDRESS = "127.0.0.1:8080"
 
@@ -22,5 +26,13 @@ class Const{
 
         val BOT_WIDTH = 30
         val BOT_MAX_BALL_CAPACITY = 6
+
+        val POST_LOCATION: Point
+        init {
+            if (POST == 1)
+                POST_LOCATION = Point(90f, 0f)
+            else
+                POST_LOCATION = Point(90f, 280f)
+        }
     }
 }

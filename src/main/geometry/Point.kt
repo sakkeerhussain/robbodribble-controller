@@ -8,8 +8,8 @@ class Point(val x:Float, val y: Float){
     }
 
     fun isOnLine(line: Line, width: Int): Boolean {
-        //TODO(implement)
-        return true
+        val lengthSum = Line(line.p1, this).length() + Line(line.p2, this).length()
+        return lengthSum + width <= line.length()
     }
 
     fun isAt(point: Point, width: Int): Boolean {

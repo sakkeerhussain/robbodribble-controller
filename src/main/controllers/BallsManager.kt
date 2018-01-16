@@ -104,7 +104,7 @@ class BallsManager : BallsListListener {
 data class BallModel(val ball: Ball, var sensorRank: Int, var notFoundCount: Int,
                      var present: Boolean, var rank: Double, var angleToBot: Double) {
     override fun toString(): String {
-        return "$ball, (rank=$rank), (sensorRank=$sensorRank), (notFoundCount=$notFoundCount)"
+        return "$ball, r=$rank, sr=$sensorRank, nfc=$notFoundCount"
     }
 
     fun calculateRank(): Double {
@@ -121,7 +121,7 @@ data class BallModel(val ball: Ball, var sensorRank: Int, var notFoundCount: Int
 
 data class Ball(val center: Point) {
     override fun toString(): String {
-        return "X: ${center.x}, Y:${center.y}"
+        return "(%.2f, %.2f)".format(center.x, center.y)
     }
 
     override fun hashCode(): Int {

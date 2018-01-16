@@ -18,7 +18,7 @@ public class LogForm {
 
     LogForm(){
         logger = new Listener(taLogs);
-        clearButton.addActionListener(e -> taLogs.setText(""));
+        clearButton.addActionListener(e -> logger.clearLogs());
 
         //Setting up search form
         tfSearch.setForeground(Color.GRAY);
@@ -68,6 +68,11 @@ public class LogForm {
 
         private void setSearchStr(String searchStr) {
             this.searchStr = searchStr;
+            updateLogText();
+        }
+
+        private void clearLogs() {
+            this.log = "";
             updateLogText();
         }
 

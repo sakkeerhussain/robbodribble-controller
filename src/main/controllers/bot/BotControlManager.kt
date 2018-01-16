@@ -14,7 +14,7 @@ import kotlin.math.absoluteValue
 
 class BotControlManager {
     companion object {
-        private var TAG = "Bot Controller"
+        private var TAG = "BOT CONTROLLER       "
         private var instance = BotControlManager()
 
         fun get(): BotControlManager {
@@ -55,8 +55,14 @@ class BotControlManager {
                 println("Collect")
                 checkBotInPathToBallOrNot()
             }
+            BotStatus.READY_TO_DUMP -> {
+                println("Ready To Dump")
+                moveTo(Const.POST_LOCATION, true)
+                setBotModeDump()
+            }
             BotStatus.DUMP -> {
                 println("Dump")
+                checkBotInPathToPostOrNot()
             }
         }
         if (restartOperator) {
@@ -68,7 +74,7 @@ class BotControlManager {
     private fun moveTo(ballModel: BallModel) {
         status = BotStatus.COLLECT
         targetBall = ballModel
-        moveTo(ballModel.ball.center)
+        moveTo(ballModel.ball.center, false)
     }
 
     private fun checkBotInPathToBallOrNot() {
@@ -77,36 +83,64 @@ class BotControlManager {
             setBotModeFind()
         } else {
             if (botLocation.point().isAt(targetBall!!.ball.center, Const.BOT_WIDTH)) {
-                LogForm.logger.println(TAG,"Bot reached target ball, Bot:${botLocation.point()}, Ball: ${targetBall!!.ball.center}")
+                LogForm.logger.println(TAG, "Bot reached target ball, Bot:${botLocation.point()}, Ball: ${targetBall!!.ball.center}")
                 collectedBallCount++
                 if (collectedBallCount >= Const.BOT_MAX_BALL_CAPACITY)
-                    setBotModeDump()
+                    setBotModeReadyToDump()
                 else
                     setBotModeFind()
             } else if (botLocation.point().isOnLine(Line(targetBall!!.ball.center, moveStartPoint!!), Const.BOT_WIDTH))
-                LogForm.logger.println(TAG,"Bot reached at ${botLocation.point()}")
+                LogForm.logger.println(TAG, "Bot reached at ${botLocation.point()}")
             else
                 setBotModeFind()
         }
     }
 
+    private fun checkBotInPathToPostOrNot() {
+        val botLocation = BotLocationManager.get().getBotLocation()
+        if (moveStartPoint == null || botLocation == null) {
+            setBotModeReadyToDump()
+        } else {
+            when {
+                botLocation.point().isAt(Const.POST_LOCATION, Const.BOT_WIDTH) -> {
+                    LogForm.logger.println(TAG, "Bot reached target post, Post: ${Const.POST_LOCATION}")
+                    setBotModeLazy()
+                }
+                botLocation.point().isOnLine(Line(Const.POST_LOCATION, moveStartPoint!!), Const.BOT_WIDTH) ->
+                    LogForm.logger.println(TAG, "Bot reached at ${botLocation.point()}")
+                else -> setBotModeReadyToDump()
+            }
+        }
+    }
+
+    private fun setBotModeLazy() {
+        LogForm.logger.println(TAG, "Bot mode changed to lazy")
+        status = BotStatus.LAZY
+    }
+
     private fun setBotModeFind() {
-        LogForm.logger.println(TAG,"Bot mode changed to find")
+        LogForm.logger.println(TAG, "Bot mode changed to find")
         status = BotStatus.FIND
         sendStopToBot()
     }
 
+    private fun setBotModeReadyToDump() {
+        LogForm.logger.println(TAG, "Bot mode changed to 'ready to dump'")
+        status = BotStatus.READY_TO_DUMP
+    }
+
     private fun setBotModeDump() {
-        LogForm.logger.println(TAG,"Bot mode changed to dump")
+        LogForm.logger.println(TAG, "Bot mode changed to dump")
         status = BotStatus.DUMP
     }
 
-    private fun moveTo(point: Point) {
+    private fun moveTo(point: Point, reverse: Boolean) {
         val pathList = ArrayList<PathRequestItem>()
         val botLocation = BotLocationManager.get().getBotLocation()
         if (botLocation == null) {
-            LogForm.logger.println(TAG,"Bot not found!")
-            setBotModeFind()
+            LogForm.logger.println(TAG, "Bot not found!")
+            if (status == BotStatus.COLLECT)
+                setBotModeFind()
         } else {
             moveStartPoint = botLocation.point()
             val botToPointLine = Line(botLocation.frontSide().mid(), point)
@@ -116,7 +150,10 @@ class BotControlManager {
             } else {
                 pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
             }
-            pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
+            if (reverse)
+                pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
+            else
+                pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
             sendPathToBot(pathList)
             //TODO(Avoid obstacle)
         }
@@ -124,10 +161,10 @@ class BotControlManager {
 
     private fun sendPathToBot(pathList: ArrayList<PathRequestItem>) {
         Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - Path").sendPath(pathList)
+            BotCommunicationService.Factory.create("BOT CONTROL - PATH").sendPath(pathList)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            LogForm.logger.println(TAG,"Sent path to bot successfully")
+                            LogForm.logger.println(TAG, "Sent path to bot successfully")
                         }
                     }, {})
         })
@@ -135,29 +172,29 @@ class BotControlManager {
 
     private fun sendStopToBot() {
         Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - Stop").stop()
+            BotCommunicationService.Factory.create("BOT CONTROL - STOP").stop()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            LogForm.logger.println(TAG,"Sent stop to bot successfully")
+                            LogForm.logger.println(TAG, "Sent stop to bot successfully")
                         }
                     }, {})
         })
     }
 
-    fun sendResetToBot() {
+    private fun sendResetToBot() {
         Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - Reset").reset()
+            BotCommunicationService.Factory.create("BOT CONTROL - RESET").reset()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            LogForm.logger.println(TAG,"Bot started")
+                            LogForm.logger.println(TAG, "Bot started")
                             status = BotStatus.FIND
                             startBotOperator()
                         }
                     }, { error ->
-                        LogForm.logger.println(TAG,"Unable to start bot")
+                        LogForm.logger.println(TAG, "Unable to start bot")
                     })
         })
     }
 }
 
-enum class BotStatus { LAZY, FIND, COLLECT, DUMP }
+enum class BotStatus { LAZY, FIND, COLLECT, READY_TO_DUMP, DUMP }
