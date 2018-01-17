@@ -45,7 +45,7 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     fun startBotLocationRequestForAllSensors() {
-        for ((ip) in SensorsManager.SENSORS_LIST) {
+        for ((ip) in SensorsManager.get().getBotSensorsList()) {
             Runnable { getBotLocation(ip) }.run()
         }
     }

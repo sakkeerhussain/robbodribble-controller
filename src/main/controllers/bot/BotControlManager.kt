@@ -26,48 +26,54 @@ class BotControlManager {
     private var targetBall: BallModel?
     private var moveStartPoint: Point?
     private var collectedBallCount: Int
+    private var botOperatorRunning: Boolean
 
     init {
         status = BotStatus.LAZY
         targetBall = null
         moveStartPoint = null
         collectedBallCount = 0
+        botOperatorRunning = false
     }
 
+
     fun startBotOperator() {
-        var restartOperator = true
-        when (status) {
-            BotStatus.LAZY -> {
-                println("Lazy")
-                restartOperator = false
-                sendResetToBot()
-            }
-            BotStatus.FIND -> {
-                println("Find")
-                val ball = BallsManager.get().getRankOneBall()
-                if (ball != null)
-                    moveTo(ball)
-                else {
-                    LogForm.logger.println(TAG, "No balls found")
+        if (botOperatorRunning)
+            return
+        botOperatorRunning = true
+        try {
+            while (true) {
+                println("Status: $status")
+                when (status) {
+                    BotStatus.LAZY -> {
+                        setBotModeWaitForBotResponse()
+                        sendResetToBot()
+                    }
+                    BotStatus.WAIT_BOT_RESPONSE -> {
+                    }
+                    BotStatus.FIND -> {
+                        val ball = BallsManager.get().getRankOneBall()
+                        if (ball != null)
+                            moveTo(ball)
+                        else {
+                            LogForm.logger.println(TAG, "No balls found")
+                        }
+                    }
+                    BotStatus.COLLECT -> {
+                        checkBotInPathToBallOrNot()
+                    }
+                    BotStatus.READY_TO_DUMP -> {
+                        moveTo(Const.POST_LOCATION, true)
+                        setBotModeDump()
+                    }
+                    BotStatus.DUMP -> {
+                        checkBotInPathToPostOrNot()
+                    }
                 }
+                Thread.sleep(500)
             }
-            BotStatus.COLLECT -> {
-                println("Collect")
-                checkBotInPathToBallOrNot()
-            }
-            BotStatus.READY_TO_DUMP -> {
-                println("Ready To Dump")
-                moveTo(Const.POST_LOCATION, true)
-                setBotModeDump()
-            }
-            BotStatus.DUMP -> {
-                println("Dump")
-                checkBotInPathToPostOrNot()
-            }
-        }
-        if (restartOperator) {
-            Thread.sleep(500)
-            startBotOperator()
+        } catch (e: Exception) {
+            botOperatorRunning = false
         }
     }
 
@@ -118,6 +124,11 @@ class BotControlManager {
         status = BotStatus.LAZY
     }
 
+    private fun setBotModeWaitForBotResponse() {
+        LogForm.logger.println(TAG, "Bot mode changed to wait for bot response")
+        status = BotStatus.WAIT_BOT_RESPONSE
+    }
+
     private fun setBotModeFind() {
         LogForm.logger.println(TAG, "Bot mode changed to find")
         status = BotStatus.FIND
@@ -143,15 +154,15 @@ class BotControlManager {
                 setBotModeFind()
         } else {
             moveStartPoint = botLocation.point()
-            val botToPointLine = Line(botLocation.frontSide().mid(), point)
+            val botToPointLine = Line(botLocation.point(), point)
             val angle = botLocation.midLine().angleBetween(botToPointLine) * Const.RAD_TO_DEGREE
             if (angle > 0) {
-                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-            } else {
                 pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
+            } else {
+                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
             }
             if (reverse)
-                pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
+                pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
             else
                 pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
             sendPathToBot(pathList)
@@ -188,7 +199,6 @@ class BotControlManager {
                         if (result.status.equals("ok")) {
                             LogForm.logger.println(TAG, "Bot started")
                             status = BotStatus.FIND
-                            startBotOperator()
                         }
                     }, { error ->
                         LogForm.logger.println(TAG, "Unable to start bot")
@@ -197,4 +207,4 @@ class BotControlManager {
     }
 }
 
-enum class BotStatus { LAZY, FIND, COLLECT, READY_TO_DUMP, DUMP }
+enum class BotStatus { LAZY, WAIT_BOT_RESPONSE, FIND, COLLECT, READY_TO_DUMP, DUMP }

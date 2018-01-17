@@ -1,8 +1,8 @@
 package main.controllers
 
 class SensorsManager{
+    private val sensorsList:ArrayList<Sensor> by lazy { DataInitializer.sensors }
     companion object {
-        val SENSORS_LIST:ArrayList<Sensor> by lazy { DataInitializer.sensors }
         private var instance: SensorsManager? = null
 
         fun get(): SensorsManager {
@@ -12,14 +12,26 @@ class SensorsManager{
         }
     }
 
+    fun getSensorsList(): List<Sensor> {
+        return sensorsList
+    }
+
+    fun getBallsSensorsList(): List<Sensor> {
+        return sensorsList.filter { !it.botOnly }
+    }
+
+    fun getBotSensorsList(): List<Sensor> {
+        return sensorsList.filter { !it.ballOnly }
+    }
+
     private object DataInitializer {
         var sensors = ArrayList<Sensor>();
 
         init {
 //            sensors.add(Sensor("192.168.1.50"))
-//              sensors.add(Sensor("10.7.120.21", false, false))
+              sensors.add(Sensor("10.7.120.3", false, false))
 //            sensors.add(Sensor(Const.IP_NEXUS, false, false))
-            sensors.add(Sensor(Const.IP_SAKKEER, false, false))
+//            sensors.add(Sensor(Const.IP_SAKKEER, false, false))
         }
     }
 }

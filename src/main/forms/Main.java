@@ -14,7 +14,7 @@ public class Main {
     private JPanel pLog;
 
     private Main() {
-        for (Sensor sensor: SensorsManager.Companion.getSENSORS_LIST()) {
+        for (Sensor sensor: SensorsManager.Companion.get().getSensorsList()) {
             addCalibrationForm(sensor.getIp());
         }
 
