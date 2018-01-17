@@ -15,7 +15,7 @@ public class Main {
 
     private Main() {
         for (Sensor sensor: SensorsManager.Companion.get().getSensorsList()) {
-            addCalibrationForm(sensor.getIp());
+            addCalibrationForm(sensor.getIp(), sensor.getPort());
         }
 
         setupBallsForm();
@@ -33,8 +33,8 @@ public class Main {
         pBalls.add(new BallsForm().pRoot);
     }
 
-    private void addCalibrationForm(String ip) {
-        tpCalibration.add(new CalibrationForm(ip).rootPanel);
+    private void addCalibrationForm(String ip, String port) {
+        tpCalibration.add(new CalibrationForm(ip, port).rootPanel);
     }
 
     public static void main(String[] args) {

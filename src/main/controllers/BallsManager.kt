@@ -67,13 +67,13 @@ class BallsManager : BallsListListener {
     }
 
     fun startBallsRequestForAllSensors() {
-        for ((ip) in SensorsManager.get().getBallsSensorsList()) {
-            Runnable { getBallsList(ip) }.run()
+        for (sensor in SensorsManager.get().getBallsSensorsList()) {
+            Runnable { getBallsList(sensor.ip, sensor.port) }.run()
         }
     }
 
-    private fun getBallsList(ip: String) {
-        Http.getBalls(ip, null, this)
+    private fun getBallsList(ip: String, port: String) {
+        Http.getBalls(ip, port, null, this)
     }
 
     private fun sortBallsListAccordingToRank(): List<BallModel> {
@@ -87,12 +87,12 @@ class BallsManager : BallsListListener {
         return if (ballListRanked.isEmpty()) null else ballListRanked[0]
     }
 
-    override fun ballsListReceived(ip: String, data: List<Ball>?) {
+    override fun ballsListReceived(ip: String, port: String, data: List<Ball>?) {
         updateBallsList(data)
-        getBallsList(ip)
+        getBallsList(ip, port)
     }
 
-    override fun ballsListFailed(ip: String) {
+    override fun ballsListFailed(ip: String, port: String) {
         updateBallsList(null);
     }
 

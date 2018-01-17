@@ -8,10 +8,10 @@ import javax.swing.JTextField
 
 class Http {
     companion object {
-        fun calibrateRef(ip: String, point: Int, lbMessage: JLabel, runnable: Runnable) {
+        fun calibrateRef(ip: String, port: String, point: Int, lbMessage: JLabel, runnable: Runnable) {
             Executors.newCachedThreadPool().submit({
                 lbMessage.text = "Loading..."
-                ApiService.Factory.create("SENSOR - CALIBRATE   ", ip).calibrateRef(point)
+                ApiService.Factory.create("SENSOR - CALIBRATE   ", ip, port).calibrateRef(point)
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage.text = "Success: ${result.message}"
@@ -25,10 +25,10 @@ class Http {
             })
         }
 
-        fun getReferencePoint(ip: String, point: Int, lbMessage: JLabel, tfX: JTextField, tfY: JTextField) {
+        fun getReferencePoint(ip: String, port: String, point: Int, lbMessage: JLabel, tfX: JTextField, tfY: JTextField) {
             Executors.newCachedThreadPool().submit({
                 lbMessage.text = "Loading..."
-                ApiService.Factory.create("SENSOR - CALIBRATE   ", ip).getReferencePoint(point)
+                ApiService.Factory.create("SENSOR - CALIBRATE   ", ip, port).getReferencePoint(point)
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage.text = "Success: ${result.message}"
@@ -47,11 +47,11 @@ class Http {
             })
         }
 
-        fun setReferencePoint(ip: String, point: Int, lbMessage: JLabel, xImage: Float, yImage: Float,
+        fun setReferencePoint(ip: String, port: String, point: Int, lbMessage: JLabel, xImage: Float, yImage: Float,
                               xBord: Float, yBord: Float, runnable: Runnable) {
             Executors.newCachedThreadPool().submit({
                 lbMessage.text = "Loading..."
-                ApiService.Factory.create("SENSOR - CALIBRATE   ", ip).setReferencePoint(point, xImage, yImage, xBord, yBord)
+                ApiService.Factory.create("SENSOR - CALIBRATE   ", ip, port).setReferencePoint(point, xImage, yImage, xBord, yBord)
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage.text = "Success: ${result.message}"
@@ -65,39 +65,39 @@ class Http {
             })
         }
 
-        fun getBalls(ip: String, lbMessage: JLabel?, listener: BallsListListener) {
+        fun getBalls(ip: String, port: String, lbMessage: JLabel?, listener: BallsListListener) {
             Executors.newCachedThreadPool().submit({
                 lbMessage?.text = "Loading balls..."
-                ApiService.Factory.create("SENSOR    -    BALLS    ", ip).getBalls()
+                ApiService.Factory.create("SENSOR    -    BALLS    ", ip, port).getBalls()
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage?.text = "Success: ${result.message}"
-                                listener.ballsListReceived(ip, result.data)
+                                listener.ballsListReceived(ip, port, result.data)
                             } else {
-                                listener.ballsListReceived(ip, null)
+                                listener.ballsListReceived(ip, port,null)
                                 lbMessage?.text = "Failed: ${result.message}"
                             }
                         }, { error ->
-                            listener.ballsListFailed(ip)
+                            listener.ballsListFailed(ip, port)
                             lbMessage?.text = "Failed: ${error.message}"
                         })
             })
         }
 
-        fun getBotLocation(ip: String, lbMessage: JLabel?, listener: BotLocationListener) {
+        fun getBotLocation(ip: String, port: String, lbMessage: JLabel?, listener: BotLocationListener) {
             Executors.newCachedThreadPool().submit({
                 lbMessage?.text = "Loading bot location..."
-                ApiService.Factory.create("SENSOR-BOT LOCATION", ip).getBotLocation()
+                ApiService.Factory.create("SENSOR-BOT LOCATION", ip, port).getBotLocation()
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage?.text = "Success: ${result.message}"
-                                listener.botLocationReceived(ip, result.data)
+                                listener.botLocationReceived(ip, port, result.data)
                             } else {
-                                listener.botLocationReceived(ip, null)
+                                listener.botLocationReceived(ip, port, null)
                                 lbMessage?.text = "Failed: ${result.message}"
                             }
                         }, { error ->
-                            listener.botLocationFailed(ip)
+                            listener.botLocationFailed(ip, port)
                             lbMessage?.text = "Failed: ${error.message}"
                         })
             })
@@ -106,16 +106,16 @@ class Http {
 }
 
 interface BallsListListener {
-    fun ballsListReceived(ip: String, data: List<Ball>?)
-    fun ballsListFailed(ip: String)
+    fun ballsListReceived(ip: String, port: String, data: List<Ball>?)
+    fun ballsListFailed(ip: String, port: String)
 }
 
 interface BotLocationListener {
-    fun botLocationReceived(ip: String, data: BotLocation?)
-    fun botLocationFailed(ip: String)
+    fun botLocationReceived(ip: String, port: String, data: BotLocation?)
+    fun botLocationFailed(ip: String, port: String)
 }
 
 interface OpponentLocationListener {
-    fun opponentLocationReceived(ip: String, data: List<Ball>)
-    fun opponentLocationFailed(ip: String)
+    fun opponentLocationReceived(ip: String, port: String, data: List<Ball>)
+    fun opponentLocationFailed(ip: String, port: String)
 }

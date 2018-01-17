@@ -29,10 +29,11 @@ class SensorsManager{
 
         init {
 //            sensors.add(Sensor("192.168.1.50"))
-              sensors.add(Sensor("10.7.120.3", false, false))
-//            sensors.add(Sensor(Const.IP_NEXUS, false, false))
+//              sensors.add(Sensor("10.7.120.3", false, false))
+              sensors.add(Sensor("127.0.0.1", "9000", false, false))
+//            sensors.add(Sensor(Const.IP_NEXUS, "8080", false, false))
 //            sensors.add(Sensor(Const.IP_SAKKEER, false, false))
         }
     }
 }
-data class Sensor(val ip: String, val ballOnly: Boolean, val botOnly: Boolean){}
+data class Sensor(val ip: String, val port: String, val ballOnly: Boolean, val botOnly: Boolean){}

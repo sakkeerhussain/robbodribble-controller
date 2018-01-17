@@ -21,6 +21,9 @@ interface BotCommunicationService{
     @GET("/v2/controller/stop/")
     fun stop() : Observable<Response>
 
+    @GET("/v2/controller/door/open/")
+    fun doorOpen() : Observable<Response>
+
     @POST("/v2/controller/path/")
     fun sendPath(@Body body: List<PathRequestItem>) : Observable<Response>
 

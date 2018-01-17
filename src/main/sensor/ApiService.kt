@@ -40,7 +40,7 @@ interface ApiService {
      */
     object Factory {
 
-        fun create(tag: String, ip: String): ApiService {
+        fun create(tag: String, ip: String, port: String): ApiService {
 
             val logging = HttpLoggingInterceptor(tag)
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
@@ -53,7 +53,7 @@ interface ApiService {
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())
                     .addConverterFactory(GsonConverterFactory.create())
                     .client(client)
-                    .baseUrl("http://$ip:8080/")
+                    .baseUrl("http://$ip:$port/")
                     .build()
 
             return retrofit.create(ApiService::class.java)

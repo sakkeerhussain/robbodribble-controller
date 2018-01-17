@@ -45,29 +45,29 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     fun startBotLocationRequestForAllSensors() {
-        for ((ip) in SensorsManager.get().getBotSensorsList()) {
-            Runnable { getBotLocation(ip) }.run()
+        for (sensor in SensorsManager.get().getBotSensorsList()) {
+            Runnable { getBotLocation(sensor.ip, sensor.port) }.run()
         }
     }
 
-    private fun getBotLocation(ip: String) {
-        Http.getBotLocation(ip, null, this)
+    private fun getBotLocation(ip: String, port: String) {
+        Http.getBotLocation(ip, port,null, this)
     }
 
-    override fun botLocationReceived(ip: String, data: BotLocation?) {
+    override fun botLocationReceived(ip: String, port: String, data: BotLocation?) {
         updateBotLocation(data)
-        getBotLocation(ip)
+        getBotLocation(ip, port)
     }
 
-    override fun botLocationFailed(ip: String) {
+    override fun botLocationFailed(ip: String, port: String) {
         updateBotLocation(null)
     }
 
-    override fun opponentLocationReceived(ip: String, data: List<Ball>) {
+    override fun opponentLocationReceived(ip: String, port: String, data: List<Ball>) {
         //TODO have to do
     }
 
-    override fun opponentLocationFailed(ip: String) {
+    override fun opponentLocationFailed(ip: String, port: String) {
         //TODO have to do
     }
 

@@ -33,11 +33,12 @@ class BallsUI : JPanel() {
         for (ball in balls) {
             g2d.fillOval(convertBallX(ball.ball.center.x), convertBallY(ball.ball.center.y), BALL_WIDTH, BALL_HEIGHT)
         }
-        g2d.color = Color.BLUE
-        g2d.stroke = BasicStroke(5f);
         if (bot != null) {
+            g2d.color = Color.BLACK
+            g2d.stroke = BasicStroke(5f);
             g2d.drawLine(convertX(bot!!.frontLeft.x), convertY(bot!!.frontLeft.y),
                     convertX(bot!!.frontRight.x), convertY(bot!!.frontRight.y))
+            g2d.color = Color.BLUE
             g2d.drawLine(convertX(bot!!.backLeft.x), convertY(bot!!.backLeft.y),
                     convertX(bot!!.backRight.x), convertY(bot!!.backRight.y))
             g2d.drawLine(convertX(bot!!.frontLeft.x), convertY(bot!!.frontLeft.y),

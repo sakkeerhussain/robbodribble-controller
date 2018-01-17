@@ -6,8 +6,9 @@ class Const{
     companion object {
         val POST = 1
         //val POST = 2
-        val BOT_ADDRESS = "10.7.120.81"
+//        val BOT_ADDRESS = "10.7.120.81"
 //        val BOT_ADDRESS = "127.0.0.1:8080"
+        val BOT_ADDRESS = "127.0.0.1:9000"
 
         val IP_NEXUS: String = "10.7.120.3"
         val IP_SAKKEER: String = "10.7.170.6"
@@ -25,7 +26,8 @@ class Const{
         val PATH_BACKWARD = "backward"
 
         val BOT_WIDTH = 30
-        val BOT_MAX_BALL_CAPACITY = 6
+        val BOT_MAX_BALL_CAPACITY = 1
+        val BOT_MIN_DIST_IN_UNIT_TIME = 3
 
         val POST_LOCATION: Point
         init {
