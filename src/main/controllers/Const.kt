@@ -6,9 +6,9 @@ class Const{
     companion object {
         val POST = 1
         //val POST = 2
-//        val BOT_ADDRESS = "10.7.120.81"
+        val BOT_ADDRESS = "10.7.120.81"
 //        val BOT_ADDRESS = "127.0.0.1:8080"
-        val BOT_ADDRESS = "127.0.0.1:9000"
+//        val BOT_ADDRESS = "127.0.0.1:9000"
 
         val IP_NEXUS: String = "10.7.120.3"
         val IP_SAKKEER: String = "10.7.170.6"

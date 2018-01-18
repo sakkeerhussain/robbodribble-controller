@@ -39,8 +39,11 @@ class BotControlManager {
 
     fun startBotOperator() {
         setBotModeLazy()
-        if (botOperatorRunning)
+        if (botOperatorRunning) {
+            botOperatorRunning = false
+            LogForm.logger.println(TAG, "Bot operator stop request placed")
             return
+        }
         botOperatorRunning = true
         Executors.newCachedThreadPool().submit {
             botOperatorLoop()
@@ -51,6 +54,10 @@ class BotControlManager {
     private fun botOperatorLoop() {
         try {
             while (true) {
+                if (!botOperatorRunning) {
+                    LogForm.logger.println(TAG, "Bot operator stopped")
+                    break
+                }
                 println("Status: $status")
                 when (status) {
                     BotStatus.LAZY -> {
@@ -185,7 +192,7 @@ class BotControlManager {
             } else if (angle <= 0 && reverse) {
                 pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
                 pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-            }else if (angle > 0) {
+            } else if (angle > 0) {
                 pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
                 pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
             } else if (angle <= 0) {
