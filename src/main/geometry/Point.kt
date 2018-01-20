@@ -15,4 +15,8 @@ class Point(val x:Float, val y: Float){
     fun isAt(point: Point, width: Int): Boolean {
         return Line(point, this).length() < width
     }
+
+    override fun toString(): String {
+        return "($x,$y)"
+    }
 }

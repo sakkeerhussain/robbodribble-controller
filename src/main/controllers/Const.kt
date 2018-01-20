@@ -28,6 +28,7 @@ class Const{
         val BOT_WIDTH = 30
         val BOT_MAX_BALL_CAPACITY = 1
         val BOT_MIN_DIST_IN_UNIT_TIME = 3
+        val BOT_ALLOWED_DEVIATION = 8
 
         val POST_LOCATION: Point
         init {
