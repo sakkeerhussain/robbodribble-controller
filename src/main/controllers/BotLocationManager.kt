@@ -44,6 +44,11 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
         notifyListeners()
     }
 
+    fun invalidateBotLocation() {
+        this.botLocation = null
+        notifyListeners()
+    }
+
     fun startBotLocationRequestForAllSensors() {
         for (sensor in SensorsManager.get().getBotSensorsList()) {
             Runnable { getBotLocation(sensor.ip, sensor.port) }.run()
@@ -56,7 +61,7 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
 
     override fun botLocationReceived(ip: String, port: String, data: BotLocation?) {
         updateBotLocation(data)
-        Thread.sleep(1000)
+        Thread.sleep(500)
         getBotLocation(ip, port)
     }
 

@@ -166,6 +166,7 @@ class BotControlManager {
 
     private fun setBotModeFind() {
         LogForm.logger.println(TAG, "Bot mode changed to find")
+        sendStopToBot()
         status = BotStatus.FIND
     }
 
@@ -194,16 +195,18 @@ class BotControlManager {
         } else {
             moveStartPoint = botLocation.point()
             val botToPointLine = Line(botLocation.point(), point)
-            val angle = botLocation.midLine().angleBetween(botToPointLine) * Const.RAD_TO_DEGREE
+            var angle = botLocation.midLine().angleBetween(botToPointLine) * Const.RAD_TO_DEGREE
+
+            if (Line(botLocation.backSide().mid(), point).length() < Line(botLocation.point(), point).length())
+                angle = 180 - angle
 
             if(reverse) {
-                if (angle > 0 && reverse) {
-                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-                    pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-                } else if (angle <= 0 && reverse) {
+                if (angle > 0) {
                     pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-                    pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
+                } else if (angle < 0) {
+                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
                 }
+                pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
             }else{
                 if (angle > 0) {
                     pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
@@ -214,6 +217,7 @@ class BotControlManager {
             }
             sendPathToBot(pathList)
             //TODO(Avoid obstacle)
+            BotLocationManager.get().invalidateBotLocation()
         }
     }
 
