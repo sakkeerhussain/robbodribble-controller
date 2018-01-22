@@ -48,22 +48,22 @@ public class CalibrationForm {
         setButton1.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint1x.getText());
             float yImage = Float.valueOf(tfPoint1y.getText());
-            Http.Companion.setReferencePoint(mIp, mPort, 1, lbMessage, xImage, yImage, 0, 0, () -> updateRefPointData(1));
+            Http.Companion.setReferencePoint(mIp, mPort, 1, lbMessage, xImage, yImage, -10, -10, () -> updateRefPointData(1));
         });
         setButton2.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint2x.getText());
             float yImage = Float.valueOf(tfPoint2y.getText());
-            Http.Companion.setReferencePoint(mIp, mPort, 2, lbMessage, xImage, yImage, 180, 0, () -> updateRefPointData(2));
+            Http.Companion.setReferencePoint(mIp, mPort, 2, lbMessage, xImage, yImage, 290, -10, () -> updateRefPointData(2));
         });
         setButton3.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint3x.getText());
             float yImage = Float.valueOf(tfPoint3y.getText());
-            Http.Companion.setReferencePoint(mIp, mPort, 3, lbMessage, xImage, yImage, 0, 280, () -> updateRefPointData(3));
+            Http.Companion.setReferencePoint(mIp, mPort, 3, lbMessage, xImage, yImage, -10, 190, () -> updateRefPointData(3));
         });
         setButton4.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint4x.getText());
             float yImage = Float.valueOf(tfPoint4y.getText());
-            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 180, 280, () -> updateRefPointData(4));
+            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 290, 190, () -> updateRefPointData(4));
         });
         btClear.addActionListener(e ->{
             lbMessage.setText("Messages");

@@ -9,7 +9,7 @@ import main.sensor.Http
 class BallsManager : BallsListListener {
     companion object {
         val BALL_LOCATION_TOLERANCE = 6
-        val BALL_NOT_FOUND_TOLERANCE = 2
+        val BALL_NOT_FOUND_TOLERANCE = 1
         private var instance: BallsManager? = null
 
         fun get(): BallsManager {
@@ -89,6 +89,7 @@ class BallsManager : BallsListListener {
 
     override fun ballsListReceived(ip: String, port: String, data: List<Ball>?) {
         updateBallsList(data)
+        Thread.sleep(1000)
         getBallsList(ip, port)
     }
 

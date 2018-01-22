@@ -90,7 +90,7 @@ class BotControlManager {
                         setBotModeLazy()
                     }
                 }
-                Thread.sleep(500)
+                Thread.sleep(2000)
             }
         } catch (e: Exception) {
             botOperatorRunning = false
@@ -115,12 +115,15 @@ class BotControlManager {
                     setBotModeReadyToDump()
                 else
                     setBotModeFind()
-            } else if (botLocation.point().isOnLine(Line(targetBall!!.ball.center, moveStartPoint!!), Const.BOT_WIDTH))
-                if (Line(botLocation.point(), moveStartPoint!!).length() > Const.BOT_MIN_DIST_IN_UNIT_TIME)
-                //TODO(Also make sure that bot moved enough distance from last point.)
-                    LogForm.logger.println(TAG, "Bot not moved from ${botLocation.point()}")
-                else
+            } else if (botLocation.point().isOnLine(Line(targetBall!!.ball.center, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION))
+                if (Line(botLocation.point(), moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
+                    //TODO(Also make sure that bot moved enough distance from last point.)
+                    LogForm.logger.println(TAG, "Bot not moved from ${moveStartPoint}")
+                    setBotModeFind()
+                } else {
                     LogForm.logger.println(TAG, "Bot reached at ${botLocation.point()}")
+                    moveStartPoint = botLocation.point()
+                }
             else
                 setBotModeFind()
         }
@@ -136,8 +139,15 @@ class BotControlManager {
                     LogForm.logger.println(TAG, "Bot reached target post, Post: ${Const.POST_LOCATION}")
                     setBotModeDumping()
                 }
-                botLocation.point().isOnLine(Line(Const.POST_LOCATION, moveStartPoint!!), Const.BOT_WIDTH) -> {
-                    LogForm.logger.println(TAG, "Bot reached at ${botLocation.point()}")
+                botLocation.point().isOnLine(Line(Const.POST_LOCATION, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
+                    if (Line(botLocation.point(), moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
+                        //TODO(Also make sure that bot moved enough distance from last point.)
+                        LogForm.logger.println(TAG, "Bot not moved from ${moveStartPoint!!}")
+                        setBotModeReadyToDump()
+                    } else {
+                        LogForm.logger.println(TAG, "Bot reached at ${botLocation.point()}")
+                        moveStartPoint = botLocation.point()
+                    }
                 }
                 else -> setBotModeReadyToDump()
             }
@@ -156,6 +166,7 @@ class BotControlManager {
 
     private fun setBotModeFind() {
         LogForm.logger.println(TAG, "Bot mode changed to find")
+        sendStopToBot()
         status = BotStatus.FIND
     }
 
@@ -184,23 +195,29 @@ class BotControlManager {
         } else {
             moveStartPoint = botLocation.point()
             val botToPointLine = Line(botLocation.point(), point)
-            val angle = botLocation.midLine().angleBetween(botToPointLine) * Const.RAD_TO_DEGREE
+            var angle = botLocation.midLine().angleBetween(botToPointLine) * Const.RAD_TO_DEGREE
 
-            if (angle > 0 && reverse) {
-                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+            if (Line(botLocation.backSide().mid(), point).length() < Line(botLocation.point(), point).length())
+                angle = 180 - angle
+
+            if(reverse) {
+                if (angle > 0) {
+                    pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
+                } else if (angle < 0) {
+                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+                }
                 pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-            } else if (angle <= 0 && reverse) {
-                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-                pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-            } else if (angle > 0) {
-                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-                pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
-            } else if (angle <= 0) {
-                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+            }else{
+                if (angle > 0) {
+                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+                } else if (angle < 0) {
+                    pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
+                }
                 pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
             }
             sendPathToBot(pathList)
             //TODO(Avoid obstacle)
+            BotLocationManager.get().invalidateBotLocation()
         }
     }
 
