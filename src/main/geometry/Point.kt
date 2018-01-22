@@ -1,6 +1,6 @@
 package main.geometry
 
-class Point(val x:Float, val y: Float){
+class Point(val x: Float, val y: Float) {
     fun distanceTo(that: Point): Double {
         val dx = this.x - that.x
         val dy = this.y - that.y
@@ -18,5 +18,14 @@ class Point(val x:Float, val y: Float){
 
     override fun toString(): String {
         return "($x,$y)"
+    }
+
+    fun getPointAtAngle(angle: Double, distance: Float, high: Boolean): Point {
+        val xDelta = distance * Math.cos(angle).toFloat()
+        val yDelta = distance * Math.sin(angle).toFloat()
+        return if (high)
+            Point(this.x + xDelta, this.y + yDelta)
+        else
+            Point(this.x - xDelta, this.y - yDelta)
     }
 }

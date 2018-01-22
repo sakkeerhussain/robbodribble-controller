@@ -195,7 +195,7 @@ class BotControlManager {
         } else {
             moveStartPoint = botLocation.point()
             val botToPointLine = Line(botLocation.point(), point)
-            var angle = botLocation.midLine().angleBetween(botToPointLine) * Const.RAD_TO_DEGREE
+            var angle = botLocation.midLine().angleBetween(botToPointLine)
 
             if (Line(botLocation.backSide().mid(), point).length() < Line(botLocation.point(), point).length())
                 angle = 180 - angle

@@ -5,9 +5,13 @@ class Line(val p1:Point, val p2: Point){
         return Point((p1.x+p2.x)/2,(p1.y+p2.y)/2)
     }
 
+    fun angleInDegree(): Double {
+        return Math.toDegrees(this.angle())
+    }
+
     fun angle(): Double {
         return if (this.p1. x == this.p2.x)
-            90.0
+            1.5708
         else
             Math.atan(((this.p2.y - this.p1.y) / (this.p2.x - this.p1.x)).toDouble())
     }
@@ -17,6 +21,6 @@ class Line(val p1:Point, val p2: Point){
     }
 
     fun angleBetween(that: Line): Double {
-        return that.angle() - this.angle()
+        return that.angleInDegree() - this.angleInDegree()
     }
 }
