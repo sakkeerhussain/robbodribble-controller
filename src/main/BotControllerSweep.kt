@@ -29,6 +29,7 @@ class BotControllerSweep : BotLocationManager.Listener {
     fun start(post: Int) {
         if (post == 1) {
             //Center to post
+            pathList.add(Path(Point(60f, 140f), true))
             pathList.add(Path(Point(125f, 130f), true))
             pathList.add(Path(Point(155f, 50f), true))
             pathList.add(Path(Point(50f, 50f), true))
