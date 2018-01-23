@@ -23,7 +23,7 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     fun addListener(listener: Listener) {
         if (listener !in listeners)
             listeners.add(listener)
-        listener.botLocationChanged(botLocation)
+        //listener.botLocationChanged(botLocation)
     }
 
     fun removeListener(listener: Listener) {

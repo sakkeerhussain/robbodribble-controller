@@ -74,14 +74,17 @@ class BotControllerSweep : BotLocationManager.Listener {
     }
 
     override fun botLocationChanged(botLocation: BotLocation?) {
-        if (botLocation == null)
+        if (botLocation == null) {
+            BotLocationManager.get().startBotLocationRequestForAllSensors()
             return
+        }
         val botLocationPoint = botLocation.point()
         println("========Bot Location received($botLocationPoint)=======")
         println("Expected point: ${pathList[pathIndex].point}")
 
         when {
             botLocationPoint.isAt(pathList[pathIndex].point, Const.BOT_ALLOWED_DEVIATION) -> {
+                println("Reached at desired point")
                 moveStartPoint = botLocationPoint
                 pathIndex++
                 if (pathList[pathIndex].point.x == -1f) {
@@ -93,17 +96,21 @@ class BotControllerSweep : BotLocationManager.Listener {
 
             }
             botLocationPoint.isOnLine(Line(pathList[pathIndex].point, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
+                println("Bot is on lie to target")
 
                 if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
+                    println("Bot not moving")
                     sendStopToBot()
                     createPathToPoint(botLocation)
                     moveStartPoint = botLocationPoint
                 } else {
                     println("Bot reached at $botLocationPoint")
                     moveStartPoint = botLocationPoint
+                    BotLocationManager.get().startBotLocationRequestForAllSensors()
                 }
             }
-            else->{
+            else -> {
+                println("Bot deviated from desired path")
                 val minFrontVal = 30f
                 val pointMinFrontH = botLocationPoint.getPointAtAngle(botLocation.midLine().angle(), minFrontVal, true)
                 val pointMinFrontL = botLocationPoint.getPointAtAngle(botLocation.midLine().angle(), minFrontVal, false)
@@ -112,9 +119,9 @@ class BotControllerSweep : BotLocationManager.Listener {
 
                 moveStartPoint = botLocationPoint
                 if (Line(pointMinFront, point).length() > Line(botLocationPoint, point).length()
-                        && Line(point, botLocationPoint).length() < 30){
+                        && Line(point, botLocationPoint).length() < 30) {
                     createReversePath(botLocation)
-                }else{
+                } else {
                     createPathToPoint(botLocation)
                 }
             }
@@ -135,12 +142,12 @@ class BotControllerSweep : BotLocationManager.Listener {
                 angle > 0 && ballInFront ->
                     pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
                 angle < 0 && !ballInFront ->
-                    pathList.add(PathRequestItem(Const.PATH_RIGHT, (180+angle).absoluteValue.toInt()))
+                    pathList.add(PathRequestItem(Const.PATH_RIGHT, (180 + angle).absoluteValue.toInt()))
                 angle > 0 && !ballInFront ->
-                    pathList.add(PathRequestItem(Const.PATH_LEFT, (180-angle).absoluteValue.toInt()))
+                    pathList.add(PathRequestItem(Const.PATH_LEFT, (180 - angle).absoluteValue.toInt()))
             }
             pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
-        }else{
+        } else {
             //Assuming y value of points in reverse are sa
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
         }
@@ -169,13 +176,13 @@ class BotControllerSweep : BotLocationManager.Listener {
 //        callBotReachedCallBackForTesting(path.point)
     }
 
-    private fun callBotReachedCallBackForTesting(point: Point){
-        val backCenter = Point(point.x+7.5f, point.y)
-        val frontCenter = Point(point.x-22.5f, point.y)
-        val backLeft = Point(backCenter.x, backCenter.y-15f)
-        val backRight = Point(backCenter.x, backCenter.y+15f)
-        val frontLeft = Point(frontCenter.x, frontCenter.y-15f)
-        val frontRight = Point(frontCenter.x, frontCenter.y+15f)
+    private fun callBotReachedCallBackForTesting(point: Point) {
+        val backCenter = Point(point.x + 7.5f, point.y)
+        val frontCenter = Point(point.x - 22.5f, point.y)
+        val backLeft = Point(backCenter.x, backCenter.y - 15f)
+        val backRight = Point(backCenter.x, backCenter.y + 15f)
+        val frontLeft = Point(frontCenter.x, frontCenter.y - 15f)
+        val frontRight = Point(frontCenter.x, frontCenter.y + 15f)
         botLocationChanged(BotLocation(0.0, backLeft, backRight, frontLeft, frontRight))
     }
 
@@ -186,7 +193,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                         if (result.status.equals("ok")) {
                             println("Sent door open to bot successfully")
                         }
-                    }, {error->
+                    }, { error ->
                         println("Sent door open to bot failed, message:${error.localizedMessage}")
                     })
         })
@@ -199,7 +206,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                         if (result.status.equals("ok")) {
                             println("Sent door close to bot successfully")
                         }
-                    }, {error->
+                    }, { error ->
                         println("Sent door close to bot failed, message:${error.localizedMessage}")
                     })
         })
@@ -229,7 +236,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                         if (result.status.equals("ok")) {
                             println("Sent stop to bot successfully")
                         }
-                    }, {error->
+                    }, { error ->
                         println("Sent stop to bot failed, message:${error.localizedMessage}")
                     })
         })
