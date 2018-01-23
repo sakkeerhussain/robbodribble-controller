@@ -9,11 +9,11 @@ class Line(val p1:Point, val p2: Point){
         return Math.toDegrees(this.angle())
     }
 
-    fun angle(): Double {
+    private fun angle(): Double {
         return if (this.p1. x == this.p2.x)
             1.5708
         else
-            Math.atan(((this.p2.y - this.p1.y) / (this.p2.x - this.p1.x)).toDouble())
+            Math.atan2((this.p2.y - this.p1.y).toDouble(), (this.p2.x - this.p1.x).toDouble())
     }
 
     fun length(): Double {
