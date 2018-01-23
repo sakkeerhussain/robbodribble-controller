@@ -127,8 +127,16 @@ class BotControllerSweep : BotLocationManager.Listener {
     private fun createPathToPoint(botLocation: BotLocation) {
         val path = pathList[pathIndex]
         val botToPointLine = Line(botLocation.point(), path.point)
+        println("Finding path from ${botLocation.point()} to ${path.point}")
+        println("Bot line angle: ${botLocation.midLine().angleInDegree()}")
+        println("Bot to target line angle: ${botToPointLine.angleInDegree()}")
         val angle = botLocation.midLine().angleBetween(botToPointLine)
+        println("Angle between bot line and target: $angle")
         val ballInFront = Line(botLocation.frontSide().mid(), path.point).length() < Line(botLocation.backSide().mid(), path.point).length()
+        if (ballInFront)
+            println("Target is in-front of bot")
+        else
+            println("Target is behind bot")
         val pathList = ArrayList<PathRequestItem>()
         if (path.front) {
             when {
