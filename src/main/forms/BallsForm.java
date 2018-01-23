@@ -1,5 +1,6 @@
 package main.forms;
 
+import main.BotControllerSweep;
 import main.controllers.*;
 import main.controllers.bot.BotControlManager;
 import org.jetbrains.annotations.NotNull;
@@ -10,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 public class BallsForm implements BallsManager.Listener, BotLocationManager.Listener {
@@ -20,6 +20,8 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     private JList ltBalls;
     private JButton btRefreshBot;
     private JButton btRestartBot;
+    private JButton btStartSweeper1;
+    private JButton btStartSweeper2;
     private BallsUI mBallsUI;
 
     BallsForm() {
@@ -41,6 +43,8 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
         btRefreshBalls.addActionListener(e -> BallsManager.Companion.get().startBallsRequestForAllSensors());
         btRefreshBot.addActionListener(e -> BotLocationManager.Companion.get().startBotLocationRequestForAllSensors());
         btRestartBot.addActionListener(e -> BotControlManager.Companion.get().startBotOperator() );
+        btStartSweeper1.addActionListener(e -> new BotControllerSweep().start(1));
+        btStartSweeper2.addActionListener(e -> new BotControllerSweep().start(1));
     }
 
     @Override

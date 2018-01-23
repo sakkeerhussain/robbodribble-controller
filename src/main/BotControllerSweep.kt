@@ -11,15 +11,15 @@ import main.geometry.Point
 import java.util.concurrent.Executors
 import kotlin.math.absoluteValue
 
-fun main(args: Array<String>) {
-    println("Initialising...")
-    when {
-        args[0] == "post-1" -> BotControllerSweep().start(1)
-        args[0] == "post-2" -> BotControllerSweep().start(2)
-        else -> println("Post not specified")
-    }
-
-}
+//fun main(args: Array<String>) {
+//    println("Initialising...")
+//    when {
+//        args[0] == "post-1" -> BotControllerSweep().start(1)
+//        args[0] == "post-2" -> BotControllerSweep().start(2)
+//        else -> println("Post not specified")
+//    }
+//
+//}
 
 class BotControllerSweep : BotLocationManager.Listener {
 
@@ -37,7 +37,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(50f, 50f), true))
             pathList.add(Path(Point(20f, 90f), true))
             pathList.add(Path(Point(30f, 90f), true))
-            pathList.add(Path(Point(10f, 90f), false))
+            pathList.add(Path(Point(8f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
             //Sweep 1
@@ -46,8 +46,8 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(250f, 135f), true))
             pathList.add(Path(Point(30f, 135f), true))
             pathList.add(Path(Point(20f, 90f), true))
-            pathList.add(Path(Point(50f, 90f), true))
-            pathList.add(Path(Point(20f, 90f), false))
+            pathList.add(Path(Point(30f, 90f), true))
+            pathList.add(Path(Point(8f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
             //Sweep 2
@@ -56,8 +56,8 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(250f, 45f), true))
             pathList.add(Path(Point(30f, 45f), true))
             pathList.add(Path(Point(20f, 90f), true))
-            pathList.add(Path(Point(50f, 90f), true))
-            pathList.add(Path(Point(20f, 90f), false))
+            pathList.add(Path(Point(30f, 90f), true))
+            pathList.add(Path(Point(8f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
 
@@ -104,16 +104,14 @@ class BotControllerSweep : BotLocationManager.Listener {
                 }
             }
             else->{
-                val minFrontVal = 30f
-                val pointMinFrontH = botLocationPoint.getPointAtAngle(botLocation.midLine().angle(), minFrontVal, true)
-                val pointMinFrontL = botLocationPoint.getPointAtAngle(botLocation.midLine().angle(), minFrontVal, false)
-                val pointMinFront = if (Line(pointMinFrontH, botLocation.frontSide().mid()).length() < minFrontVal) pointMinFrontH else pointMinFrontL
-                val point = pathList[pathIndex].point
-
-                moveStartPoint = botLocationPoint
-                if (Line(pointMinFront, point).length() > Line(botLocationPoint, point).length()
-                        && Line(point, botLocationPoint).length() < 30){
-                    createReversePath(botLocation)
+                if (pathList[pathIndex].front) {
+                    val point = pathList[pathIndex].point
+                    moveStartPoint = botLocationPoint
+                    if (Line(point, botLocationPoint).length() < 30) {
+                        createReversePath(botLocation)
+                    } else {
+                        createPathToPoint(botLocation)
+                    }
                 }else{
                     createPathToPoint(botLocation)
                 }

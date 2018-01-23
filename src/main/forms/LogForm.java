@@ -14,10 +14,11 @@ public class LogForm {
     JPanel pRoot;
     private JButton clearButton;
     private JTextField tfSearch;
+    private JScrollPane spLogs;
     public static Listener logger = new Listener();
 
     LogForm() {
-        logger.setTaLogs(taLogs);
+        logger.setViewObjects(taLogs, spLogs);
         clearButton.addActionListener(e -> logger.clearLogs());
 
         //Setting up search form
@@ -55,6 +56,7 @@ public class LogForm {
         private JTextArea taLogs;
         private String log;
         private String searchStr;
+        private JScrollPane spLogs;
 
         Listener() {
             log = "";
@@ -76,8 +78,9 @@ public class LogForm {
             updateLogText();
         }
 
-        private void setTaLogs(JTextArea taLogs) {
+        private void setViewObjects(JTextArea taLogs, JScrollPane spLogs) {
             this.taLogs = taLogs;
+            this.spLogs = spLogs;
         }
 
         private void clearLogs() {
@@ -87,6 +90,8 @@ public class LogForm {
 
         private void updateLogText() {
             taLogs.setText(getFilteredLog());
+            JScrollBar scrollBar = spLogs.getVerticalScrollBar();
+            scrollBar.setValue(scrollBar.getMaximum());
         }
 
         private String getFilteredLog() {

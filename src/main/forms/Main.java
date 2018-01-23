@@ -21,7 +21,7 @@ public class Main {
         setupBallsForm();
         setupLogForm();
 
-        BotControlManager.Companion.get().startBotOperator();
+        //BotControlManager.Companion.get().startBotOperator();
     }
 
     private void setupLogForm() {
