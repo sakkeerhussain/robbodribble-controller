@@ -28,19 +28,25 @@ class BotControllerSweep : BotLocationManager.Listener {
         if (post == 1) {
             //Center to post
             pathList.add(Path(Point(45f, 140f), true))
+            pathList.add(Path(Point(85f, 140f), true))
             pathList.add(Path(Point(125f, 130f), true))
+            pathList.add(Path(Point(140f, 90f), true))
             pathList.add(Path(Point(155f, 50f), true))
-            pathList.add(Path(Point(100f, 50f), true))
-            pathList.add(Path(Point(50f, 50f), true))
+            pathList.add(Path(Point(105f, 50f), true))
+            pathList.add(Path(Point(60f, 50f), true))
+            pathList.add(Path(Point(20f, 50f), true))
             pathList.add(Path(Point(20f, 90f), true))
-            pathList.add(Path(Point(30f, 90f), true))
+            pathList.add(Path(Point(40f, 90f), true))
             pathList.add(Path(Point(8f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
             //Sweep 1
             pathList.add(Path(Point(30f, 105f), true))
-            pathList.add(Path(Point(250f, 105f), true))
-            pathList.add(Path(Point(250f, 135f), true))
+            pathList.add(Path(Point(80f, 105f), true))
+            pathList.add(Path(Point(130f, 105f), true))
+            pathList.add(Path(Point(180f, 105f), true))
+            pathList.add(Path(Point(230f, 135f), true))
+            pathList.add(Path(Point(255f, 135f), true))
             pathList.add(Path(Point(30f, 135f), true))
             pathList.add(Path(Point(20f, 90f), true))
             pathList.add(Path(Point(30f, 90f), true))
@@ -76,8 +82,9 @@ class BotControllerSweep : BotLocationManager.Listener {
             return
         }
         val botLocationPoint = botLocation.point()
+        println()
         println("========Bot Location received($botLocationPoint)=======")
-        println("Expected point: ${pathList[pathIndex].point}")
+        println("========Expected point: ${pathList[pathIndex].point}======")
 
         when {
             botLocationPoint.isAt(pathList[pathIndex].point, Const.BOT_ALLOWED_DEVIATION) -> {
@@ -88,23 +95,26 @@ class BotControllerSweep : BotLocationManager.Listener {
                     sendDoorOpenToBot()
                     Thread.sleep(5000)
                     sendDoorCloseToBot()
+                    pathIndex++
                 }
                 createPathToPoint(botLocation)
 
             }
             botLocationPoint.isOnLine(Line(pathList[pathIndex].point, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
-                println("Bot is on lie to target")
+                println("Bot is on line to target")
 
-                if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
-                    println("Bot not moving")
-                    sendStopToBot()
-                    createPathToPoint(botLocation)
-                    moveStartPoint = botLocationPoint
-                } else {
-                    println("Bot reached at $botLocationPoint")
-                    moveStartPoint = botLocationPoint
-                    BotLocationManager.get().startBotLocationRequestForAllSensors()
-                }
+//                if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
+//                    println("Bot not moving")
+//                    sendStopToBot()
+//                    createPathToPoint(botLocation)
+//                    moveStartPoint = botLocationPoint
+//                } else {
+//                    println("Bot reached at $botLocationPoint")
+//                    moveStartPoint = botLocationPoint
+//                    BotLocationManager.get().startBotLocationRequestForAllSensors()
+//                }
+                createPathToPoint(botLocation)
+                moveStartPoint = botLocationPoint
             }
             else->{
                 println("Bot deviated from desired path")
@@ -151,7 +161,10 @@ class BotControllerSweep : BotLocationManager.Listener {
             }
             pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
         } else {
-            //Assuming y value of points in reverse are sa
+            if (angle > 0)
+                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+            else if (angle < 0)
+                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
         }
         sendPathToBot(pathList)
@@ -171,7 +184,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                 angle > 0 ->
                     pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
             }
-            pathList.add(PathRequestItem(Const.PATH_BACKWARD, 15))
+            pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
         }
         sendPathToBot(pathList)
 

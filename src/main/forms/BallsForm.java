@@ -25,8 +25,8 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     BallsForm() {
         mBallsUI = new BallsUI();
         pBallsDiagram.add(mBallsUI);
-        BallsManager.Companion.get().startBallsRequestForAllSensors();
-        BotLocationManager.Companion.get().startBotLocationRequestForAllSensors();
+        //BallsManager.Companion.get().startBallsRequestForAllSensors();
+        //BotLocationManager.Companion.get().startBotLocationRequestForAllSensors();
         BallsManager.Companion.get().addListener(BallsForm.this);
         BotLocationManager.Companion.get().addListener(BallsForm.this);
 

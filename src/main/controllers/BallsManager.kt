@@ -24,7 +24,7 @@ class BallsManager : BallsListListener {
     fun addListener(listener: Listener) {
         if (listener !in listeners)
             listeners.add(listener)
-        listener.ballListChanged(ballList)
+        //listener.ballListChanged(ballList)
     }
 
     fun removeListener(listener: Listener) {
