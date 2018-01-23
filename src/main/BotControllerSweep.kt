@@ -1,5 +1,6 @@
 package main
 
+import com.google.gson.Gson
 import main.controllers.BotLocation
 import main.controllers.BotLocationManager
 import main.controllers.Const
@@ -29,13 +30,14 @@ class BotControllerSweep : BotLocationManager.Listener {
     fun start(post: Int) {
         if (post == 1) {
             //Center to post
-            pathList.add(Path(Point(60f, 140f), true))
+            pathList.add(Path(Point(45f, 140f), true))
             pathList.add(Path(Point(125f, 130f), true))
             pathList.add(Path(Point(155f, 50f), true))
+            pathList.add(Path(Point(100f, 50f), true))
             pathList.add(Path(Point(50f, 50f), true))
             pathList.add(Path(Point(20f, 90f), true))
-            pathList.add(Path(Point(50f, 90f), true))
-            pathList.add(Path(Point(20f, 90f), false))
+            pathList.add(Path(Point(30f, 90f), true))
+            pathList.add(Path(Point(10f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
             //Sweep 1
@@ -76,6 +78,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             return
         val botLocationPoint = botLocation.point()
         println("========Bot Location received($botLocationPoint)=======")
+        println("Expected point: ${pathList[pathIndex].point}")
 
         when {
             botLocationPoint.isAt(pathList[pathIndex].point, Const.BOT_ALLOWED_DEVIATION) -> {
@@ -84,6 +87,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                 if (pathList[pathIndex].point.x == -1f) {
                     sendDoorOpenToBot()
                     Thread.sleep(5000)
+                    sendDoorCloseToBot()
                 }
                 createPathToPoint(botLocation)
 
@@ -100,14 +104,15 @@ class BotControllerSweep : BotLocationManager.Listener {
                 }
             }
             else->{
-                val minFrontVal = 120f
+                val minFrontVal = 30f
                 val pointMinFrontH = botLocationPoint.getPointAtAngle(botLocation.midLine().angle(), minFrontVal, true)
-                val pointMinFrontL = botLocationPoint.getPointAtAngle(botLocation.midLine().angle(), minFrontVal, true)
+                val pointMinFrontL = botLocationPoint.getPointAtAngle(botLocation.midLine().angle(), minFrontVal, false)
                 val pointMinFront = if (Line(pointMinFrontH, botLocation.frontSide().mid()).length() < minFrontVal) pointMinFrontH else pointMinFrontL
                 val point = pathList[pathIndex].point
 
                 moveStartPoint = botLocationPoint
-                if (Line(pointMinFront, point).length() > Line(botLocationPoint, point).length()){
+                if (Line(pointMinFront, point).length() > Line(botLocationPoint, point).length()
+                        && Line(point, botLocationPoint).length() < 30){
                     createReversePath(botLocation)
                 }else{
                     createPathToPoint(botLocation)
@@ -152,11 +157,11 @@ class BotControllerSweep : BotLocationManager.Listener {
         if (path.front) {
             when {
                 angle < 0 ->
-                    pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
-                angle > 0 ->
                     pathList.add(PathRequestItem(Const.PATH_LEFT, 10))
+                angle > 0 ->
+                    pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
             }
-            pathList.add(PathRequestItem(Const.PATH_BACKWARD, 60))
+            pathList.add(PathRequestItem(Const.PATH_BACKWARD, 15))
         }
         sendPathToBot(pathList)
 
@@ -187,15 +192,31 @@ class BotControllerSweep : BotLocationManager.Listener {
         })
     }
 
+    private fun sendDoorCloseToBot() {
+        Executors.newCachedThreadPool().submit({
+            BotCommunicationService.Factory.create("BOT CONTROL - DOOR CLOSE").doorClose()
+                    .subscribe({ result ->
+                        if (result.status.equals("ok")) {
+                            println("Sent door close to bot successfully")
+                        }
+                    }, {error->
+                        println("Sent door close to bot failed, message:${error.localizedMessage}")
+                    })
+        })
+    }
+
     private fun sendPathToBot(pathList: ArrayList<PathRequestItem>) {
+        println("Sending path to point. Data: ${Gson().toJson(pathList)}")
         Executors.newCachedThreadPool().submit({
             BotCommunicationService.Factory.create("BOT CONTROL - PATH").sendPath(pathList)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             println("Sent path to bot successfully")
                         }
+                        BotLocationManager.get().startBotLocationRequestForAllSensors()
                     }, { error ->
                         println("Sent path to bot failed, message:${error.localizedMessage}")
+                        BotLocationManager.get().startBotLocationRequestForAllSensors()
                     })
         })
     }

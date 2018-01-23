@@ -61,8 +61,8 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
 
     override fun botLocationReceived(ip: String, port: String, data: BotLocation?) {
         updateBotLocation(data)
-        Thread.sleep(500)
-        getBotLocation(ip, port)
+        //Thread.sleep(1000)
+        //getBotLocation(ip, port)
     }
 
     override fun botLocationFailed(ip: String, port: String) {
