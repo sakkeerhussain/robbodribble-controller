@@ -1,14 +1,12 @@
 package main.forms;
 
-import main.BotControllerSweep;
+import main.controllers.bot.BotControllerSweep;
 import main.controllers.*;
 import main.controllers.bot.BotControlManager;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.util.List;

@@ -5,6 +5,7 @@ import main.geometry.Point
 import main.sensor.BotLocationListener
 import main.sensor.Http
 import main.sensor.OpponentLocationListener
+import main.sensor.SensorsManager
 
 
 class BotLocationManager : BotLocationListener, OpponentLocationListener {

@@ -1,4 +1,6 @@
-package main.controllers
+package main.sensor
+
+import main.controllers.Const
 
 class SensorsManager{
     private val sensorsList:ArrayList<Sensor> by lazy { DataInitializer.sensors }

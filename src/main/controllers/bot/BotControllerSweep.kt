@@ -1,11 +1,9 @@
-package main
+package main.controllers.bot
 
 import com.google.gson.Gson
 import main.controllers.BotLocation
 import main.controllers.BotLocationManager
 import main.controllers.Const
-import main.controllers.bot.BotCommunicationService
-import main.controllers.bot.PathRequestItem
 import main.geometry.Line
 import main.geometry.Point
 import java.util.concurrent.Executors

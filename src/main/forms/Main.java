@@ -1,8 +1,7 @@
 package main.forms;
 
-import main.controllers.Sensor;
-import main.controllers.SensorsManager;
-import main.controllers.bot.BotControlManager;
+import main.sensor.Sensor;
+import main.sensor.SensorsManager;
 
 import javax.swing.*;
 
