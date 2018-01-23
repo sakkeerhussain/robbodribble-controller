@@ -16,7 +16,6 @@ import kotlin.math.absoluteValue
 //        args[0] == "post-2" -> BotControllerSweep().start(2)
 //        else -> println("Post not specified")
 //    }
-//
 //}
 
 class BotControllerSweep : BotLocationManager.Listener {
