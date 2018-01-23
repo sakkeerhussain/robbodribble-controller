@@ -14,10 +14,10 @@ public class LogForm {
     JPanel pRoot;
     private JButton clearButton;
     private JTextField tfSearch;
-    public static Listener logger;
+    public static Listener logger = new Listener();
 
-    LogForm(){
-        logger = new Listener(taLogs);
+    LogForm() {
+        logger.setTaLogs(taLogs);
         clearButton.addActionListener(e -> logger.clearLogs());
 
         //Setting up search form
@@ -30,6 +30,7 @@ public class LogForm {
                     tfSearch.setForeground(Color.BLACK);
                 }
             }
+
             @Override
             public void focusLost(FocusEvent e) {
                 if (tfSearch.getText().isEmpty()) {
@@ -50,25 +51,33 @@ public class LogForm {
         });
     }
 
-    public class Listener{
+    public static class Listener {
         private JTextArea taLogs;
         private String log;
         private String searchStr;
 
-        Listener(JTextArea ta) {
+        Listener() {
             log = "";
             searchStr = "";
-            taLogs = ta;
+            taLogs = null;
         }
 
         public void println(@NotNull String tag, @NotNull String msg) {
-            log = log.concat(tag).concat(" => ").concat(msg).concat("\n");
-            updateLogText();
+            if (null == taLogs)
+                System.out.println(tag + " => " + msg);
+            else {
+                log = log.concat(tag).concat(" => ").concat(msg).concat("\n");
+                updateLogText();
+            }
         }
 
         private void setSearchStr(String searchStr) {
             this.searchStr = searchStr;
             updateLogText();
+        }
+
+        private void setTaLogs(JTextArea taLogs) {
+            this.taLogs = taLogs;
         }
 
         private void clearLogs() {
@@ -82,7 +91,7 @@ public class LogForm {
 
         private String getFilteredLog() {
             StringBuilder stringBuilder = new StringBuilder();
-            for(String str: log.split("\n")){
+            for (String str : log.split("\n")) {
                 if (str.contains(searchStr))
                     stringBuilder.append(str).append("\n");
             }

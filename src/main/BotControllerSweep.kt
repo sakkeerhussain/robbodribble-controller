@@ -66,7 +66,9 @@ class BotControllerSweep : BotLocationManager.Listener {
         moveStartPoint = pathList[pathIndex].point
         BotLocationManager.get().addListener(this)
 
-        callBotReachedCallBackForTesting(pathList[pathIndex].point)
+        BotLocationManager.get().startBotLocationRequestForAllSensors()
+
+//        callBotReachedCallBackForTesting(pathList[pathIndex].point)
     }
 
     override fun botLocationChanged(botLocation: BotLocation?) {
@@ -91,6 +93,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                 if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
                     sendStopToBot()
                     createPathToPoint(botLocation)
+                    moveStartPoint = botLocationPoint
                 } else {
                     println("Bot reached at $botLocationPoint")
                     moveStartPoint = botLocationPoint
@@ -103,6 +106,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                 val pointMinFront = if (Line(pointMinFrontH, botLocation.frontSide().mid()).length() < minFrontVal) pointMinFrontH else pointMinFrontL
                 val point = pathList[pathIndex].point
 
+                moveStartPoint = botLocationPoint
                 if (Line(pointMinFront, point).length() > Line(botLocationPoint, point).length()){
                     createReversePath(botLocation)
                 }else{
