@@ -16,6 +16,10 @@ class Line(val p1:Point, val p2: Point){
             Math.atan2((this.p2.y - this.p1.y).toDouble(), (this.p2.x - this.p1.x).toDouble())
     }
 
+    override fun toString(): String {
+        return "[$p1,$p2]"
+    }
+
     fun length(): Double {
         return p1.distanceTo(p2)
     }

@@ -142,29 +142,25 @@ class BotControllerSweep : BotLocationManager.Listener {
         println("Bot to target line angle: ${botToPointLine.angleInDegree()}")
         val angle = botLocation.midLine().angleBetween(botToPointLine)
         println("Angle between bot line and target: $angle")
-        val ballInFront = Line(botLocation.frontSide().mid(), path.point).length() < Line(botLocation.backSide().mid(), path.point).length()
-        if (ballInFront)
-            println("Target is in-front of bot")
-        else
-            println("Target is behind bot")
+        //val ballInFront = Line(botLocation.frontSide().mid(), path.point).length() < Line(botLocation.backSide().mid(), path.point).length()
+//        if (ballInFront)
+//            println("Target is in-front of bot")
+//        else
+//            println("Target is behind bot")
         val pathList = ArrayList<PathRequestItem>()
         if (path.front) {
             when {
-                angle < 0 && ballInFront ->
+                angle < 0 ->
                     pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-                angle > 0 && ballInFront ->
+                angle > 0 ->
                     pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-                angle < 0 && !ballInFront ->
-                    pathList.add(PathRequestItem(Const.PATH_RIGHT, (180 + angle).absoluteValue.toInt()))
-                angle > 0 && !ballInFront ->
-                    pathList.add(PathRequestItem(Const.PATH_LEFT, (180 - angle).absoluteValue.toInt()))
             }
             pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
         } else {
             if (angle > 0)
-                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+                pathList.add(PathRequestItem(Const.PATH_LEFT, 180 - angle.absoluteValue.toInt()))
             else if (angle < 0)
-                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
+                pathList.add(PathRequestItem(Const.PATH_RIGHT, 180 - angle.absoluteValue.toInt()))
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
         }
         sendPathToBot(pathList)
