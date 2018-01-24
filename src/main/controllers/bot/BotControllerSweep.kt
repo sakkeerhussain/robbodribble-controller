@@ -140,7 +140,7 @@ class BotControllerSweep : BotLocationManager.Listener {
         println("Finding path from ${botLocation.point()} to ${path.point}")
         println("Bot line angle: ${botLocation.midLine().angleInDegree()}")
         println("Bot to target line angle: ${botToPointLine.angleInDegree()}")
-        val angle = botLocation.midLine().angleBetween(botToPointLine)
+        var angle = botLocation.midLine().angleBetween(botToPointLine)
         println("Angle between bot line and target: $angle")
         //val ballInFront = Line(botLocation.frontSide().mid(), path.point).length() < Line(botLocation.backSide().mid(), path.point).length()
 //        if (ballInFront)
@@ -149,13 +149,15 @@ class BotControllerSweep : BotLocationManager.Listener {
 //            println("Target is behind bot")
         val pathList = ArrayList<PathRequestItem>()
         if (path.front) {
+            val distance = botToPointLine.length().toInt()
+            angle += (distance * 0.133333333)
             when {
                 angle < 0 ->
                     pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
                 angle > 0 ->
                     pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
             }
-            pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
+            pathList.add(PathRequestItem(Const.PATH_FORWARD, distance))
         } else {
             if (angle > 0)
                 pathList.add(PathRequestItem(Const.PATH_LEFT, 180 - angle.absoluteValue.toInt()))
