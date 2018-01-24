@@ -37,7 +37,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(20f, 50f), true))
             pathList.add(Path(Point(20f, 90f), true))
             pathList.add(Path(Point(40f, 90f), true))
-            pathList.add(Path(Point(8f, 90f), false))
+            pathList.add(Path(Point(4f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
             //Sweep 1
@@ -47,20 +47,32 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(180f, 105f), true))
             pathList.add(Path(Point(230f, 135f), true))
             pathList.add(Path(Point(255f, 135f), true))
+            pathList.add(Path(Point(200f, 135f), true))
+            pathList.add(Path(Point(150f, 135f), true))
+            pathList.add(Path(Point(100f, 135f), true))
+            pathList.add(Path(Point(60f, 135f), true))
             pathList.add(Path(Point(30f, 135f), true))
             pathList.add(Path(Point(20f, 90f), true))
-            pathList.add(Path(Point(30f, 90f), true))
-            pathList.add(Path(Point(8f, 90f), false))
+            pathList.add(Path(Point(40f, 90f), true))
+            pathList.add(Path(Point(4f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
             //Sweep 2
             pathList.add(Path(Point(30f, 75f), true))
+            pathList.add(Path(Point(80f, 75f), true))
+            pathList.add(Path(Point(130f, 75f), true))
+            pathList.add(Path(Point(180f, 75f), true))
+            pathList.add(Path(Point(220f, 75f), true))
             pathList.add(Path(Point(250f, 75f), true))
             pathList.add(Path(Point(250f, 45f), true))
+            pathList.add(Path(Point(220f, 45f), true))
+            pathList.add(Path(Point(180f, 45f), true))
+            pathList.add(Path(Point(130f, 45f), true))
+            pathList.add(Path(Point(80f, 45f), true))
             pathList.add(Path(Point(30f, 45f), true))
             pathList.add(Path(Point(20f, 90f), true))
-            pathList.add(Path(Point(30f, 90f), true))
-            pathList.add(Path(Point(8f, 90f), false))
+            pathList.add(Path(Point(40f, 90f), true))
+            pathList.add(Path(Point(4f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
 
@@ -82,6 +94,8 @@ class BotControllerSweep : BotLocationManager.Listener {
             return
         }
         val botLocationPoint = botLocation.point()
+        if (pathIndex >= pathList.size)
+            pathIndex = 0
         println()
         println("========Bot Location received($botLocationPoint)=======")
         println("========Expected point: ${pathList[pathIndex].point}======")
@@ -150,7 +164,15 @@ class BotControllerSweep : BotLocationManager.Listener {
         val pathList = ArrayList<PathRequestItem>()
         if (path.front) {
             val distance = botToPointLine.length().toInt()
+            //Left move correction
             angle += (distance * 0.133333333)
+
+            if (angle > 180){
+                angle -= 360
+            }else if (angle < -180){
+                angle += 360
+            }
+
             when {
                 angle < 0 ->
                     pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
