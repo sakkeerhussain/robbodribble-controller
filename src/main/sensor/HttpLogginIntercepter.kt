@@ -4,6 +4,7 @@ import com.squareup.okhttp.Headers
 import com.squareup.okhttp.Interceptor
 import com.squareup.okhttp.Response
 import main.forms.LogForm
+import main.utils.Log
 import okio.Buffer
 import java.io.EOFException
 import java.io.IOException
@@ -78,8 +79,7 @@ class HttpLoggingInterceptor @JvmOverloads constructor(val tag:String, private v
             /** A [Logger] defaults output appropriate for the current platform.  */
             val DEFAULT: Logger = object : Logger {
                 override fun log(tag:String, message: String) {
-                    LogForm.logger.println(tag, message)
-                    //System.out.println(message)
+                    Log.d(tag, message)
                 }
             }
         }

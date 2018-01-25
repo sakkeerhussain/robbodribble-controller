@@ -68,7 +68,7 @@ class Http {
         fun getBalls(ip: String, port: String, lbMessage: JLabel?, listener: BallsListListener) {
             Executors.newCachedThreadPool().submit({
                 lbMessage?.text = "Loading balls..."
-                ApiService.Factory.create("SENSOR    -    BALLS    ", ip, port).getBalls()
+                ApiService.Factory.create("SENSOR - BALLS           ", ip, port).getBalls()
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage?.text = "Success: ${result.message}"

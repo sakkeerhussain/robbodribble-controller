@@ -2,10 +2,13 @@ package main.forms;
 
 import main.sensor.Sensor;
 import main.sensor.SensorsManager;
+import main.utils.Log;
 
 import javax.swing.*;
+import java.util.Date;
 
 public class Main {
+    private static String TAG = "Main";
     private JTabbedPane tabbedPane1;
     private JPanel pRoot;
     private JTabbedPane tpCalibration;
@@ -13,14 +16,18 @@ public class Main {
     private JPanel pLog;
 
     private Main() {
-        for (Sensor sensor: SensorsManager.Companion.get().getSensorsList()) {
+        //BotControlManager.Companion.get().startBotOperator();
+        Log.Companion.d(TAG, "\n\n****************************************************"
+                + "\nStarting application at " + new Date()
+                + "\n****************************************************");
+
+
+        for (Sensor sensor : SensorsManager.Companion.get().getSensorsList()) {
             addCalibrationForm(sensor.getIp(), sensor.getPort());
         }
 
         setupBallsForm();
         setupLogForm();
-
-        //BotControlManager.Companion.get().startBotOperator();
     }
 
     private void setupLogForm() {

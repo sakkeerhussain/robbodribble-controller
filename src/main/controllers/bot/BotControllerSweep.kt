@@ -6,19 +6,21 @@ import main.controllers.BotLocationManager
 import main.controllers.Const
 import main.geometry.Line
 import main.geometry.Point
+import main.utils.Log
 import java.util.concurrent.Executors
 import kotlin.math.absoluteValue
 
 //fun main(args: Array<String>) {
-//    println("Initialising...")
+//    Log.d("Initialising...")
 //    when {
 //        args[0] == "post-1" -> BotControllerSweep().start(1)
 //        args[0] == "post-2" -> BotControllerSweep().start(2)
-//        else -> println("Post not specified")
+//        else -> Log.d("Post not specified")
 //    }
 //}
 
 class BotControllerSweep : BotLocationManager.Listener {
+    val TAG = "BotControllerSweep"
 
     private val pathList = ArrayList<Path>()
     private var pathIndex = 0
@@ -64,7 +66,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
 
 
-            println("Starting...")
+            Log.d(TAG, "Starting...")
         } else {
             pathList.add(Path(Point(155f, 50f), true))
         }
@@ -82,13 +84,13 @@ class BotControllerSweep : BotLocationManager.Listener {
             return
         }
         val botLocationPoint = botLocation.point()
-        println()
-        println("========Bot Location received($botLocationPoint)=======")
-        println("========Expected point: ${pathList[pathIndex].point}======")
+        Log.d(TAG)
+        Log.d(TAG, "========Bot Location received($botLocationPoint)=======")
+        Log.d(TAG, "========Expected point: ${pathList[pathIndex].point}======")
 
         when {
             botLocationPoint.isAt(pathList[pathIndex].point, Const.BOT_ALLOWED_DEVIATION) -> {
-                println("Reached at desired point")
+                Log.d("Reached at desired point")
                 moveStartPoint = botLocationPoint
                 pathIndex++
                 if (pathList[pathIndex].point.x == -1f) {
@@ -101,15 +103,15 @@ class BotControllerSweep : BotLocationManager.Listener {
 
             }
             botLocationPoint.isOnLine(Line(pathList[pathIndex].point, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
-                println("Bot is on line to target")
+                Log.d("Bot is on line to target")
 
 //                if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
-//                    println("Bot not moving")
+//                    Log.d("Bot not moving")
 //                    sendStopToBot()
 //                    createPathToPoint(botLocation)
 //                    moveStartPoint = botLocationPoint
 //                } else {
-//                    println("Bot reached at $botLocationPoint")
+//                    Log.d("Bot reached at $botLocationPoint")
 //                    moveStartPoint = botLocationPoint
 //                    BotLocationManager.get().startBotLocationRequestForAllSensors()
 //                }
@@ -117,7 +119,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                 moveStartPoint = botLocationPoint
             }
             else->{
-                println("Bot deviated from desired path")
+                Log.d("Bot deviated from desired path")
                 if (pathList[pathIndex].front) {
                     val point = pathList[pathIndex].point
                     moveStartPoint = botLocationPoint
@@ -137,16 +139,16 @@ class BotControllerSweep : BotLocationManager.Listener {
     private fun createPathToPoint(botLocation: BotLocation) {
         val path = pathList[pathIndex]
         val botToPointLine = Line(botLocation.point(), path.point)
-        println("Finding path from ${botLocation.point()} to ${path.point}")
-        println("Bot line angle: ${botLocation.midLine().angleInDegree()}")
-        println("Bot to target line angle: ${botToPointLine.angleInDegree()}")
+        Log.d(TAG, "Finding path from ${botLocation.point()} to ${path.point}")
+        Log.d(TAG, "Bot line angle: ${botLocation.midLine().angleInDegree()}")
+        Log.d(TAG, "Bot to target line angle: ${botToPointLine.angleInDegree()}")
         var angle = botLocation.midLine().angleBetween(botToPointLine)
-        println("Angle between bot line and target: $angle")
+        Log.d(TAG, "Angle between bot line and target: $angle")
         //val ballInFront = Line(botLocation.frontSide().mid(), path.point).length() < Line(botLocation.backSide().mid(), path.point).length()
 //        if (ballInFront)
-//            println("Target is in-front of bot")
+//            Log.d(TAG, "Target is in-front of bot")
 //        else
-//            println("Target is behind bot")
+//            Log.d(TAG, "Target is behind bot")
         val pathList = ArrayList<PathRequestItem>()
         if (path.front) {
             val distance = botToPointLine.length().toInt()
@@ -166,7 +168,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
         }
         sendPathToBot(pathList)
-//        println("Path list: $pathList")
+//        Log.d(TAG, "Path list: $pathList")
 //        callBotReachedCallBackForTesting(path.point)
     }
 
@@ -186,7 +188,7 @@ class BotControllerSweep : BotLocationManager.Listener {
         }
         sendPathToBot(pathList)
 
-//        println("Path list: $pathList")
+//        Log.d(TAG, "Path list: $pathList")
 //        callBotReachedCallBackForTesting(path.point)
     }
 
@@ -205,10 +207,10 @@ class BotControllerSweep : BotLocationManager.Listener {
             BotCommunicationService.Factory.create("BOT CONTROL - DOOR OPEN").doorOpen()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            println("Sent door open to bot successfully")
+                            Log.d(TAG, "Sent door open to bot successfully")
                         }
                     }, { error ->
-                        println("Sent door open to bot failed, message:${error.localizedMessage}")
+                        Log.d(TAG, "Sent door open to bot failed, message:${error.localizedMessage}")
                     })
         })
     }
@@ -218,40 +220,40 @@ class BotControllerSweep : BotLocationManager.Listener {
             BotCommunicationService.Factory.create("BOT CONTROL - DOOR CLOSE").doorClose()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            println("Sent door close to bot successfully")
+                            Log.d(TAG, "Sent door close to bot successfully")
                         }
                     }, { error ->
-                        println("Sent door close to bot failed, message:${error.localizedMessage}")
+                        Log.d(TAG, "Sent door close to bot failed, message:${error.localizedMessage}")
                     })
         })
     }
 
     private fun sendPathToBot(pathList: ArrayList<PathRequestItem>) {
-        println("Sending path to point. Data: ${Gson().toJson(pathList)}")
+        Log.d(TAG, "Sending path to point. Data: ${Gson().toJson(pathList)}")
         Executors.newCachedThreadPool().submit({
             BotCommunicationService.Factory.create("BOT CONTROL - PATH").sendPath(pathList)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            println("Sent path to bot successfully")
+                            Log.d(TAG, "Sent path to bot successfully")
                         }
                         BotLocationManager.get().startBotLocationRequestForAllSensors()
                     }, { error ->
-                        println("Sent path to bot failed, message:${error.localizedMessage}")
+                        Log.d(TAG, "Sent path to bot failed, message:${error.localizedMessage}")
                         BotLocationManager.get().startBotLocationRequestForAllSensors()
                     })
         })
     }
 
     private fun sendStopToBot() {
-        println("Sending stop to bot...")
+        Log.d(TAG, "Sending stop to bot...")
         Executors.newCachedThreadPool().submit({
             BotCommunicationService.Factory.create("BOT CONTROL - STOP").stop()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
-                            println("Sent stop to bot successfully")
+                            Log.d(TAG, "Sent stop to bot successfully")
                         }
                     }, { error ->
-                        println("Sent stop to bot failed, message:${error.localizedMessage}")
+                        Log.d(TAG, "Sent stop to bot failed, message:${error.localizedMessage}")
                     })
         })
     }

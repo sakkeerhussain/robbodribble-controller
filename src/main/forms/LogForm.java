@@ -64,11 +64,9 @@ public class LogForm {
             taLogs = null;
         }
 
-        public void println(@NotNull String tag, @NotNull String msg) {
-            if (null == taLogs) {
-                System.out.println(tag + " => " + msg);
-            } else {
-                log = log.concat(tag).concat(" => ").concat(msg).concat("\n");
+        public void println(@NotNull String msg) {
+            if (null != taLogs)  {
+                log = log.concat(msg);
                 updateLogText();
             }
         }
