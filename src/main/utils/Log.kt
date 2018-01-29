@@ -8,18 +8,18 @@ class Log {
     companion object {
 
         fun d(tag: String, message: String) {
-            Executors.newCachedThreadPool().submit {
-                try {
-                    println("$tag *** $message")
-                    LogForm.logger.println("$tag *** $message\n")
-                    val file = File("logs/robo-dribble.txt")
-                    if (!file.exists()) {
-                        File(file.parent).mkdir()
-                    }
-                    file.appendText("\n$message")
-                } catch (e: Exception) {
+            //Executors.newCachedThreadPool().submit {
+            try {
+                println("$tag *** $message")
+                LogForm.logger.println("$tag *** $message\n")
+                val file = File("logs/robo-dribble.txt")
+                if (!file.exists()) {
+                    File(file.parent).mkdir()
                 }
+                file.appendText("$tag *** $message\n")
+            } catch (e: Exception) {
             }
+            //}
         }
 
         fun d(tag: String) {

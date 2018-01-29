@@ -17,7 +17,7 @@ public class Main {
 
     private Main() {
         //BotControlManager.Companion.get().startBotOperator();
-        Log.Companion.d(TAG, "\n\n****************************************************"
+        Log.Companion.d("", "\n\n****************************************************"
                 + "\nStarting application at " + new Date()
                 + "\n****************************************************");
 

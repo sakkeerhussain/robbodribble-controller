@@ -37,7 +37,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(105f, 50f), true))
             pathList.add(Path(Point(60f, 50f), true))
             pathList.add(Path(Point(20f, 50f), true))
-            pathList.add(Path(Point(20f, 90f), true))
+            pathList.add(Path(Point(10f, 95f), true))
             pathList.add(Path(Point(40f, 90f), true))
             pathList.add(Path(Point(4f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
@@ -54,7 +54,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(100f, 135f), true))
             pathList.add(Path(Point(60f, 135f), true))
             pathList.add(Path(Point(30f, 135f), true))
-            pathList.add(Path(Point(20f, 90f), true))
+            pathList.add(Path(Point(10f, 85f), true))
             pathList.add(Path(Point(40f, 90f), true))
             pathList.add(Path(Point(4f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
@@ -72,7 +72,7 @@ class BotControllerSweep : BotLocationManager.Listener {
             pathList.add(Path(Point(130f, 45f), true))
             pathList.add(Path(Point(80f, 45f), true))
             pathList.add(Path(Point(30f, 45f), true))
-            pathList.add(Path(Point(20f, 90f), true))
+            pathList.add(Path(Point(10f, 95f), true))
             pathList.add(Path(Point(40f, 90f), true))
             pathList.add(Path(Point(4f, 90f), false))
             pathList.add(Path(Point(-1f, -1f), true)) //Open Door
