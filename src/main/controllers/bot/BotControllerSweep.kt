@@ -6,6 +6,7 @@ import main.controllers.BotLocationManager
 import main.controllers.Const
 import main.geometry.Line
 import main.geometry.Point
+import main.opencv.OpenCV
 import main.utils.Log
 import java.util.concurrent.Executors
 import kotlin.math.absoluteValue
@@ -19,80 +20,51 @@ import kotlin.math.absoluteValue
 //    }
 //}
 
-class BotControllerSweep : BotLocationManager.Listener {
-    val TAG = "BotControllerSweep"
+class BotControllerSweep private constructor() : BotLocationManager.Listener {
+    private val TAG = "BotControllerSweep"
+
+    companion object {
+        private var instance: BotControllerSweep? = null
+
+        fun get(): BotControllerSweep {
+            if (instance == null)
+                instance = BotControllerSweep()
+            return instance!!
+        }
+    }
 
     private val pathList = ArrayList<Path>()
     private var pathIndex = 0
     private var moveStartPoint: Point? = null
+    private var controllerRunning = false
 
-    fun start(post: Int) {
-        if (post == 1) {
-            //Center to post
-            pathList.add(Path(Point(45f, 140f), true))
-            pathList.add(Path(Point(85f, 140f), true))
-            pathList.add(Path(Point(125f, 130f), true))
-            pathList.add(Path(Point(140f, 90f), true))
-            pathList.add(Path(Point(155f, 50f), true))
-            pathList.add(Path(Point(105f, 50f), true))
-            pathList.add(Path(Point(60f, 50f), true))
-            pathList.add(Path(Point(20f, 50f), true))
-            pathList.add(Path(Point(10f, 95f), true))
-            pathList.add(Path(Point(40f, 90f), true))
-            pathList.add(Path(Point(4f, 90f), false))
-            pathList.add(Path(Point(-1f, -1f), true)) //Open Door
+    fun stop() {
+        Log.d(TAG, "Stopping sweep controller...")
+        controllerRunning = false
+    }
 
-            //Sweep 1
-            pathList.add(Path(Point(30f, 105f), true))
-            pathList.add(Path(Point(80f, 105f), true))
-            pathList.add(Path(Point(130f, 105f), true))
-            pathList.add(Path(Point(180f, 105f), true))
-            pathList.add(Path(Point(230f, 135f), true))
-            pathList.add(Path(Point(255f, 135f), true))
-            pathList.add(Path(Point(200f, 135f), true))
-            pathList.add(Path(Point(150f, 135f), true))
-            pathList.add(Path(Point(100f, 135f), true))
-            pathList.add(Path(Point(60f, 135f), true))
-            pathList.add(Path(Point(30f, 135f), true))
-            pathList.add(Path(Point(10f, 85f), true))
-            pathList.add(Path(Point(40f, 90f), true))
-            pathList.add(Path(Point(4f, 90f), false))
-            pathList.add(Path(Point(-1f, -1f), true)) //Open Door
-
-            //Sweep 2
-            pathList.add(Path(Point(30f, 75f), true))
-            pathList.add(Path(Point(80f, 75f), true))
-            pathList.add(Path(Point(130f, 75f), true))
-            pathList.add(Path(Point(180f, 75f), true))
-            pathList.add(Path(Point(220f, 75f), true))
-            pathList.add(Path(Point(250f, 75f), true))
-            pathList.add(Path(Point(250f, 45f), true))
-            pathList.add(Path(Point(220f, 45f), true))
-            pathList.add(Path(Point(180f, 45f), true))
-            pathList.add(Path(Point(130f, 45f), true))
-            pathList.add(Path(Point(80f, 45f), true))
-            pathList.add(Path(Point(30f, 45f), true))
-            pathList.add(Path(Point(10f, 95f), true))
-            pathList.add(Path(Point(40f, 90f), true))
-            pathList.add(Path(Point(4f, 90f), false))
-            pathList.add(Path(Point(-1f, -1f), true)) //Open Door
-
-
-            Log.d(TAG, "Starting...")
-        } else {
-            pathList.add(Path(Point(155f, 50f), true))
+    fun start() {
+        if (controllerRunning) {
+            Log.d(TAG, "Sweep controller is already running...")
+            return
         }
-        moveStartPoint = pathList[pathIndex].point
-        BotLocationManager.get().addListener(this)
-
-        BotLocationManager.get().startBotLocationRequestForAllSensors()
-
-//        callBotReachedCallBackForTesting(pathList[pathIndex].point)
+        Executors.newCachedThreadPool().submit {
+            Log.d(TAG, "Starting sweeper controller...")
+            controllerRunning = true
+            init()
+            BotLocationManager.get().addListener(this)
+            OpenCV.init()
+            BotLocationManager.get().startBotLocationRequestForMainSensor()
+        }
     }
 
     override fun botLocationChanged(botLocation: BotLocation?) {
+        if (!controllerRunning) {
+            Log.d(TAG, "Stopped sweeper controller")
+            return
+        }
         if (botLocation == null) {
-            BotLocationManager.get().startBotLocationRequestForAllSensors()
+            BotLocationManager.get().startBotLocationRequestForMainSensor()
             return
         }
         val botLocationPoint = botLocation.point()
@@ -127,12 +99,12 @@ class BotControllerSweep : BotLocationManager.Listener {
 //                } else {
 //                    Log.d("Bot reached at $botLocationPoint")
 //                    moveStartPoint = botLocationPoint
-//                    BotLocationManager.get().startBotLocationRequestForAllSensors()
+//                    BotLocationManager.get().startBotLocationRequestForMainSensor()
 //                }
                 createPathToPoint(botLocation)
                 moveStartPoint = botLocationPoint
             }
-            else->{
+            else -> {
                 Log.d("Bot deviated from desired path")
                 if (pathList[pathIndex].front) {
                     val point = pathList[pathIndex].point
@@ -142,7 +114,7 @@ class BotControllerSweep : BotLocationManager.Listener {
                     } else {
                         createPathToPoint(botLocation)
                     }
-                }else{
+                } else {
                     createPathToPoint(botLocation)
                 }
             }
@@ -169,9 +141,9 @@ class BotControllerSweep : BotLocationManager.Listener {
             //Left move correction
             angle += (distance * 0.133333333)
 
-            if (angle > 180){
+            if (angle > 180) {
                 angle -= 360
-            }else if (angle < -180){
+            } else if (angle < -180) {
                 angle += 360
             }
 
@@ -212,6 +184,59 @@ class BotControllerSweep : BotLocationManager.Listener {
 
 //        Log.d(TAG, "Path list: $pathList")
 //        callBotReachedCallBackForTesting(path.point)
+    }
+
+    fun init() {
+        //Center to post
+        pathList.add(Path(Point(45f, 140f), true))
+        pathList.add(Path(Point(85f, 140f), true))
+        pathList.add(Path(Point(125f, 130f), true))
+        pathList.add(Path(Point(140f, 90f), true))
+        pathList.add(Path(Point(155f, 50f), true))
+        pathList.add(Path(Point(105f, 50f), true))
+        pathList.add(Path(Point(60f, 50f), true))
+        pathList.add(Path(Point(20f, 50f), true))
+        pathList.add(Path(Point(10f, 95f), true))
+        pathList.add(Path(Point(40f, 90f), true))
+        pathList.add(Path(Point(4f, 90f), false))
+        pathList.add(Path(Point(-1f, -1f), true)) //Open Door
+
+        //Sweep 1
+        pathList.add(Path(Point(30f, 105f), true))
+        pathList.add(Path(Point(80f, 105f), true))
+        pathList.add(Path(Point(130f, 105f), true))
+        pathList.add(Path(Point(180f, 105f), true))
+        pathList.add(Path(Point(230f, 135f), true))
+        pathList.add(Path(Point(255f, 135f), true))
+        pathList.add(Path(Point(200f, 135f), true))
+        pathList.add(Path(Point(150f, 135f), true))
+        pathList.add(Path(Point(100f, 135f), true))
+        pathList.add(Path(Point(60f, 135f), true))
+        pathList.add(Path(Point(30f, 135f), true))
+        pathList.add(Path(Point(10f, 85f), true))
+        pathList.add(Path(Point(40f, 90f), true))
+        pathList.add(Path(Point(4f, 90f), false))
+        pathList.add(Path(Point(-1f, -1f), true)) //Open Door
+
+        //Sweep 2
+        pathList.add(Path(Point(30f, 75f), true))
+        pathList.add(Path(Point(80f, 75f), true))
+        pathList.add(Path(Point(130f, 75f), true))
+        pathList.add(Path(Point(180f, 75f), true))
+        pathList.add(Path(Point(220f, 75f), true))
+        pathList.add(Path(Point(250f, 75f), true))
+        pathList.add(Path(Point(250f, 45f), true))
+        pathList.add(Path(Point(220f, 45f), true))
+        pathList.add(Path(Point(180f, 45f), true))
+        pathList.add(Path(Point(130f, 45f), true))
+        pathList.add(Path(Point(80f, 45f), true))
+        pathList.add(Path(Point(30f, 45f), true))
+        pathList.add(Path(Point(10f, 95f), true))
+        pathList.add(Path(Point(40f, 90f), true))
+        pathList.add(Path(Point(4f, 90f), false))
+        pathList.add(Path(Point(-1f, -1f), true)) //Open Door
+        Log.d(TAG, "Starting...")
+        moveStartPoint = pathList[pathIndex].point
     }
 
     private fun callBotReachedCallBackForTesting(point: Point) {
@@ -258,10 +283,10 @@ class BotControllerSweep : BotLocationManager.Listener {
                         if (result.status.equals("ok")) {
                             Log.d(TAG, "Sent path to bot successfully")
                         }
-                        BotLocationManager.get().startBotLocationRequestForAllSensors()
+                        BotLocationManager.get().startBotLocationRequestForMainSensor()
                     }, { error ->
                         Log.d(TAG, "Sent path to bot failed, message:${error.localizedMessage}")
-                        BotLocationManager.get().startBotLocationRequestForAllSensors()
+                        BotLocationManager.get().startBotLocationRequestForMainSensor()
                     })
         })
     }

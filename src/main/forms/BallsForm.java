@@ -18,8 +18,7 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     private JList ltBalls;
     private JButton btRefreshBot;
     private JButton btRestartBot;
-    private JButton btStartSweeper1;
-    private JButton btStartSweeper2;
+    private JButton btStartSweeper;
     private BallsUI mBallsUI;
 
     BallsForm() {
@@ -40,9 +39,17 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
         });
         btRefreshBalls.addActionListener(e -> BallsManager.Companion.get().startBallsRequestForAllSensors());
         btRefreshBot.addActionListener(e -> BotLocationManager.Companion.get().startBotLocationRequestForAllSensors());
-        btRestartBot.addActionListener(e -> BotControlManager.Companion.get().startBotOperator() );
-        btStartSweeper1.addActionListener(e -> new BotControllerSweep().start(1));
-        btStartSweeper2.addActionListener(e -> new BotControllerSweep().start(1));
+        btRestartBot.addActionListener(e -> BotControlManager.Companion.get().startBotOperator());
+        btStartSweeper.addActionListener(e -> {
+            String stopText = "Stop Sweeper";
+            if (btStartSweeper.getText().equals(stopText)) {
+                BotControllerSweep.Companion.get().stop();
+                btStartSweeper.setText("Start Sweeper");
+            } else {
+                BotControllerSweep.Companion.get().start();
+                btStartSweeper.setText(stopText);
+            }
+        });
     }
 
     @Override

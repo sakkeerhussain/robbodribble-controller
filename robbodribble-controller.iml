@@ -7,11 +7,22 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" exported="" name="KotlinJavaRuntime" level="project" />
-    <orderEntry type="library" exported="" name="com.squareup.retrofit:converter-gson:2.0.0-SNAPSHOT" level="project" />
+    <orderEntry type="library" name="KotlinJavaRuntime" level="project" />
+    <orderEntry type="library" name="com.squareup.retrofit:converter-gson:2.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="com.squareup.retrofit:retrofit:2.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="io.reactivex.rxjava2:rxjava:2.1.7" level="project" />
     <orderEntry type="library" name="com.squareup.retrofit:adapter-rxjava:2.0.0-SNAPSHOT" level="project" />
     <orderEntry type="library" name="com.squareup.okhttp3:logging-interceptor:3.9.1" level="project" />
+    <orderEntry type="module-library">
+      <library>
+        <CLASSES>
+          <root url="jar:///usr/local/Cellar/opencv/3.3.1_1/share/OpenCV/java/opencv-331.jar!/" />
+        </CLASSES>
+        <JAVADOC />
+        <SOURCES>
+          <root url="jar:///usr/local/Cellar/opencv/3.3.1_1/share/OpenCV/java/opencv-331.jar!/" />
+        </SOURCES>
+      </library>
+    </orderEntry>
   </component>
 </module>

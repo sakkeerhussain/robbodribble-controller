@@ -56,6 +56,11 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
         }
     }
 
+    fun startBotLocationRequestForMainSensor() {
+        val sensor = SensorsManager.get().getBotSensorsList().get(0)
+        getBotLocation(sensor.ip, sensor.port)
+    }
+
     private fun getBotLocation(ip: String, port: String) {
         Http.getBotLocation(ip, port,null, this)
     }
