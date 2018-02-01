@@ -17,8 +17,10 @@ object OpenCV {
     private var imagePath: String? = null
 
     private val refPoint1: ReferencePoint? = null
+    private val refPointMid12: ReferencePoint? = null
     private val refPoint2: ReferencePoint? = null
     private val refPoint3: ReferencePoint? = null
+    private val refPointMid34: ReferencePoint? = null
     private val refPoint4: ReferencePoint? = null
 
     fun init() {
@@ -66,10 +68,12 @@ object OpenCV {
     }
 
     private fun getRefPoints(): MatOfPoint? {
-        if (refPoint1 == null || refPoint2 == null || refPoint3 == null || refPoint4 == null) {
+        if (refPoint1 == null || refPointMid12 == null || refPoint2 == null
+                || refPoint3 == null || refPointMid34 == null || refPoint4 == null) {
             return null
         }
-        val points = arrayOf(refPoint1.pointImage.cvPoint(), refPoint2.pointImage.cvPoint(), refPoint4.pointImage.cvPoint(), refPoint3.pointImage.cvPoint())
+        val points = arrayOf(refPoint1.pointImage.cvPoint(), refPointMid12.pointImage.cvPoint(), refPoint2.pointImage.cvPoint(),
+                refPoint4.pointImage.cvPoint(), refPointMid34.pointImage.cvPoint(), refPoint3.pointImage.cvPoint())
         val matOfPoint = MatOfPoint()
         matOfPoint.fromArray(*points)
         return matOfPoint

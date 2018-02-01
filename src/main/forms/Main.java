@@ -15,6 +15,7 @@ public class Main {
     private JTabbedPane tpCalibration;
     private JPanel pBalls;
     private JPanel pLog;
+    private JPanel pLocalCalibration;
 
     private Main() {
         //BotControlManager.Companion.get().startBotOperator();
@@ -27,6 +28,7 @@ public class Main {
             addCalibrationForm(sensor.getIp(), sensor.getPort());
         }
 
+        setupLocalCalibrationForm();
         setupBallsForm();
         setupLogForm();
         OpenCV.INSTANCE.init();
@@ -39,6 +41,10 @@ public class Main {
 
     private void setupBallsForm() {
         pBalls.add(new BallsForm().pRoot);
+    }
+
+    private void setupLocalCalibrationForm() {
+        pLocalCalibration.add(new CalibLocForm().pRoot);
     }
 
     private void addCalibrationForm(String ip, String port) {
