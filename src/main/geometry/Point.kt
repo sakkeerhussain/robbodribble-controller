@@ -28,4 +28,8 @@ class Point(val x: Float, val y: Float) {
         else
             Point(this.x - xDelta, this.y - yDelta)
     }
+
+    fun cvPoint(): org.opencv.core.Point {
+        return org.opencv.core.Point(x.toDouble(), y.toDouble())
+    }
 }

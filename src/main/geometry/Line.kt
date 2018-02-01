@@ -9,7 +9,7 @@ class Line(val p1:Point, val p2: Point){
         return Math.toDegrees(this.angle())
     }
 
-    private fun angle(): Double {
+    fun angle(): Double {
         return if (this.p1. x == this.p2.x)
             1.5708
         else

@@ -2,6 +2,8 @@ package main.controllers
 
 import main.geometry.Line
 import main.geometry.Point
+import main.opencv.OpenCV
+import main.opencv.OpenCvUtils
 import main.sensor.BotLocationListener
 import main.sensor.Http
 import main.sensor.OpponentLocationListener
@@ -62,7 +64,9 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     private fun getBotLocation(ip: String, port: String) {
-        Http.getBotLocation(ip, port,null, this)
+        //Http.getBotLocation(ip, port,null, this)
+        val botLocation = OpenCvUtils.getBotLocationOnBoard()
+        updateBotLocation(botLocation)
     }
 
     override fun botLocationReceived(ip: String, port: String, data: BotLocation?) {

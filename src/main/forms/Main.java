@@ -1,5 +1,6 @@
 package main.forms;
 
+import main.opencv.OpenCV;
 import main.sensor.Sensor;
 import main.sensor.SensorsManager;
 import main.utils.Log;
@@ -28,6 +29,7 @@ public class Main {
 
         setupBallsForm();
         setupLogForm();
+        OpenCV.INSTANCE.init();
     }
 
     private void setupLogForm() {

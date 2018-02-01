@@ -3,7 +3,6 @@ package main.forms;
 import main.sensor.Http;
 
 import javax.swing.*;
-import java.util.concurrent.Executors;
 
 public class CalibrationForm {
     private final String mIp;
@@ -83,5 +82,14 @@ public class CalibrationForm {
             Http.Companion.getReferencePoint(mIp, mPort,3, lbMessage, tfPoint3x, tfPoint3y);
         if (point == 4 || point == -1)
             Http.Companion.getReferencePoint(mIp, mPort,4, lbMessage, tfPoint4x, tfPoint4y);
+    }
+
+    public static void main(String[] args) {
+        JFrame frame = new JFrame("Main");
+        frame.setContentPane(new CalibrationForm("dgasg", "sgsg").rootPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setLocationRelativeTo(null);
+        frame.setVisible(true);
     }
 }
