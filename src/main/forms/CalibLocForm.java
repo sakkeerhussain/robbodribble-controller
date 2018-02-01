@@ -13,30 +13,46 @@ public class CalibLocForm {
     private JTextField tfPoint3y;
     private JTextField tfPoint4x;
     private JTextField tfPoint4y;
-    private JButton setButton1;
-    private JButton setButton3;
-    private JButton setButton2;
-    private JButton setButton4;
+    private JButton btSet1;
+    private JButton btSet3;
+    private JButton btSet2;
+    private JButton btSet4;
     private JButton btRefresh;
     private JButton btClear;
+    private JTextField tfPoint12x;
+    private JTextField tfPoint12y;
+    private JTextField tfPoint34x;
+    private JTextField tfPoint34y;
+    private JButton btSet12;
+    private JButton btSet34;
 
     CalibLocForm() {
-        setButton1.addActionListener(e -> {
+        btSet1.addActionListener(e -> {
 //            float xImage = Float.valueOf(tfPoint1x.getText());
 //            float yImage = Float.valueOf(tfPoint1y.getText());
 //            Http.Companion.setReferencePoint(mIp, mPort, 1, lbMessage, xImage, yImage, -10, -10, () -> updateRefPointData(1));
         });
-        setButton2.addActionListener(e -> {
+        btSet2.addActionListener(e -> {
 //            float xImage = Float.valueOf(tfPoint2x.getText());
 //            float yImage = Float.valueOf(tfPoint2y.getText());
 //            Http.Companion.setReferencePoint(mIp, mPort, 2, lbMessage, xImage, yImage, 290, -10, () -> updateRefPointData(2));
         });
-        setButton3.addActionListener(e -> {
+        btSet3.addActionListener(e -> {
 //            float xImage = Float.valueOf(tfPoint3x.getText());
 //            float yImage = Float.valueOf(tfPoint3y.getText());
 //            Http.Companion.setReferencePoint(mIp, mPort, 3, lbMessage, xImage, yImage, -10, 190, () -> updateRefPointData(3));
         });
-        setButton4.addActionListener(e -> {
+        btSet4.addActionListener(e -> {
+//            float xImage = Float.valueOf(tfPoint4x.getText());
+//            float yImage = Float.valueOf(tfPoint4y.getText());
+//            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 290, 190, () -> updateRefPointData(4));
+        });
+        btSet12.addActionListener(e -> {
+//            float xImage = Float.valueOf(tfPoint4x.getText());
+//            float yImage = Float.valueOf(tfPoint4y.getText());
+//            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 290, 190, () -> updateRefPointData(4));
+        });
+        btSet34.addActionListener(e -> {
 //            float xImage = Float.valueOf(tfPoint4x.getText());
 //            float yImage = Float.valueOf(tfPoint4y.getText());
 //            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 290, 190, () -> updateRefPointData(4));
