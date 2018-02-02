@@ -23,6 +23,18 @@ object OpenCV {
     var refPointMid34: ReferencePoint = ReferencePoint(622.5f, 852.5f, 140f, 190f)
     var refPoint4: ReferencePoint = ReferencePoint(1245f, 840f, 290f, 190f)
 
+    init {
+        updateMappingConstants()
+    }
+
+    var aX = 0
+    var bX = 0
+
+    fun updateMappingConstants() {
+        aX = 4
+    }
+
+
     fun init() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
         camera = VideoCapture()

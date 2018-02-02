@@ -21,7 +21,7 @@ object OpenCvUtils {
 
     private fun convertPointOnBoard(point: Point): Point {
         //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        return point
+        return Point(4f, 7f)
     }
 
     fun getBotLocationOnBoard(sensor: Sensor): BotLocation? {
