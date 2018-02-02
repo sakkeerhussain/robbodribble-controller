@@ -16,12 +16,12 @@ object OpenCV {
     private var camera: VideoCapture? = null
     private var imagePath: String? = null
 
-    private val refPoint1: ReferencePoint? = null
-    private val refPointMid12: ReferencePoint? = null
-    private val refPoint2: ReferencePoint? = null
-    private val refPoint3: ReferencePoint? = null
-    private val refPointMid34: ReferencePoint? = null
-    private val refPoint4: ReferencePoint? = null
+    var refPoint1: ReferencePoint = ReferencePoint(0f, 0f, -10f, -10f)
+    var refPointMid12: ReferencePoint = ReferencePoint(622.5f, 12.5f, 140f, -10f)
+    var refPoint2: ReferencePoint = ReferencePoint(1245f, 25f, 290f, -10f)
+    var refPoint3: ReferencePoint = ReferencePoint(0f, 865f, -10f, 190f)
+    var refPointMid34: ReferencePoint = ReferencePoint(622.5f, 852.5f, 140f, 190f)
+    var refPoint4: ReferencePoint = ReferencePoint(1245f, 840f, 290f, 190f)
 
     fun init() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)

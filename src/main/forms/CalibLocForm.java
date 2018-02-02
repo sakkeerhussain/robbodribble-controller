@@ -1,5 +1,8 @@
 package main.forms;
 
+import main.opencv.OpenCV;
+import main.opencv.models.ReferencePoint;
+
 import javax.swing.*;
 
 public class CalibLocForm {
@@ -13,68 +16,90 @@ public class CalibLocForm {
     private JTextField tfPoint3y;
     private JTextField tfPoint4x;
     private JTextField tfPoint4y;
-    private JButton btSet1;
-    private JButton btSet3;
-    private JButton btSet2;
-    private JButton btSet4;
-    private JButton btRefresh;
-    private JButton btClear;
     private JTextField tfPoint12x;
     private JTextField tfPoint12y;
     private JTextField tfPoint34x;
     private JTextField tfPoint34y;
+    private JButton btSet1;
+    private JButton btSet2;
+    private JButton btSet3;
+    private JButton btSet4;
     private JButton btSet12;
     private JButton btSet34;
+    private JButton btRefresh;
+    private JButton btClear;
 
     CalibLocForm() {
         btSet1.addActionListener(e -> {
-//            float xImage = Float.valueOf(tfPoint1x.getText());
-//            float yImage = Float.valueOf(tfPoint1y.getText());
-//            Http.Companion.setReferencePoint(mIp, mPort, 1, lbMessage, xImage, yImage, -10, -10, () -> updateRefPointData(1));
+            float xImage = Float.valueOf(tfPoint1x.getText());
+            float yImage = Float.valueOf(tfPoint1y.getText());
+            OpenCV.INSTANCE.setRefPoint1(new ReferencePoint(xImage, yImage, -10f, -10f));
+            updateRefPointData(1);
         });
         btSet2.addActionListener(e -> {
-//            float xImage = Float.valueOf(tfPoint2x.getText());
-//            float yImage = Float.valueOf(tfPoint2y.getText());
-//            Http.Companion.setReferencePoint(mIp, mPort, 2, lbMessage, xImage, yImage, 290, -10, () -> updateRefPointData(2));
+            float xImage = Float.valueOf(tfPoint2x.getText());
+            float yImage = Float.valueOf(tfPoint2y.getText());
+            OpenCV.INSTANCE.setRefPoint2(new ReferencePoint(xImage, yImage, 290f, -10f));
+            updateRefPointData(2);
         });
         btSet3.addActionListener(e -> {
-//            float xImage = Float.valueOf(tfPoint3x.getText());
-//            float yImage = Float.valueOf(tfPoint3y.getText());
-//            Http.Companion.setReferencePoint(mIp, mPort, 3, lbMessage, xImage, yImage, -10, 190, () -> updateRefPointData(3));
+            float xImage = Float.valueOf(tfPoint3x.getText());
+            float yImage = Float.valueOf(tfPoint3y.getText());
+            OpenCV.INSTANCE.setRefPoint3(new ReferencePoint(xImage, yImage, -10f, 190f));
+            updateRefPointData(3);
         });
         btSet4.addActionListener(e -> {
-//            float xImage = Float.valueOf(tfPoint4x.getText());
-//            float yImage = Float.valueOf(tfPoint4y.getText());
-//            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 290, 190, () -> updateRefPointData(4));
+            float xImage = Float.valueOf(tfPoint4x.getText());
+            float yImage = Float.valueOf(tfPoint4y.getText());
+            OpenCV.INSTANCE.setRefPoint4(new ReferencePoint(xImage, yImage, 290f, 190f));
+            updateRefPointData(4);
         });
         btSet12.addActionListener(e -> {
-//            float xImage = Float.valueOf(tfPoint4x.getText());
-//            float yImage = Float.valueOf(tfPoint4y.getText());
-//            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 290, 190, () -> updateRefPointData(4));
+            float xImage = Float.valueOf(tfPoint12x.getText());
+            float yImage = Float.valueOf(tfPoint12y.getText());
+            OpenCV.INSTANCE.setRefPointMid12(new ReferencePoint(xImage, yImage, 140f, -10f));
+            updateRefPointData(12);
         });
         btSet34.addActionListener(e -> {
-//            float xImage = Float.valueOf(tfPoint4x.getText());
-//            float yImage = Float.valueOf(tfPoint4y.getText());
-//            Http.Companion.setReferencePoint(mIp, mPort, 4, lbMessage, xImage, yImage, 290, 190, () -> updateRefPointData(4));
+            float xImage = Float.valueOf(tfPoint34x.getText());
+            float yImage = Float.valueOf(tfPoint34y.getText());
+            OpenCV.INSTANCE.setRefPointMid34(new ReferencePoint(xImage, yImage, 140f, 190f));
+            updateRefPointData(34);
         });
-        btClear.addActionListener(e ->{
+        btClear.addActionListener(e -> {
             lbMessage.setText("Messages");
         });
-        btRefresh.addActionListener(e ->{
+        btRefresh.addActionListener(e -> {
             updateRefPointData(-1);
         });
         updateRefPointData(-1);
     }
 
     private void updateRefPointData(int point) {
-//        if (point == 1 || point == -1)
-//            Http.Companion.getReferencePoint(mIp, mPort,1, lbMessage, tfPoint1x, tfPoint1y);
-//        if (point == 2 || point == -1)
-//            Http.Companion.getReferencePoint(mIp, mPort,2, lbMessage, tfPoint2x, tfPoint2y);
-//        if (point == 3 || point == -1)
-//            Http.Companion.getReferencePoint(mIp, mPort,3, lbMessage, tfPoint3x, tfPoint3y);
-//        if (point == 4 || point == -1)
-//            Http.Companion.getReferencePoint(mIp, mPort,4, lbMessage, tfPoint4x, tfPoint4y);
+        if (point == 1 || point == -1) {
+            tfPoint1x.setText(OpenCV.INSTANCE.getRefPoint1().getPointImage().getX() + "");
+            tfPoint1y.setText(OpenCV.INSTANCE.getRefPoint1().getPointImage().getY() + "");
+        }
+        if (point == 12 || point == -1) {
+            tfPoint12x.setText(OpenCV.INSTANCE.getRefPointMid12().getPointImage().getX() + "");
+            tfPoint12y.setText(OpenCV.INSTANCE.getRefPointMid12().getPointImage().getY() + "");
+        }
+        if (point == 2 || point == -1) {
+            tfPoint2x.setText(OpenCV.INSTANCE.getRefPoint2().getPointImage().getX() + "");
+            tfPoint2y.setText(OpenCV.INSTANCE.getRefPoint2().getPointImage().getY() + "");
+        }
+        if (point == 3 || point == -1) {
+            tfPoint3x.setText(OpenCV.INSTANCE.getRefPoint3().getPointImage().getX() + "");
+            tfPoint3y.setText(OpenCV.INSTANCE.getRefPoint3().getPointImage().getY() + "");
+        }
+        if (point == 34 || point == -1) {
+            tfPoint34x.setText(OpenCV.INSTANCE.getRefPointMid34().getPointImage().getX() + "");
+            tfPoint34y.setText(OpenCV.INSTANCE.getRefPointMid34().getPointImage().getY() + "");
+        }
+        if (point == 4 || point == -1) {
+            tfPoint4x.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getX() + "");
+            tfPoint4y.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getY() + "");
+        }
     }
 
 //    public static void main(String[] args) {
