@@ -53,7 +53,6 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             controllerRunning = true
             init()
             BotLocationManager.get().addListener(this)
-            OpenCV.init()
             BotLocationManager.get().startBotLocationRequestForMainSensor()
         }
     }

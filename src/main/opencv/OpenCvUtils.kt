@@ -5,12 +5,14 @@ import main.geometry.Circle
 import main.geometry.Line
 import main.geometry.Point
 import main.utils.Log
-import org.opencv.core.Core
-import org.opencv.core.Mat
-import org.opencv.core.Scalar
-import org.opencv.core.Size
+import org.opencv.core.*
+import org.opencv.imgcodecs.Imgcodecs
 import org.opencv.imgproc.Imgproc
+import java.awt.image.BufferedImage
+import java.io.ByteArrayInputStream
+import java.io.IOException
 import java.util.*
+import javax.imageio.ImageIO
 
 
 object OpenCvUtils {
@@ -99,5 +101,14 @@ object OpenCvUtils {
         }
 
         return circles
+    }
+
+    @Throws(IOException::class)
+    fun mat2BufferedImage(matrix: Mat): BufferedImage {
+        val mob = MatOfByte()
+        Imgcodecs.imencode(".jpg", matrix, mob)
+        val ba = mob.toArray()
+
+        return ImageIO.read(ByteArrayInputStream(ba))
     }
 }

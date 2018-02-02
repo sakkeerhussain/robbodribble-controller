@@ -28,10 +28,10 @@ public class Main {
             addCalibrationForm(sensor.getIp(), sensor.getPort());
         }
 
-        setupLocalCalibrationForm();
         setupBallsForm();
         setupLogForm();
         OpenCV.INSTANCE.init();
+        setupLocalCalibrationForm();
     }
 
     private void setupLogForm() {

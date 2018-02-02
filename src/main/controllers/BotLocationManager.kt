@@ -4,10 +4,9 @@ import main.geometry.Line
 import main.geometry.Point
 import main.opencv.OpenCV
 import main.opencv.OpenCvUtils
-import main.sensor.BotLocationListener
-import main.sensor.Http
-import main.sensor.OpponentLocationListener
-import main.sensor.SensorsManager
+import main.sensor.*
+import java.util.concurrent.Executor
+import java.util.concurrent.Executors
 
 
 class BotLocationManager : BotLocationListener, OpponentLocationListener {
@@ -34,7 +33,7 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     private fun notifyListeners() {
-        listeners.forEach { it.botLocationChanged(botLocation) }
+        listeners.forEach { Executors.newCachedThreadPool().submit {it.botLocationChanged(botLocation)} }
     }
 
     private var botLocation: BotLocation? = null
@@ -53,17 +52,17 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     fun startBotLocationRequestForAllSensors() {
-        for (sensor in SensorsManager.get().getBotSensorsList()) {
-            Runnable { getBotLocation(sensor.ip, sensor.port) }.run()
+        for (sensor in SensorsManager.get().getSensorsList()) {
+            Runnable { getBotLocation(sensor) }.run()
         }
     }
 
     fun startBotLocationRequestForMainSensor() {
-        val sensor = SensorsManager.get().getBotSensorsList().get(0)
-        getBotLocation(sensor.ip, sensor.port)
+        val sensor = SensorsManager.get().getSensorsList().get(0)
+        getBotLocation(sensor)
     }
 
-    private fun getBotLocation(ip: String, port: String) {
+    private fun getBotLocation(sensor: Sensor) {
         //Http.getBotLocation(ip, port,null, this)
         val botLocation = OpenCvUtils.getBotLocationOnBoard()
         updateBotLocation(botLocation)

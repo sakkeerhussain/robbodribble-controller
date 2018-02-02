@@ -18,14 +18,6 @@ class SensorsManager{
         return sensorsList
     }
 
-    fun getBallsSensorsList(): List<Sensor> {
-        return sensorsList.filter { !it.botOnly }
-    }
-
-    fun getBotSensorsList(): List<Sensor> {
-        return sensorsList.filter { !it.ballOnly }
-    }
-
     private object DataInitializer {
         var sensors = ArrayList<Sensor>()
 
@@ -35,8 +27,12 @@ class SensorsManager{
 //              sensors.add(Sensor("127.0.0.1", "9000", false, false))
 //            sensors.add(Sensor(Const.IP_NEXUS, "8080", false, false))
 //            sensors.add(Sensor("10.7.120.22", "8080", false, false))
-            sensors.add(Sensor(Const.IP_SAKKEER, "8080", false, false))
+            sensors.add(Sensor(Const.IP_SAKKEER, "8080"))
         }
     }
 }
-data class Sensor(val ip: String, val port: String, val ballOnly: Boolean, val botOnly: Boolean){}
+data class Sensor(val ip: String, val port: String) {
+    fun getImageUrl(): String {
+        return "http://$ip:$port/image/"
+    }
+}

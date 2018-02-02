@@ -68,7 +68,7 @@ class BallsManager : BallsListListener {
     }
 
     fun startBallsRequestForAllSensors() {
-        for (sensor in SensorsManager.get().getBallsSensorsList()) {
+        for (sensor in SensorsManager.get().getSensorsList()) {
             Runnable { getBallsList(sensor.ip, sensor.port) }.run()
         }
     }

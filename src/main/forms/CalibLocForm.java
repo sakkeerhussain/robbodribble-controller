@@ -1,13 +1,20 @@
 package main.forms;
 
 import main.opencv.OpenCV;
+import main.opencv.OpenCvUtils;
 import main.opencv.models.ReferencePoint;
+import main.sensor.Sensor;
+import main.sensor.SensorsManager;
+import org.opencv.core.Mat;
+import org.opencv.core.Size;
+import org.opencv.imgproc.Imgproc;
 
 import javax.swing.*;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 public class CalibLocForm {
     JPanel pRoot;
-    private JLabel lbMessage;
     private JTextField tfPoint1x;
     private JTextField tfPoint1y;
     private JTextField tfPoint2x;
@@ -27,7 +34,7 @@ public class CalibLocForm {
     private JButton btSet12;
     private JButton btSet34;
     private JButton btRefresh;
-    private JButton btClear;
+    private JLabel jlPreview;
 
     CalibLocForm() {
         btSet1.addActionListener(e -> {
@@ -66,9 +73,6 @@ public class CalibLocForm {
             OpenCV.INSTANCE.setRefPointMid34(new ReferencePoint(xImage, yImage, 140f, 190f));
             updateRefPointData(34);
         });
-        btClear.addActionListener(e -> {
-            lbMessage.setText("Messages");
-        });
         btRefresh.addActionListener(e -> {
             updateRefPointData(-1);
         });
@@ -99,6 +103,22 @@ public class CalibLocForm {
         if (point == 4 || point == -1) {
             tfPoint4x.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getX() + "");
             tfPoint4y.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getY() + "");
+        }
+        drawFrameToLable();
+    }
+
+    private void drawFrameToLable() {
+        try {
+            Sensor sensor = SensorsManager.Companion.get().getSensorsList().get(0);
+            OpenCV.INSTANCE.setCamUrl(sensor.getImageUrl());
+            Mat frame = OpenCV.INSTANCE.getFrame();
+            if (frame == null || jlPreview.getWidth() == 0 || jlPreview.getHeight() == 0)
+                return;
+            Imgproc.resize(frame, frame, new Size(jlPreview.getWidth(), jlPreview.getHeight()));
+            BufferedImage buffImage = OpenCvUtils.INSTANCE.mat2BufferedImage(frame);
+            jlPreview.setIcon(new ImageIcon(buffImage));
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 
