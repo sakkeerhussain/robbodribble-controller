@@ -68,10 +68,6 @@ object OpenCV {
     }
 
     private fun getRefPoints(): MatOfPoint? {
-        if (refPoint1 == null || refPointMid12 == null || refPoint2 == null
-                || refPoint3 == null || refPointMid34 == null || refPoint4 == null) {
-            return null
-        }
         val points = arrayOf(refPoint1.pointImage.cvPoint(), refPointMid12.pointImage.cvPoint(), refPoint2.pointImage.cvPoint(),
                 refPoint4.pointImage.cvPoint(), refPointMid34.pointImage.cvPoint(), refPoint3.pointImage.cvPoint())
         val matOfPoint = MatOfPoint()
