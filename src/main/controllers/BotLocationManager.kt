@@ -33,7 +33,7 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     private fun notifyListeners() {
-        listeners.forEach { Executors.newCachedThreadPool().submit {it.botLocationChanged(botLocation)} }
+        listeners.forEach { it.botLocationChanged(botLocation) }
     }
 
     private var botLocation: BotLocation? = null
@@ -64,7 +64,7 @@ class BotLocationManager : BotLocationListener, OpponentLocationListener {
 
     private fun getBotLocation(sensor: Sensor) {
         //Http.getBotLocation(ip, port,null, this)
-        val botLocation = OpenCvUtils.getBotLocationOnBoard()
+        val botLocation = OpenCvUtils.getBotLocationOnBoard(sensor)
         updateBotLocation(botLocation)
     }
 

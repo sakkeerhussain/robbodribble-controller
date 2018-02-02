@@ -11,7 +11,6 @@ import org.opencv.imgproc.Imgproc;
 
 import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.io.IOException;
 
 public class CalibLocForm {
     JPanel pRoot;
@@ -104,16 +103,20 @@ public class CalibLocForm {
             tfPoint4x.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getX() + "");
             tfPoint4y.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getY() + "");
         }
-        drawFrameToLable();
+        drawFrameToLabel();
     }
 
-    private void drawFrameToLable() {
+    private void drawFrameToLabel() {
         try {
             Sensor sensor = SensorsManager.Companion.get().getSensorsList().get(0);
             OpenCV.INSTANCE.setCamUrl(sensor.getImageUrl());
             Mat frame = OpenCV.INSTANCE.getFrame();
-            if (frame == null || jlPreview.getWidth() == 0 || jlPreview.getHeight() == 0)
+            if (frame == null || frame.rows() == 0|| frame.cols() == 0
+                    || jlPreview.getWidth() == 0 || jlPreview.getHeight() == 0) {
+                jlPreview.setText("Unable to print frame now");
                 return;
+            }
+            jlPreview.setText("");
             OpenCvUtils.INSTANCE.drawBordToFrame(frame);
             Imgproc.resize(frame, frame, new Size(jlPreview.getWidth(), jlPreview.getHeight()));
             BufferedImage buffImage = OpenCvUtils.INSTANCE.mat2BufferedImage(frame);

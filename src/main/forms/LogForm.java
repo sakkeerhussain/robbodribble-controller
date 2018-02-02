@@ -87,7 +87,7 @@ public class LogForm {
         }
 
         private void updateLogText() {
-            taLogs.setText(getFilteredLog());
+            taLogs.setText(getFilteredLog()+"\n\n");
             JScrollBar scrollBar = spLogs.getVerticalScrollBar();
             scrollBar.setValue(scrollBar.getMaximum());
         }

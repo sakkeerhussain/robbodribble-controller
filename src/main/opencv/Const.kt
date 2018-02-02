@@ -22,17 +22,17 @@ class Const {
         var REFERENCE_SCALAR_MIN = Scalar(12.0, 72.0, 108.0)
         var REFERENCE_SCALAR_MAX = Scalar(17.0, 146.0, 180.0)
 
-        val BOT_FRONT_RADIUS_MIN = 26
-        val BOT_FRONT_RADIUS_MAX = 100
-        val BOT_FRONT_MIN_DISTANCE = 500
-        var BOT_FRONT_SCALAR_MIN = Scalar(147.0, 169.0, 118.0)
-        var BOT_FRONT_SCALAR_MAX = Scalar(155.0, 215.0, 136.0)
+        internal val BOT_FRONT_RADIUS_MIN = 26
+        internal val BOT_FRONT_RADIUS_MAX = 50
+        internal val BOT_FRONT_MIN_DISTANCE = 500
+        internal var BOT_FRONT_SCALAR_MIN = Scalar(150.0, 117.0, 36.0)
+        internal var BOT_FRONT_SCALAR_MAX = Scalar(163.0, 255.0, 159.0)
 
-        val BOT_BACK_RADIUS_MIN = 26
-        val BOT_BACK_RADIUS_MAX = 100
-        val BOT_BACK_MIN_DISTANCE = 500
-        var BOT_BACK_SCALAR_MIN = Scalar(63.0, 96.0, 136.0)
-        var BOT_BACK_SCALAR_MAX = Scalar(73.0, 183.0, 255.0)
+        internal val BOT_BACK_RADIUS_MIN = 26
+        internal val BOT_BACK_RADIUS_MAX = 50
+        internal val BOT_BACK_MIN_DISTANCE = 500
+        internal var BOT_BACK_SCALAR_MIN = Scalar(57.0, 94.0, 68.0)
+        internal var BOT_BACK_SCALAR_MAX = Scalar(70.0, 255.0, 180.0)
 
         private val BOT_LOCATOR_DISTANCE_IN_BETWEEN = 15
         private val BOT_LOCATOR_DISTANCE_TO_CORNER = 10.61

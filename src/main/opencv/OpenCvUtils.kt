@@ -4,6 +4,7 @@ import main.controllers.BotLocation
 import main.geometry.Circle
 import main.geometry.Line
 import main.geometry.Point
+import main.sensor.Sensor
 import main.utils.Log
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
@@ -19,11 +20,12 @@ object OpenCvUtils {
     val TAG = "OpenCvUtils"
 
     private fun convertPointOnBoard(point: Point): Point {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return point
     }
 
-    fun getBotLocationOnBoard(): BotLocation? {
-        val location = getBotLocation() ?: return null
+    fun getBotLocationOnBoard(sensor: Sensor): BotLocation? {
+        val location = getBotLocation(sensor) ?: return null
         return BotLocation(location.angle,
                 convertPointOnBoard(location.backLeft),
                 convertPointOnBoard(location.frontLeft),
@@ -31,21 +33,22 @@ object OpenCvUtils {
                 convertPointOnBoard(location.frontRight))
     }
 
-    private fun getBotLocation(): BotLocation? {
-        val startTime = Date().getTime()
+    private fun getBotLocation(sensor: Sensor): BotLocation? {
+        val startTime = Date().time
+        OpenCV.setCamUrl(sensor.getImageUrl())
         var frame = OpenCV.getFrame()
-        if (frame == null) {
+        if (frame == null || frame.rows() == 0 || frame.cols() == 0) {
             Log.d(TAG, "No frame received")
             return null
         }
         frame = OpenCV.clipFrame(frame)
         val frontCircles = getBotFront(frame)
         val backCircles = getBotBack(frame)
-        if (frontCircles.size < 1 || backCircles.size < 1) {
+        if (frontCircles.isEmpty() || backCircles.isEmpty()) {
             Log.d(TAG, "Bot not found")
             return null
         } else if (frontCircles.size > 1 || backCircles.size > 1) {
-            TODO("Handle multiple bot detection issue")
+            //TODO("Handle multiple bot detection issue")
         }
         val frontCenter = frontCircles.get(0).center
         val backCenter = backCircles.get(0).center
@@ -97,7 +100,7 @@ object OpenCvUtils {
                 circles.add(Circle(center, radius))
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.d(TAG, "Exception in circle detection, ${e.message}")
         }
 
         return circles

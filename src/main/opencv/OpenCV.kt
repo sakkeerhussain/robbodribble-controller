@@ -61,7 +61,7 @@ object OpenCV {
     fun clipFrame(frame: Mat): Mat {
         val refPoints = getRefPoints() ?: return frame
         val frameRes = Mat()
-        val mask = Mat.zeros(frame.rows(), frame.cols(), CvType.CV_8UC4)
+        val mask = Mat.zeros(frame.rows(), frame.cols(), CvType.CV_8UC3)
         Imgproc.fillConvexPoly(mask, refPoints, Scalar(255.0, 255.0, 255.0))
         frame.copyTo(frameRes, mask)
         return frameRes

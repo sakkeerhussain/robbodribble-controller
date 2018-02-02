@@ -30,8 +30,12 @@ public class Main {
 
         setupBallsForm();
         setupLogForm();
-        OpenCV.INSTANCE.init();
+        initializingOpenCV();
         setupLocalCalibrationForm();
+    }
+
+    private void initializingOpenCV() {
+        OpenCV.INSTANCE.init();
     }
 
     private void setupLogForm() {
