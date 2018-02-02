@@ -5,6 +5,7 @@ import main.geometry.Circle
 import main.geometry.Line
 import main.geometry.Point
 import main.sensor.Sensor
+import main.utils.ImageToRealMapper.convertPointOnBoard
 import main.utils.Log
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
@@ -18,11 +19,6 @@ import javax.imageio.ImageIO
 
 object OpenCvUtils {
     val TAG = "OpenCvUtils"
-
-    private fun convertPointOnBoard(point: Point): Point {
-        //TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
-        return Point(4f, 7f)
-    }
 
     fun getBotLocationOnBoard(sensor: Sensor): BotLocation? {
         val location = getBotLocation(sensor) ?: return null

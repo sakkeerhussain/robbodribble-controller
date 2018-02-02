@@ -5,6 +5,7 @@ import main.opencv.OpenCvUtils;
 import main.opencv.models.ReferencePoint;
 import main.sensor.Sensor;
 import main.sensor.SensorsManager;
+import main.utils.ImageToRealMapper;
 import org.opencv.core.Mat;
 import org.opencv.core.Size;
 import org.opencv.imgproc.Imgproc;
@@ -40,42 +41,42 @@ public class CalibLocForm {
             float xImage = Float.valueOf(tfPoint1x.getText());
             float yImage = Float.valueOf(tfPoint1y.getText());
             OpenCV.INSTANCE.setRefPoint1(new ReferencePoint(xImage, yImage, -10f, -10f));
-            OpenCV.INSTANCE.updateMappingConstants();
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(1);
         });
         btSet2.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint2x.getText());
             float yImage = Float.valueOf(tfPoint2y.getText());
             OpenCV.INSTANCE.setRefPoint2(new ReferencePoint(xImage, yImage, 290f, -10f));
-            OpenCV.INSTANCE.updateMappingConstants();
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(2);
         });
         btSet3.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint3x.getText());
             float yImage = Float.valueOf(tfPoint3y.getText());
             OpenCV.INSTANCE.setRefPoint3(new ReferencePoint(xImage, yImage, -10f, 190f));
-            OpenCV.INSTANCE.updateMappingConstants();
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(3);
         });
         btSet4.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint4x.getText());
             float yImage = Float.valueOf(tfPoint4y.getText());
             OpenCV.INSTANCE.setRefPoint4(new ReferencePoint(xImage, yImage, 290f, 190f));
-            OpenCV.INSTANCE.updateMappingConstants();
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(4);
         });
         btSet12.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint12x.getText());
             float yImage = Float.valueOf(tfPoint12y.getText());
             OpenCV.INSTANCE.setRefPointMid12(new ReferencePoint(xImage, yImage, 140f, -10f));
-            OpenCV.INSTANCE.updateMappingConstants();
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(12);
         });
         btSet34.addActionListener(e -> {
             float xImage = Float.valueOf(tfPoint34x.getText());
             float yImage = Float.valueOf(tfPoint34y.getText());
             OpenCV.INSTANCE.setRefPointMid34(new ReferencePoint(xImage, yImage, 140f, 190f));
-            OpenCV.INSTANCE.updateMappingConstants();
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(34);
         });
         btRefresh.addActionListener(e -> {

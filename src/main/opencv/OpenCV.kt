@@ -1,6 +1,7 @@
 package main.opencv
 
 import main.opencv.models.ReferencePoint
+import main.utils.ImageToRealMapper
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.imgcodecs.Imgcodecs
@@ -24,16 +25,8 @@ object OpenCV {
     var refPoint4: ReferencePoint = ReferencePoint(1245f, 840f, 290f, 190f)
 
     init {
-        updateMappingConstants()
+        ImageToRealMapper.updateMappingConstants()
     }
-
-    var aX = 0
-    var bX = 0
-
-    fun updateMappingConstants() {
-        aX = 4
-    }
-
 
     fun init() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
