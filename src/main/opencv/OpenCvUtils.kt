@@ -64,16 +64,16 @@ object OpenCvUtils {
     }
 
     private fun getBotFront(rgbaFrame: Mat): List<Circle> {
-        return detectCircles("front.jpg", rgbaFrame, Const.BOT_FRONT_SCALAR_MIN, Const.BOT_FRONT_SCALAR_MAX,
+        return detectCircles(rgbaFrame, Const.BOT_FRONT_SCALAR_MIN, Const.BOT_FRONT_SCALAR_MAX,
                 Const.BOT_FRONT_RADIUS_MIN, Const.BOT_FRONT_RADIUS_MAX, Const.BOT_FRONT_MIN_DISTANCE)
     }
 
     private fun getBotBack(rgbaFrame: Mat): List<Circle> {
-        return detectCircles("back.jpg", rgbaFrame, Const.BOT_BACK_SCALAR_MIN, Const.BOT_BACK_SCALAR_MAX,
+        return detectCircles(rgbaFrame, Const.BOT_BACK_SCALAR_MIN, Const.BOT_BACK_SCALAR_MAX,
                 Const.BOT_BACK_RADIUS_MIN, Const.BOT_BACK_RADIUS_MAX, Const.BOT_BACK_MIN_DISTANCE)
     }
 
-    private fun detectCircles(name: String, frame: Mat, minRange: Scalar, maxRange: Scalar, minRadius: Int, maxRadius: Int, minDistance: Int): List<Circle> {
+    private fun detectCircles(frame: Mat, minRange: Scalar, maxRange: Scalar, minRadius: Int, maxRadius: Int, minDistance: Int): List<Circle> {
         val circles = ArrayList<Circle>()
         try {
             val frameProc = Mat()
@@ -110,5 +110,23 @@ object OpenCvUtils {
         val ba = mob.toArray()
 
         return ImageIO.read(ByteArrayInputStream(ba))
+    }
+
+    fun drawBordToFrame(frame: Mat) {
+        val boardDrawColor = Scalar(0.0, 0.0, 255.0)
+        val refPoint1 = OpenCV.refPoint1.pointImage.cvPoint()
+        val refPoint2 = OpenCV.refPoint2.pointImage.cvPoint()
+        val refPoint3 = OpenCV.refPoint3.pointImage.cvPoint()
+        val refPoint4 = OpenCV.refPoint4.pointImage.cvPoint()
+
+        Imgproc.line(frame, refPoint1, refPoint2, boardDrawColor, 3)
+        Imgproc.line(frame, refPoint1, refPoint3, boardDrawColor, 3)
+        Imgproc.line(frame, refPoint4, refPoint2, boardDrawColor, 3)
+        Imgproc.line(frame, refPoint3, refPoint4, boardDrawColor, 3)
+
+        Imgproc.putText(frame, "1", refPoint1, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "2", refPoint2, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "3", refPoint3, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "4", refPoint4, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
     }
 }
