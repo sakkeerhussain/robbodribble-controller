@@ -1,16 +1,33 @@
 package main
 
-import java.util.concurrent.Executors
+import Jama.Matrix
 
 fun main(args : Array<String>) {
-    val future = Executors.newCachedThreadPool().submit {
-        var c = 1;
-        while (!Thread.currentThread().isInterrupted()){
-            println("Reached ${c++}th iteration.")
-            Thread.sleep(100)
-        }
-    }
-    Thread.sleep(1000)
-    future.cancel(true)
-    println("Execution completed.")
+
+
+
+//    val A = Matrix(arrayOf(doubleArrayOf(25.0, 5.0, 1.0), doubleArrayOf(1.0, 1.0 ,1.0), doubleArrayOf(9.0, 3.0, 1.0)))
+//    val Y = Matrix(doubleArrayOf(5.0, 1.0, 3.0), 3)
+//
+//    val X = A.inverse().times(Y)
+//
+//    X.print(0, 0)
+
+
+
+    val A = Matrix(arrayOf(doubleArrayOf(25.0, 9.0, 15.0, 5.0, 3.0, 1.0),
+            doubleArrayOf(0.0, 0.0, 0.0, 0.0, 0.0, 1.0),
+            doubleArrayOf(1.0, 1.0, 1.0, 1.0, 1.0, 1.0),
+            doubleArrayOf(1.0, 0.0, 0.0, 1.0, 0.0, 1.0),
+            doubleArrayOf(0.0, 1.0, 0.0, 0.0, 1.0, 1.0),
+            doubleArrayOf(4.0, 0.0, 0.0, 2.0, 0.0, 1.0)))
+    val Y = Matrix(doubleArrayOf(5.0, 0.0, 1.0, 1.0, 0.0, 2.0), 6)
+
+    val X = A.inverse().times(Y)
+
+    X.print(0, 0)
+
+
+
+
 }
