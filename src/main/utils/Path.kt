@@ -2,7 +2,7 @@ package main.utils
 
 import main.geometry.Point
 
-data class Path(val vertices: ArrayList<PathVertex>) {
+data class Path(var vertices: ArrayList<PathVertex>) {
     constructor() : this(ArrayList())
 
     fun size(): Int {
@@ -14,4 +14,7 @@ data class Path(val vertices: ArrayList<PathVertex>) {
     }
 }
 
-data class PathVertex(val point: Point, val front: Boolean)
+data class PathVertex(var point: Point, val front: Boolean) {
+
+    constructor(point: Point) : this(point, true)
+}

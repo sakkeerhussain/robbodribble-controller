@@ -3,6 +3,7 @@ package main.forms
 import main.controllers.BallModel
 import main.controllers.BotLocation
 import main.utils.Path
+import main.utils.PathVertex
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics
@@ -14,7 +15,12 @@ class BallsUI : JPanel() {
     private val BALL_HEIGHT: Int = 15
     var balls: List<BallModel> = ArrayList<BallModel>()
     var bot: BotLocation? = null
-    var path: Path? = null
+    var path: Path = Path()
+        set(value) {
+            val vertices = ArrayList<PathVertex>()
+            value.vertices.filterTo(vertices) { it.point.x != -1f }
+            field.vertices = vertices
+        }
 
     init {
         this.isOpaque = false

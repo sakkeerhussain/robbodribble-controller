@@ -83,7 +83,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
                 pathIndex++
                 if (path.get(pathIndex).point.x == -1f) {
                     sendDoorOpenToBot()
-                    Thread.sleep(5000)
+                    Thread.sleep(3000)
                     sendDoorCloseToBot()
                     pathIndex++
                 }
@@ -208,7 +208,8 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
         path.vertices.add(PathVertex(Point(80f, 105f), true))
         path.vertices.add(PathVertex(Point(130f, 105f), true))
         path.vertices.add(PathVertex(Point(180f, 105f), true))
-        path.vertices.add(PathVertex(Point(230f, 135f), true))
+        path.vertices.add(PathVertex(Point(230f, 105f), true))
+        path.vertices.add(PathVertex(Point(255f, 105f), true))
         path.vertices.add(PathVertex(Point(255f, 135f), true))
         path.vertices.add(PathVertex(Point(200f, 135f), true))
         path.vertices.add(PathVertex(Point(150f, 135f), true))
