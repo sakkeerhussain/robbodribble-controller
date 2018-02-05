@@ -5,7 +5,7 @@ import main.geometry.Circle
 import main.geometry.Line
 import main.geometry.Point
 import main.sensor.Sensor
-import main.utils.ImageToRealMapper.convertPointOnBoard
+import main.utils.ImageToRealMapper.convertPointToBoard
 import main.utils.Log
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
@@ -23,10 +23,10 @@ object OpenCvUtils {
     fun getBotLocationOnBoard(sensor: Sensor): BotLocation? {
         val location = getBotLocation(sensor) ?: return null
         return BotLocation(location.angle,
-                convertPointOnBoard(location.backLeft),
-                convertPointOnBoard(location.frontLeft),
-                convertPointOnBoard(location.backRight),
-                convertPointOnBoard(location.frontRight))
+                convertPointToBoard(location.backLeft),
+                convertPointToBoard(location.frontLeft),
+                convertPointToBoard(location.backRight),
+                convertPointToBoard(location.frontRight))
     }
 
     private fun getBotLocation(sensor: Sensor): BotLocation? {
