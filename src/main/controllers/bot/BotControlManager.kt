@@ -1,10 +1,6 @@
 package main.controllers.bot
 
-import main.controllers.BallModel
-import main.controllers.BallsManager
-import main.controllers.BotLocationManager
-import main.controllers.Const
-import main.forms.LogForm
+import main.controllers.*
 import main.geometry.Line
 import main.geometry.Point
 import main.utils.Log
@@ -13,7 +9,8 @@ import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 
 
-class BotControlManager {
+class BotControlManager : BotLocationManager.Listener {
+
     companion object {
         private var TAG = "BOT CONTROLLER       "
         private var instance = BotControlManager()
@@ -37,75 +34,88 @@ class BotControlManager {
         botOperatorRunning = false
     }
 
-
     fun startBotOperator() {
         setBotModeLazy()
+        if (botOperatorRunning) {
+            Log.d(TAG, "Bot operator already running.")
+            return
+        }
+        botOperatorRunning = true
+        Executors.newCachedThreadPool().submit {
+            BotLocationManager.get().addListener(this)
+            BotLocationManager.get().startBotLocationRequestForMainSensor()
+        }
+    }
+
+    fun stopBotOperator() {
         if (botOperatorRunning) {
             botOperatorRunning = false
             Log.d(TAG, "Bot operator stop request placed")
             return
         }
-        botOperatorRunning = true
-        Executors.newCachedThreadPool().submit {
-            botOperatorLoop()
+        Log.d(TAG, "Bot operator stopped already")
+    }
+
+    override fun botLocationChanged(botLocation: BotLocation?) {
+        if (!botOperatorRunning) {
+            Log.d(TAG, "Bot operator stopped")
+            return
+        }
+
+        if (botLocation == null){
+            BotLocationManager.get().startBotLocationRequestForMainSensor()
+        }else {
+            botOperatorLoop(botLocation)
         }
     }
 
-
-    private fun botOperatorLoop() {
+    private fun botOperatorLoop(botLocation: BotLocation?) {
         try {
-            while (true) {
-                if (!botOperatorRunning) {
-                    Log.d(TAG, "Bot operator stopped")
-                    break
+            Log.d("Status: $status")
+            when (status) {
+                BotStatus.LAZY -> {
+                    setBotModeWaitForBotResponse()
+                    sendResetToBot()
                 }
-                Log.d("Status: $status")
-                when (status) {
-                    BotStatus.LAZY -> {
-                        setBotModeWaitForBotResponse()
-                        sendResetToBot()
-                    }
-                    BotStatus.WAIT_BOT_RESPONSE -> {
-                    }
-                    BotStatus.FIND -> {
-                        val ball = BallsManager.get().getRankOneBall()
-                        if (ball != null)
-                            moveTo(ball)
-                        else {
-                            Log.d(TAG, "No balls found")
-                        }
-                    }
-                    BotStatus.COLLECT -> {
-                        checkBotInPathToBallOrNot()
-                    }
-                    BotStatus.BOT_FULL -> {
-                        moveTo(Const.POST_LOCATION, true)
-                        setBotModeMovingToDump()
-                    }
-                    BotStatus.MOVING_TO_DUMP -> {
-                        checkBotInPathToPostOrNot()
-                    }
-                    BotStatus.DUMPING -> {
-                        sendDoorOpenToBot()
-                        Thread.sleep(3000)
-                        setBotModeLazy()
+                BotStatus.WAIT_BOT_RESPONSE -> {
+                }
+                BotStatus.FIND -> {
+                    val ball = BallsManager.get().getRankOneBall()
+                    if (ball != null)
+                        moveTo(ball, botLocation)
+                    else {
+                        Log.d(TAG, "No balls found")
                     }
                 }
-                Thread.sleep(2000)
+                BotStatus.COLLECT -> {
+                    checkBotInPathToBallOrNot(botLocation)
+                }
+                BotStatus.BOT_FULL -> {
+                    moveTo(Const.POST_LOCATION, true, botLocation)
+                    setBotModeMovingToDump()
+                }
+                BotStatus.MOVING_TO_DUMP -> {
+                    checkBotInPathToPostOrNot(botLocation)
+                }
+                BotStatus.DUMPING -> {
+                    sendDoorOpenToBot()
+                    Thread.sleep(3000)
+                    setBotModeLazy()
+                }
             }
         } catch (e: Exception) {
-            botOperatorRunning = false
+            Log.d(TAG, e.localizedMessage)
         }
+        BotLocationManager.get().startBotLocationRequestForMainSensor()
     }
 
-    private fun moveTo(ballModel: BallModel) {
+    private fun moveTo(ballModel: BallModel, botLocation:BotLocation?) {
         status = BotStatus.COLLECT
         targetBall = ballModel
-        moveTo(ballModel.ball.center, false)
+        moveTo(ballModel.ball.center, false, botLocation)
     }
 
-    private fun checkBotInPathToBallOrNot() {
-        val botLocation = BotLocationManager.get().getBotLocation()
+    private fun checkBotInPathToBallOrNot(botLocation: BotLocation?) {
         if (targetBall == null || moveStartPoint == null || botLocation == null) {
             setBotModeFind()
         } else {
@@ -130,8 +140,7 @@ class BotControlManager {
         }
     }
 
-    private fun checkBotInPathToPostOrNot() {
-        val botLocation = BotLocationManager.get().getBotLocation()
+    private fun checkBotInPathToPostOrNot(botLocation: BotLocation?) {
         if (moveStartPoint == null || botLocation == null) {
             setBotModeReadyToDump()
         } else {
@@ -186,9 +195,8 @@ class BotControlManager {
         status = BotStatus.DUMPING
     }
 
-    private fun moveTo(point: Point, reverse: Boolean) {
+    private fun moveTo(point: Point, reverse: Boolean, botLocation: BotLocation?) {
         val pathList = ArrayList<PathRequestItem>()
-        val botLocation = BotLocationManager.get().getBotLocation()
         if (botLocation == null) {
             Log.d(TAG, "Bot not found!")
             if (status == BotStatus.COLLECT)
@@ -201,14 +209,14 @@ class BotControlManager {
             if (Line(botLocation.backSide().mid(), point).length() < Line(botLocation.point(), point).length())
                 angle = 180 - angle
 
-            if(reverse) {
+            if (reverse) {
                 if (angle > 0) {
                     pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
                 } else if (angle < 0) {
                     pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
                 }
                 pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-            }else{
+            } else {
                 if (angle > 0) {
                     pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
                 } else if (angle < 0) {
@@ -218,7 +226,6 @@ class BotControlManager {
             }
             sendPathToBot(pathList)
             //TODO(Avoid obstacle)
-            BotLocationManager.get().invalidateBotLocation()
         }
     }
 
