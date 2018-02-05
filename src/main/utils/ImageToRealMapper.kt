@@ -24,6 +24,21 @@ object ImageToRealMapper {
     fun updateMappingConstants() {
         updateMappingConstantsX()
         updateMappingConstantsY()
+
+        println("\n\nPrinting coefficients")
+        println("aX: ${"%.3f".format(aX.toFloat())}")
+        println("bX: ${"%.3f".format(bX.toFloat())}")
+        println("cX: ${"%.3f".format(cX.toFloat())}")
+        println("dX: ${"%.3f".format(dX.toFloat())}")
+        println("eX: ${"%.3f".format(eX.toFloat())}")
+        println("fX: ${"%.3f".format(fX.toFloat())}")
+
+        println("aY: ${"%.3f".format(aY.toFloat())}")
+        println("bY: ${"%.3f".format(bY.toFloat())}")
+        println("cY: ${"%.3f".format(cY.toFloat())}")
+        println("dY: ${"%.3f".format(dY.toFloat())}")
+        println("eY: ${"%.3f".format(eY.toFloat())}")
+        println("fY: ${"%.3f".format(fY.toFloat())}")
     }
 
     private fun updateMappingConstantsX() {
