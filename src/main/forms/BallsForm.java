@@ -3,15 +3,17 @@ package main.forms;
 import main.controllers.bot.BotControllerSweep;
 import main.controllers.*;
 import main.controllers.bot.BotControlManager;
+import main.utils.Path;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.nio.file.PathMatcher;
 import java.util.List;
 
-public class BallsForm implements BallsManager.Listener, BotLocationManager.Listener {
+public class BallsForm implements BallsManager.Listener, BotLocationManager.Listener, PathManager.Listener {
     JPanel pRoot;
     private JButton btRefreshBalls;
     private JPanel pBallsDiagram;
@@ -24,10 +26,9 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     BallsForm() {
         mBallsUI = new BallsUI();
         pBallsDiagram.add(mBallsUI);
-        //BallsManager.Companion.get().startBallsRequestForAllSensors();
-        //BotLocationManager.Companion.get().startBotLocationRequestForAllSensors();
-        BallsManager.Companion.get().addListener(BallsForm.this);
-        BotLocationManager.Companion.get().addListener(BallsForm.this);
+        BallsManager.Companion.get().addListener(this);
+        BotLocationManager.Companion.get().addListener(this);
+        PathManager.INSTANCE.addListener(this);
 
         pRoot.addComponentListener(new ComponentAdapter() {
             @Override
@@ -64,12 +65,6 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     @Override
     public void ballListChanged(@NotNull List<BallModel> balls) {
         ltBalls.setListData(balls.toArray());
-
-        /*ArrayList<BallModel> list = new ArrayList<>();
-        list.add(new BallModel(new Ball(0, 0), 0, 0, false));
-        list.add(new BallModel(new Ball(50, 50), 0, 0, false));
-        mBallsUI.setBalls(list);*/
-
         mBallsUI.setBalls(balls);
         pBallsDiagram.revalidate();
         pBallsDiagram.repaint();
@@ -78,6 +73,13 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     @Override
     public void botLocationChanged(@Nullable BotLocation botLocation) {
         mBallsUI.setBot(botLocation);
+        pBallsDiagram.revalidate();
+        pBallsDiagram.repaint();
+    }
+
+    @Override
+    public void pathChanged(@NotNull Path path) {
+        mBallsUI.setPath(path);
         pBallsDiagram.revalidate();
         pBallsDiagram.repaint();
     }

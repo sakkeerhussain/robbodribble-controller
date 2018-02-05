@@ -4,10 +4,13 @@ import com.google.gson.Gson
 import main.controllers.BotLocation
 import main.controllers.BotLocationManager
 import main.controllers.Const
+import main.controllers.PathManager
+import main.forms.BallsUI
 import main.geometry.Line
 import main.geometry.Point
-import main.opencv.OpenCV
 import main.utils.Log
+import main.utils.Path
+import main.utils.PathVertex
 import java.util.concurrent.Executors
 import kotlin.math.absoluteValue
 
@@ -33,7 +36,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
         }
     }
 
-    private val pathList = ArrayList<Path>()
+    val path = Path()
     private var pathIndex = 0
     private var moveStartPoint: Point? = null
     private var controllerRunning = false
@@ -67,18 +70,18 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             return
         }
         val botLocationPoint = botLocation.point()
-        if (pathIndex >= pathList.size)
+        if (pathIndex >= path.size())
             pathIndex = 0
         Log.d(TAG)
         Log.d(TAG, "========Bot Location received($botLocationPoint)=======")
-        Log.d(TAG, "========Expected point: ${pathList[pathIndex].point}======")
+        Log.d(TAG, "========Expected point: ${path.get(pathIndex).point}======")
 
         when {
-            botLocationPoint.isAt(pathList[pathIndex].point, Const.BOT_ALLOWED_DEVIATION) -> {
+            botLocationPoint.isAt(path.get(pathIndex).point, Const.BOT_ALLOWED_DEVIATION) -> {
                 Log.d("Reached at desired point")
                 moveStartPoint = botLocationPoint
                 pathIndex++
-                if (pathList[pathIndex].point.x == -1f) {
+                if (path.get(pathIndex).point.x == -1f) {
                     sendDoorOpenToBot()
                     Thread.sleep(5000)
                     sendDoorCloseToBot()
@@ -87,7 +90,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
                 createPathToPoint(botLocation)
 
             }
-            botLocationPoint.isOnLine(Line(pathList[pathIndex].point, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
+            botLocationPoint.isOnLine(Line(path.get(pathIndex).point, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
                 Log.d("Bot is on line to target")
 
 //                if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
@@ -105,8 +108,8 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             }
             else -> {
                 Log.d("Bot deviated from desired path")
-                if (pathList[pathIndex].front) {
-                    val point = pathList[pathIndex].point
+                if (path.get(pathIndex).front) {
+                    val point = path.get(pathIndex).point
                     moveStartPoint = botLocationPoint
                     if (Line(point, botLocationPoint).length() < 30) {
                         createReversePath(botLocation)
@@ -122,7 +125,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
     }
 
     private fun createPathToPoint(botLocation: BotLocation) {
-        val path = pathList[pathIndex]
+        val path = path.get(pathIndex)
         val botToPointLine = Line(botLocation.point(), path.point)
         Log.d(TAG, "Finding path from ${botLocation.point()} to ${path.point}")
         Log.d(TAG, "Bot line angle: ${botLocation.midLine().angleInDegree()}")
@@ -161,12 +164,12 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
         }
         sendPathToBot(pathList)
-//        Log.d(TAG, "Path list: $pathList")
+//        Log.d(TAG, "PathVertex list: $pathList")
 //        callBotReachedCallBackForTesting(path.point)
     }
 
     private fun createReversePath(botLocation: BotLocation) {
-        val path = pathList[pathIndex]
+        val path = path.get(pathIndex)
         val botToPointLine = Line(botLocation.point(), path.point)
         val angle = botLocation.midLine().angleBetween(botToPointLine)
         val pathList = ArrayList<PathRequestItem>()
@@ -181,61 +184,63 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
         }
         sendPathToBot(pathList)
 
-//        Log.d(TAG, "Path list: $pathList")
+//        Log.d(TAG, "PathVertex list: $pathList")
 //        callBotReachedCallBackForTesting(path.point)
     }
 
     fun init() {
         //Center to post
-        pathList.add(Path(Point(45f, 140f), true))
-        pathList.add(Path(Point(85f, 140f), true))
-        pathList.add(Path(Point(125f, 130f), true))
-        pathList.add(Path(Point(140f, 90f), true))
-        pathList.add(Path(Point(155f, 50f), true))
-        pathList.add(Path(Point(105f, 50f), true))
-        pathList.add(Path(Point(60f, 50f), true))
-        pathList.add(Path(Point(20f, 50f), true))
-        pathList.add(Path(Point(10f, 95f), true))
-        pathList.add(Path(Point(40f, 90f), true))
-        pathList.add(Path(Point(4f, 90f), false))
-        pathList.add(Path(Point(-1f, -1f), true)) //Open Door
+        path.vertices.add(PathVertex(Point(45f, 140f), true))
+        path.vertices.add(PathVertex(Point(85f, 140f), true))
+        path.vertices.add(PathVertex(Point(125f, 130f), true))
+        path.vertices.add(PathVertex(Point(140f, 90f), true))
+        path.vertices.add(PathVertex(Point(155f, 50f), true))
+        path.vertices.add(PathVertex(Point(105f, 50f), true))
+        path.vertices.add(PathVertex(Point(60f, 50f), true))
+        path.vertices.add(PathVertex(Point(20f, 50f), true))
+        path.vertices.add(PathVertex(Point(10f, 95f), true))
+        path.vertices.add(PathVertex(Point(40f, 90f), true))
+        path.vertices.add(PathVertex(Point(4f, 90f), false))
+        path.vertices.add(PathVertex(Point(-1f, -1f), true)) //Open Door
 
         //Sweep 1
-        pathList.add(Path(Point(30f, 105f), true))
-        pathList.add(Path(Point(80f, 105f), true))
-        pathList.add(Path(Point(130f, 105f), true))
-        pathList.add(Path(Point(180f, 105f), true))
-        pathList.add(Path(Point(230f, 135f), true))
-        pathList.add(Path(Point(255f, 135f), true))
-        pathList.add(Path(Point(200f, 135f), true))
-        pathList.add(Path(Point(150f, 135f), true))
-        pathList.add(Path(Point(100f, 135f), true))
-        pathList.add(Path(Point(60f, 135f), true))
-        pathList.add(Path(Point(30f, 135f), true))
-        pathList.add(Path(Point(10f, 85f), true))
-        pathList.add(Path(Point(40f, 90f), true))
-        pathList.add(Path(Point(4f, 90f), false))
-        pathList.add(Path(Point(-1f, -1f), true)) //Open Door
+        path.vertices.add(PathVertex(Point(30f, 105f), true))
+        path.vertices.add(PathVertex(Point(80f, 105f), true))
+        path.vertices.add(PathVertex(Point(130f, 105f), true))
+        path.vertices.add(PathVertex(Point(180f, 105f), true))
+        path.vertices.add(PathVertex(Point(230f, 135f), true))
+        path.vertices.add(PathVertex(Point(255f, 135f), true))
+        path.vertices.add(PathVertex(Point(200f, 135f), true))
+        path.vertices.add(PathVertex(Point(150f, 135f), true))
+        path.vertices.add(PathVertex(Point(100f, 135f), true))
+        path.vertices.add(PathVertex(Point(60f, 135f), true))
+        path.vertices.add(PathVertex(Point(30f, 135f), true))
+        path.vertices.add(PathVertex(Point(10f, 85f), true))
+        path.vertices.add(PathVertex(Point(40f, 90f), true))
+        path.vertices.add(PathVertex(Point(4f, 90f), false))
+        path.vertices.add(PathVertex(Point(-1f, -1f), true)) //Open Door
 
         //Sweep 2
-        pathList.add(Path(Point(30f, 75f), true))
-        pathList.add(Path(Point(80f, 75f), true))
-        pathList.add(Path(Point(130f, 75f), true))
-        pathList.add(Path(Point(180f, 75f), true))
-        pathList.add(Path(Point(220f, 75f), true))
-        pathList.add(Path(Point(250f, 75f), true))
-        pathList.add(Path(Point(250f, 45f), true))
-        pathList.add(Path(Point(220f, 45f), true))
-        pathList.add(Path(Point(180f, 45f), true))
-        pathList.add(Path(Point(130f, 45f), true))
-        pathList.add(Path(Point(80f, 45f), true))
-        pathList.add(Path(Point(30f, 45f), true))
-        pathList.add(Path(Point(10f, 95f), true))
-        pathList.add(Path(Point(40f, 90f), true))
-        pathList.add(Path(Point(4f, 90f), false))
-        pathList.add(Path(Point(-1f, -1f), true)) //Open Door
+        path.vertices.add(PathVertex(Point(30f, 75f), true))
+        path.vertices.add(PathVertex(Point(80f, 75f), true))
+        path.vertices.add(PathVertex(Point(130f, 75f), true))
+        path.vertices.add(PathVertex(Point(180f, 75f), true))
+        path.vertices.add(PathVertex(Point(220f, 75f), true))
+        path.vertices.add(PathVertex(Point(250f, 75f), true))
+        path.vertices.add(PathVertex(Point(250f, 45f), true))
+        path.vertices.add(PathVertex(Point(220f, 45f), true))
+        path.vertices.add(PathVertex(Point(180f, 45f), true))
+        path.vertices.add(PathVertex(Point(130f, 45f), true))
+        path.vertices.add(PathVertex(Point(80f, 45f), true))
+        path.vertices.add(PathVertex(Point(30f, 45f), true))
+        path.vertices.add(PathVertex(Point(10f, 95f), true))
+        path.vertices.add(PathVertex(Point(40f, 90f), true))
+        path.vertices.add(PathVertex(Point(4f, 90f), false))
+        path.vertices.add(PathVertex(Point(-1f, -1f), true)) //Open Door
         Log.d(TAG, "Starting...")
-        moveStartPoint = pathList[pathIndex].point
+        moveStartPoint = path.get(pathIndex).point
+
+        PathManager.updatePath(path)
     }
 
     private fun callBotReachedCallBackForTesting(point: Point) {
@@ -305,5 +310,3 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
     }
 
 }
-
-data class Path(val point: Point, val front: Boolean)

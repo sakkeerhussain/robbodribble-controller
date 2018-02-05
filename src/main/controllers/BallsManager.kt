@@ -9,8 +9,8 @@ import main.sensor.SensorsManager
 
 class BallsManager : BallsListListener {
     companion object {
-        val BALL_LOCATION_TOLERANCE = 6
-        val BALL_NOT_FOUND_TOLERANCE = 1
+        const val BALL_LOCATION_TOLERANCE = 6
+        const val BALL_NOT_FOUND_TOLERANCE = 1
         private var instance: BallsManager? = null
 
         fun get(): BallsManager {

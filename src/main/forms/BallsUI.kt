@@ -2,6 +2,7 @@ package main.forms
 
 import main.controllers.BallModel
 import main.controllers.BotLocation
+import main.utils.Path
 import java.awt.BasicStroke
 import java.awt.Color
 import java.awt.Graphics
@@ -9,14 +10,13 @@ import java.awt.Graphics2D
 import javax.swing.JPanel
 
 class BallsUI : JPanel() {
-    val BALL_WIDTH: Int = 15
-    val BALL_HEIGHT: Int = 15
-    private var balls: List<BallModel>
-    private var bot: BotLocation?
+    private val BALL_WIDTH: Int = 15
+    private val BALL_HEIGHT: Int = 15
+    var balls: List<BallModel> = ArrayList<BallModel>()
+    var bot: BotLocation? = null
+    var path: Path? = null
 
     init {
-        this.balls = ArrayList<BallModel>()
-        this.bot = null
         this.isOpaque = false
     }
 
@@ -46,6 +46,16 @@ class BallsUI : JPanel() {
             g2d.drawLine(convertX(bot!!.frontRight.x), convertY(bot!!.frontRight.y),
                     convertX(bot!!.backRight.x), convertY(bot!!.backRight.y))
         }
+        if (path != null) {
+            g2d.color = Color.ORANGE
+            g2d.stroke = BasicStroke(5f);
+            for (i in 1 until path!!.vertices.size) {
+                val v1 = path!!.get(i - 1)
+                val v2 = path!!.get(i)
+                g2d.drawLine(convertX(v1.point.x), convertY(v1.point.y),
+                        convertX(v2.point.x), convertY(v2.point.y))
+            }
+        }
     }
 
     override fun paint(g: Graphics) {
@@ -67,13 +77,4 @@ class BallsUI : JPanel() {
     private fun convertBallX(v: Float): Int {
         return (v * (this.width - BALL_WIDTH) / 280).toInt()
     }
-
-    fun setBalls(balls: List<BallModel>){
-        this.balls = balls
-    }
-
-    fun setBot(bot: BotLocation?){
-        this.bot = bot
-    }
-
 }
