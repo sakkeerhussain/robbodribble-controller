@@ -3,6 +3,9 @@ package main.utils
 import main.geometry.Point
 import main.opencv.OpenCV
 import Jama.Matrix
+import main.opencv.models.ReferencePoint
+
+
 
 
 object ImageToRealMapper {
@@ -134,6 +137,7 @@ object ImageToRealMapper {
                 1.0)
     }
 
+    //Assumption #2
     fun convertPointToBoard(point: Point): Point {
         val x2 = Math.pow(point.x.toDouble(), 2.0)
         val y2 = Math.pow(point.y.toDouble(), 2.0)
@@ -145,4 +149,26 @@ object ImageToRealMapper {
         return Point(pX.toFloat(), pY.toFloat())
     }
 
+    //Assumption #1
+    fun convertPointToBoard2(centerPoint: Point): Point {
+        val point1 = OpenCV.refPoint1
+        val point2 = OpenCV.refPoint2
+        val point3 = OpenCV.refPoint3
+
+        val imageXd = centerPoint.x - point1.pointImage.x
+        val imageYd = centerPoint.y - point1.pointImage.y
+
+        val imageXD = point2.pointImage.x - point1.pointImage.x
+        val imageYD = point3.pointImage.y - point1.pointImage.y
+
+        val boardXD = point2.pointBord.x - point1.pointBord.x
+        val boardYD = point3.pointBord.y - point1.pointBord.y
+
+        var x = imageXd * boardXD / imageXD
+        var y = imageYd * boardYD / imageYD
+
+        x += point1.pointBord.x
+        y += point1.pointBord.y
+        return Point(x, y)
+    }
 }
