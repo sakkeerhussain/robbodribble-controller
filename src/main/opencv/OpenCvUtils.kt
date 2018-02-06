@@ -114,14 +114,18 @@ object OpenCvUtils {
     fun drawBordToFrame(frame: Mat) {
         val boardDrawColor = Scalar(0.0, 0.0, 255.0)
         val refPoint1 = OpenCV.refPoint1.pointImage.cvPoint()
+        val refPointMid12 = OpenCV.refPointMid12.pointImage.cvPoint()
         val refPoint2 = OpenCV.refPoint2.pointImage.cvPoint()
         val refPoint3 = OpenCV.refPoint3.pointImage.cvPoint()
+        val refPointMid34 = OpenCV.refPointMid34.pointImage.cvPoint()
         val refPoint4 = OpenCV.refPoint4.pointImage.cvPoint()
 
-        Imgproc.line(frame, refPoint1, refPoint2, boardDrawColor, 3)
+        Imgproc.line(frame, refPoint1, refPointMid12, boardDrawColor, 3)
+        Imgproc.line(frame, refPointMid12, refPoint2, boardDrawColor, 3)
         Imgproc.line(frame, refPoint1, refPoint3, boardDrawColor, 3)
         Imgproc.line(frame, refPoint4, refPoint2, boardDrawColor, 3)
-        Imgproc.line(frame, refPoint3, refPoint4, boardDrawColor, 3)
+        Imgproc.line(frame, refPoint3, refPointMid34, boardDrawColor, 3)
+        Imgproc.line(frame, refPointMid34, refPoint4, boardDrawColor, 3)
 
         Imgproc.putText(frame, "1", refPoint1, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
         Imgproc.putText(frame, "2", refPoint2, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
