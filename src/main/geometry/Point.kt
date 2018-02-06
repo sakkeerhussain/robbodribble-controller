@@ -20,13 +20,12 @@ class Point(val x: Float, val y: Float) {
         return "($x,$y)"
     }
 
-    fun getPointAtAngle(angle: Double, distance: Float, high: Boolean): Point {
+    fun getPointAtAngleFarFrom(angle: Double, distance: Float, farPoint: Point): Point {
         val xDelta = distance * Math.cos(angle).toFloat()
         val yDelta = distance * Math.sin(angle).toFloat()
-        return if (high)
-            Point(this.x + xDelta, this.y + yDelta)
-        else
-            Point(this.x - xDelta, this.y - yDelta)
+        val p1 = Point(this.x + xDelta, this.y + yDelta)
+        val p2 = Point(this.x - xDelta, this.y - yDelta)
+        return if (Line(p1, farPoint).length() > Line(p2, farPoint).length()) p1 else p2
     }
 
     fun cvPoint(): org.opencv.core.Point {

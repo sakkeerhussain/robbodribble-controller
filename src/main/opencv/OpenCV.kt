@@ -17,16 +17,16 @@ object OpenCV {
     private var camera: VideoCapture? = null
     private var imagePath: String? = null
 
-    var refPoint1: ReferencePoint = ReferencePoint(0.01f, 0.01f, -10f, -10f)
-    var refPointMid12: ReferencePoint = ReferencePoint(622.5f, 12.5f, 140f, -10f)
-    var refPoint2: ReferencePoint = ReferencePoint(1245f, 25f, 290f, -10f)
-    var refPoint3: ReferencePoint = ReferencePoint(0.01f, 865f, -10f, 190f)
-    var refPointMid34: ReferencePoint = ReferencePoint(622.5f, 852.5f, 140f, 190f)
-    var refPoint4: ReferencePoint = ReferencePoint(1245f, 840f, 290f, 190f)
+    var refPoint1: ReferencePoint = ReferencePoint(30f, 1f, -10f, -10f)
+    var refPointMid12: ReferencePoint = ReferencePoint(622.5f, 5f, 140f, -10f)
+    var refPoint2: ReferencePoint = ReferencePoint(1280f, 5f, 290f, -10f)
+    var refPoint3: ReferencePoint = ReferencePoint(25f, 865f, -10f, 190f)
+    var refPointMid34: ReferencePoint = ReferencePoint(622.5f, 870f, 140f, 190f)
+    var refPoint4: ReferencePoint = ReferencePoint(1280f, 870f, 290f, 190f)
 
-    var refPointC: ReferencePoint = ReferencePoint(622.5f, 432.5f, 140f, 90f)
-    var refPointQ1: ReferencePoint = ReferencePoint(311.25f, 432.5f, 70f, 90f)
-    var refPointQ2: ReferencePoint = ReferencePoint(933.75f, 432.5f, 210f, 90f)
+    var refPointC: ReferencePoint = ReferencePoint(663f, 438f, 140f, 90f)
+    var refPointQ1: ReferencePoint = ReferencePoint(377f, 438f, 70f, 90f)
+    var refPointQ2: ReferencePoint = ReferencePoint(945f, 432.5f, 210f, 90f)
 
     init {
         ImageToRealMapper.updateMappingConstants()

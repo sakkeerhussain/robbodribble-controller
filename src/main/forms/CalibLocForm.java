@@ -35,6 +35,15 @@ public class CalibLocForm {
     private JButton btSet34;
     private JButton btRefresh;
     private JLabel jlPreview;
+    private JTextField tfPointCx;
+    private JTextField tfPointCy;
+    private JTextField tfPointQ1x;
+    private JTextField tfPointQ1y;
+    private JTextField tfPointQ2x;
+    private JTextField tfPointQ2y;
+    private JButton btSetC;
+    private JButton btSetQ1;
+    private JButton btSetQ2;
 
     CalibLocForm() {
         btSet1.addActionListener(e -> {
@@ -79,6 +88,27 @@ public class CalibLocForm {
             ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(34);
         });
+        btSetC.addActionListener(e -> {
+            float xImage = Float.valueOf(tfPointCx.getText());
+            float yImage = Float.valueOf(tfPointCy.getText());
+            OpenCV.INSTANCE.setRefPointC(new ReferencePoint(xImage, yImage, 140f, 90f));
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
+            updateRefPointData(5);
+        });
+        btSetQ1.addActionListener(e -> {
+            float xImage = Float.valueOf(tfPointQ1x.getText());
+            float yImage = Float.valueOf(tfPointQ1y.getText());
+            OpenCV.INSTANCE.setRefPointQ1(new ReferencePoint(xImage, yImage, 70f, 90f));
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
+            updateRefPointData(6);
+        });
+        btSetQ2.addActionListener(e -> {
+            float xImage = Float.valueOf(tfPointQ2x.getText());
+            float yImage = Float.valueOf(tfPointQ2y.getText());
+            OpenCV.INSTANCE.setRefPointQ2(new ReferencePoint(xImage, yImage, 210f, 90f));
+            ImageToRealMapper.INSTANCE.updateMappingConstants();
+            updateRefPointData(7);
+        });
         btRefresh.addActionListener(e -> {
             updateRefPointData(-1);
         });
@@ -109,6 +139,18 @@ public class CalibLocForm {
         if (point == 4 || point == -1) {
             tfPoint4x.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getX() + "");
             tfPoint4y.setText(OpenCV.INSTANCE.getRefPoint4().getPointImage().getY() + "");
+        }
+        if (point == 5 || point == -1) {
+            tfPointCx.setText(OpenCV.INSTANCE.getRefPointC().getPointImage().getX() + "");
+            tfPointCy.setText(OpenCV.INSTANCE.getRefPointC().getPointImage().getY() + "");
+        }
+        if (point == 6 || point == -1) {
+            tfPointQ1x.setText(OpenCV.INSTANCE.getRefPointQ1().getPointImage().getX() + "");
+            tfPointQ1y.setText(OpenCV.INSTANCE.getRefPointQ1().getPointImage().getY() + "");
+        }
+        if (point == 7 || point == -1) {
+            tfPointQ2x.setText(OpenCV.INSTANCE.getRefPointQ2().getPointImage().getX() + "");
+            tfPointQ2y.setText(OpenCV.INSTANCE.getRefPointQ2().getPointImage().getY() + "");
         }
         drawFrameToLabel();
     }

@@ -31,8 +31,8 @@ class Const {
         internal val BOT_BACK_RADIUS_MIN = 26
         internal val BOT_BACK_RADIUS_MAX = 50
         internal val BOT_BACK_MIN_DISTANCE = 500
-        internal var BOT_BACK_SCALAR_MIN = Scalar(57.0, 94.0, 68.0)
-        internal var BOT_BACK_SCALAR_MAX = Scalar(70.0, 255.0, 180.0)
+        internal var BOT_BACK_SCALAR_MIN = Scalar(57.0, 75.0, 68.0)
+        internal var BOT_BACK_SCALAR_MAX = Scalar(70.0, 255.0, 199.0)
 
         private val BOT_LOCATOR_DISTANCE_IN_BETWEEN = 15
         private val BOT_LOCATOR_DISTANCE_TO_CORNER = 10.61

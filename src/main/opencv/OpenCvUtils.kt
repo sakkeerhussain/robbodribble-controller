@@ -5,7 +5,7 @@ import main.geometry.Circle
 import main.geometry.Line
 import main.geometry.Point
 import main.sensor.Sensor
-import main.utils.ImageToRealMapper.convertPointToBoard2
+import main.utils.ImageToRealMapper.convertPointToBoard
 import main.utils.Log
 import org.opencv.core.*
 import org.opencv.imgcodecs.Imgcodecs
@@ -23,10 +23,10 @@ object OpenCvUtils {
     fun getBotLocationOnBoard(sensor: Sensor): BotLocation? {
         val location = getBotLocation(sensor) ?: return null
         return BotLocation(location.angle,
-                convertPointToBoard2(location.backLeft),
-                convertPointToBoard2(location.frontLeft),
-                convertPointToBoard2(location.backRight),
-                convertPointToBoard2(location.frontRight))
+                convertPointToBoard(location.backLeft),
+                convertPointToBoard(location.backRight),
+                convertPointToBoard(location.frontLeft),
+                convertPointToBoard(location.frontRight))
     }
 
     private fun getBotLocation(sensor: Sensor): BotLocation? {
@@ -51,13 +51,14 @@ object OpenCvUtils {
         val centerLine = Line(frontCenter, backCenter)
         val centerLineAngle = centerLine.angle()
         val centerToCornerLength = (centerLine.length() * Const.BOT_LOCATOR_DISTANCE_RATIO).toFloat()
-        var highest = true
-        if (frontCenter.x < backCenter.x)
-            highest = false
-        val frontLeft = frontCenter.getPointAtAngle(centerLineAngle + Const.BOT_LOCATOR_ANGLE_45, centerToCornerLength, highest)
-        val frontRight = frontCenter.getPointAtAngle(centerLineAngle - Const.BOT_LOCATOR_ANGLE_45, centerToCornerLength, highest)
-        val backLeft = backCenter.getPointAtAngle(centerLineAngle + Const.BOT_LOCATOR_ANGLE_135, centerToCornerLength, highest)
-        val backRight = backCenter.getPointAtAngle(centerLineAngle - Const.BOT_LOCATOR_ANGLE_135, centerToCornerLength, highest)
+        val frontLeft = frontCenter.getPointAtAngleFarFrom(centerLineAngle + Const.BOT_LOCATOR_ANGLE_45,
+                centerToCornerLength, backCenter)
+        val frontRight = frontCenter.getPointAtAngleFarFrom(centerLineAngle - Const.BOT_LOCATOR_ANGLE_45,
+                centerToCornerLength, backCenter)
+        val backLeft = backCenter.getPointAtAngleFarFrom(centerLineAngle + Const.BOT_LOCATOR_ANGLE_135,
+                centerToCornerLength, frontCenter)
+        val backRight = backCenter.getPointAtAngleFarFrom(centerLineAngle - Const.BOT_LOCATOR_ANGLE_135,
+                centerToCornerLength, frontCenter)
         Log.d("Bot detection", "Time taken to detect bot: " + (Date().getTime() - startTime) + "ms")
         return BotLocation(centerLineAngle, backLeft, backRight, frontLeft, frontRight)
     }
@@ -119,6 +120,9 @@ object OpenCvUtils {
         val refPoint3 = OpenCV.refPoint3.pointImage.cvPoint()
         val refPointMid34 = OpenCV.refPointMid34.pointImage.cvPoint()
         val refPoint4 = OpenCV.refPoint4.pointImage.cvPoint()
+        val refPointC = OpenCV.refPointC.pointImage.cvPoint()
+        val refPointQ1 = OpenCV.refPointQ1.pointImage.cvPoint()
+        val refPointQ2 = OpenCV.refPointQ2.pointImage.cvPoint()
 
         Imgproc.line(frame, refPoint1, refPointMid12, boardDrawColor, 3)
         Imgproc.line(frame, refPointMid12, refPoint2, boardDrawColor, 3)
@@ -127,9 +131,17 @@ object OpenCvUtils {
         Imgproc.line(frame, refPoint3, refPointMid34, boardDrawColor, 3)
         Imgproc.line(frame, refPointMid34, refPoint4, boardDrawColor, 3)
 
-        Imgproc.putText(frame, "1", refPoint1, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
-        Imgproc.putText(frame, "2", refPoint2, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
-        Imgproc.putText(frame, "3", refPoint3, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
-        Imgproc.putText(frame, "4", refPoint4, Core.FONT_HERSHEY_PLAIN, 4.0, boardDrawColor, 3)
+        Imgproc.circle(frame, refPointC, 6, boardDrawColor, 3)
+        Imgproc.circle(frame, refPointQ1, 6, boardDrawColor, 3)
+        Imgproc.circle(frame, refPointQ2, 6, boardDrawColor, 3)
+
+        Imgproc.putText(frame, "1", refPoint1, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "2", refPoint2, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "3", refPoint3, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "4", refPoint4, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
+
+        Imgproc.putText(frame, "C", refPointC, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "Q1", refPointQ1, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
+        Imgproc.putText(frame, "Q2", refPointQ2, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
     }
 }
