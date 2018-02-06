@@ -38,6 +38,9 @@ fun main(args : Array<String>) {
 //    OpenCV.refPoint3 = ReferencePoint(0.01f, 865f, -10f, 190f)
 //    OpenCV.refPointMid34 = ReferencePoint(622.5f, 865f, 140f, 190f)
 //    OpenCV.refPoint4 = ReferencePoint(1245f, 865f, 290f, 190f)
+//    OpenCV.refPointC = ReferencePoint(622.5f, 432.5f, 140f, 90f)
+//    OpenCV.refPointQ1 = ReferencePoint(311.25f, 432.5f, 70f, 90f)
+//    OpenCV.refPointQ2 = ReferencePoint(933.75f, 432.5f, 210f, 90f)
 //    ImageToRealMapper.updateMappingConstants()
 
 //    OpenCV.refPoint1 = ReferencePoint(1f, 1f, -10f, -10f)
@@ -46,15 +49,21 @@ fun main(args : Array<String>) {
 //    OpenCV.refPoint3 = ReferencePoint(1f, 800f, -10f, 190f)
 //    OpenCV.refPointMid34 = ReferencePoint(600f, 800f, 140f, 190f)
 //    OpenCV.refPoint4 = ReferencePoint(1200f, 800f, 290f, 190f)
+//    OpenCV.refPointC = ReferencePoint(600f, 400f, 140f, 90f)
+//    OpenCV.refPointQ1 = ReferencePoint(300f, 400f, 70f, 90f)
+//    OpenCV.refPointQ2 = ReferencePoint(900f, 400f, 210f, 90f)
 //    ImageToRealMapper.updateMappingConstants()
 
-    OpenCV.refPoint1 = ReferencePoint(1f, 1f, 0f, 0f)
-    OpenCV.refPointMid12 = ReferencePoint(6f, 1f, 5f, 0f)
-    OpenCV.refPoint2 = ReferencePoint(12f, 1f, 11f, 0f)
-    OpenCV.refPoint3 = ReferencePoint(1f, 8f, 0f, 7f)
-    OpenCV.refPointMid34 = ReferencePoint(6f, 8f, 5f, 7f)
-    OpenCV.refPoint4 = ReferencePoint(12f, 8f, 11f, 7f)
-    ImageToRealMapper.updateMappingConstants()
+//    OpenCV.refPoint1 = ReferencePoint(1f, 1f, 0f, 0f)
+//    OpenCV.refPointMid12 = ReferencePoint(6f, 1f, 5f, 0f)
+//    OpenCV.refPoint2 = ReferencePoint(12f, 1f, 11f, 0f)
+//    OpenCV.refPoint3 = ReferencePoint(1f, 8f, 0f, 7f)
+//    OpenCV.refPointMid34 = ReferencePoint(6f, 8f, 5f, 7f)
+//    OpenCV.refPoint4 = ReferencePoint(12f, 8f, 11f, 7f)
+//    OpenCV.refPointC = ReferencePoint(6f, 4f, 5f, 3f)
+//    OpenCV.refPointQ1 = ReferencePoint(3f, 4f, 2f, 3f)
+//    OpenCV.refPointQ2 = ReferencePoint(9f, 4f, 8f, 3f)
+//    ImageToRealMapper.updateMappingConstants()
 
 //    val point1 = Point(0.01f, 0.01f)
 //    print("Map of $point1: ${ImageToRealMapper.convertPointToBoard(point1)}\n")
@@ -70,14 +79,14 @@ fun main(args : Array<String>) {
 //    print("Map of $point6: ${ImageToRealMapper.convertPointToBoard(point6)}\n")
 
 
-    val pointCenter = Point(600f, 420f)
+    val pointCenter = Point(625f, 433f)
     print("Map of $pointCenter: ${ImageToRealMapper.convertPointToBoard(pointCenter)}\n")
 
-    println()
-    println()
-    for (i in 1..249) {
-        val point7 = Point(i.toFloat(), 1f)
-        print("Map of $point7: ${ImageToRealMapper.convertPointToBoard(point7)}\n")
-    }
+//    println()
+//    println()
+//    for (i in 1..249) {
+//        val point7 = Point(i * 5f, 10f)
+//        print("Map of $point7: ${ImageToRealMapper.convertPointToBoard(point7)}\n")
+//    }
 
 }

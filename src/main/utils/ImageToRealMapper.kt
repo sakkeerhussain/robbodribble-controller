@@ -45,8 +45,8 @@ object ImageToRealMapper {
     }
 
     private fun updateMappingConstantsX() {
-        val aArray = Array<DoubleArray>(6, { DoubleArray(6) })
-        val yArray = DoubleArray(6)
+        val aArray = Array<DoubleArray>(9, { DoubleArray(6) })
+        val yArray = DoubleArray(9)
 
         //Point 1
         yArray[0] = OpenCV.refPoint1.pointBord.x.toDouble()
@@ -72,10 +72,22 @@ object ImageToRealMapper {
         yArray[5] = OpenCV.refPoint3.pointBord.x.toDouble()
         aArray[5] = getArrayOfPoint(OpenCV.refPoint3.pointImage)
 
+        //Point C1
+        yArray[6] = OpenCV.refPointC.pointBord.x.toDouble()
+        aArray[6] = getArrayOfPoint(OpenCV.refPointC.pointImage)
+
+        //Point Q1
+        yArray[7] = OpenCV.refPointQ1.pointBord.x.toDouble()
+        aArray[7] = getArrayOfPoint(OpenCV.refPointQ1.pointImage)
+
+        //Point Q2
+        yArray[8] = OpenCV.refPointQ2.pointBord.x.toDouble()
+        aArray[8] = getArrayOfPoint(OpenCV.refPointQ2.pointImage)
+
 
         //Creating Matrix Objects with arrays
         val a = Matrix(aArray)
-        val y = Matrix(yArray, 6)
+        val y = Matrix(yArray, 9)
 
         //Calculate Solved Matrix
         val ans = a.inverse().times(y)
@@ -89,8 +101,8 @@ object ImageToRealMapper {
     }
 
     private fun updateMappingConstantsY() {
-        val aArray = Array<DoubleArray>(6, { DoubleArray(6) })
-        val yArray = DoubleArray(6)
+        val aArray = Array<DoubleArray>(9, { DoubleArray(6) })
+        val yArray = DoubleArray(9)
 
         //Point 1
         yArray[0] = OpenCV.refPoint1.pointBord.y.toDouble()
@@ -116,8 +128,20 @@ object ImageToRealMapper {
         yArray[5] = OpenCV.refPoint3.pointBord.y.toDouble()
         aArray[5] = getArrayOfPoint(OpenCV.refPoint3.pointImage)
 
+        //Point C1
+        yArray[6] = OpenCV.refPointC.pointBord.y.toDouble()
+        aArray[6] = getArrayOfPoint(OpenCV.refPointC.pointImage)
+
+        //Point Q1
+        yArray[7] = OpenCV.refPointQ1.pointBord.y.toDouble()
+        aArray[7] = getArrayOfPoint(OpenCV.refPointQ1.pointImage)
+
+        //Point Q2
+        yArray[8] = OpenCV.refPointQ2.pointBord.y.toDouble()
+        aArray[8] = getArrayOfPoint(OpenCV.refPointQ2.pointImage)
+
         val a = Matrix(aArray)
-        val y = Matrix(yArray, 6)
+        val y = Matrix(yArray, 9)
         val ans = a.inverse().times(y)
 
         aY = ans.get(0, 0)

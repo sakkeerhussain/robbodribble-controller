@@ -24,6 +24,10 @@ object OpenCV {
     var refPointMid34: ReferencePoint = ReferencePoint(622.5f, 852.5f, 140f, 190f)
     var refPoint4: ReferencePoint = ReferencePoint(1245f, 840f, 290f, 190f)
 
+    var refPointC: ReferencePoint = ReferencePoint(622.5f, 432.5f, 140f, 90f)
+    var refPointQ1: ReferencePoint = ReferencePoint(311.25f, 432.5f, 70f, 90f)
+    var refPointQ2: ReferencePoint = ReferencePoint(933.75f, 432.5f, 210f, 90f)
+
     init {
         ImageToRealMapper.updateMappingConstants()
     }
