@@ -2,23 +2,16 @@ package main.controllers
 
 import main.geometry.Line
 import main.geometry.Point
+import main.opencv.OpenCvUtils
 import main.sensor.BallsListListener
 import main.sensor.Http
+import main.sensor.Sensor
 import main.sensor.SensorsManager
 
 
-class BallsManager : BallsListListener {
-    companion object {
-        const val BALL_LOCATION_TOLERANCE = 6
-        const val BALL_NOT_FOUND_TOLERANCE = 1
-        private var instance: BallsManager? = null
-
-        fun get(): BallsManager {
-            if (instance == null)
-                instance = BallsManager()
-            return instance!!
-        }
-    }
+object BallsManager : BallsListListener {
+    const val BALL_LOCATION_TOLERANCE = 6
+    private const val BALL_NOT_FOUND_TOLERANCE = 1
 
     private var listeners = ArrayList<Listener>()
     fun addListener(listener: Listener) {
@@ -36,11 +29,7 @@ class BallsManager : BallsListListener {
     }
 
     private val ballList = ArrayList<BallModel>()
-    fun getBallList(): List<BallModel> {
-        return ballList;
-    }
-
-    fun updateBallsList(balls: List<Ball>?) {
+    private fun updateBallsList(balls: List<Ball>?) {
         ballList.forEach { it.present = false }
         if (balls != null)
             balls.forEach { ball -> detectBallFromList(ball) }
@@ -69,12 +58,13 @@ class BallsManager : BallsListListener {
 
     fun startBallsRequestForAllSensors() {
         for (sensor in SensorsManager.get().getSensorsList()) {
-            Runnable { getBallsList(sensor.ip, sensor.port) }.run()
+            Runnable { getBallsList(sensor) }.run()
         }
     }
 
-    private fun getBallsList(ip: String, port: String) {
-        Http.getBalls(ip, port, null, this)
+    fun startBallsRequestForMainSensor() {
+        val sensor = SensorsManager.get().getSensorsList().get(0)
+        getBallsList(sensor)
     }
 
     private fun sortBallsListAccordingToRank(): List<BallModel> {
@@ -88,13 +78,19 @@ class BallsManager : BallsListListener {
         return if (ballListRanked.isEmpty()) null else ballListRanked[0]
     }
 
-    override fun ballsListReceived(ip: String, port: String, data: List<Ball>?) {
-        updateBallsList(data)
-        Thread.sleep(1000)
-        getBallsList(ip, port)
+    private fun getBallsList(sensor: Sensor) {
+        //Http.getBalls(sensor, null, this)
+        val balls = OpenCvUtils.getBallsOnBoard(sensor)
+        updateBallsList(balls)
     }
 
-    override fun ballsListFailed(ip: String, port: String) {
+    override fun ballsListReceived(sensor: Sensor, data: List<Ball>?) {
+        updateBallsList(data)
+        Thread.sleep(1000)
+        getBallsList(sensor)
+    }
+
+    override fun ballsListFailed(sensor: Sensor) {
         updateBallsList(null);
     }
 

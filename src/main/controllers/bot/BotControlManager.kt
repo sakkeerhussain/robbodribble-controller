@@ -9,16 +9,8 @@ import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 
 
-class BotControlManager : BotLocationManager.Listener {
-
-    companion object {
-        private var TAG = "BOT CONTROLLER       "
-        private var instance = BotControlManager()
-
-        fun get(): BotControlManager {
-            return instance
-        }
-    }
+object BotControlManager : BotLocationManager.Listener {
+    private var TAG = "BOT CONTROLLER       "
 
     private var status: BotStatus
     private var targetBall: BallModel?
@@ -75,12 +67,13 @@ class BotControlManager : BotLocationManager.Listener {
             when (status) {
                 BotStatus.LAZY -> {
                     setBotModeWaitForBotResponse()
-                    sendResetToBot()
+                    Utils.sendResetToBot()
+                    setBotModeFind()
                 }
                 BotStatus.WAIT_BOT_RESPONSE -> {
                 }
                 BotStatus.FIND -> {
-                    val ball = BallsManager.get().getRankOneBall()
+                    val ball = BallsManager.getRankOneBall()
                     if (ball != null)
                         moveTo(ball, botLocation)
                     else {
@@ -98,7 +91,7 @@ class BotControlManager : BotLocationManager.Listener {
                     checkBotInPathToPostOrNot(botLocation)
                 }
                 BotStatus.DUMPING -> {
-                    sendDoorOpenToBot()
+                    Utils.sendDoorOpenToBot()
                     Thread.sleep(3000)
                     setBotModeLazy()
                 }
@@ -176,7 +169,6 @@ class BotControlManager : BotLocationManager.Listener {
 
     private fun setBotModeFind() {
         Log.d(TAG, "Bot mode changed to find")
-        sendStopToBot()
         status = BotStatus.FIND
     }
 
@@ -224,56 +216,9 @@ class BotControlManager : BotLocationManager.Listener {
                 }
                 pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
             }
-            sendPathToBot(pathList)
+            Utils.sendPathToBot(pathList)
             //TODO(Avoid obstacle)
         }
-    }
-
-    private fun sendPathToBot(pathList: ArrayList<PathRequestItem>) {
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - PATH").sendPath(pathList)
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Sent path to bot successfully")
-                        }
-                    }, {})
-        })
-    }
-
-    private fun sendStopToBot() {
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - STOP").stop()
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Sent stop to bot successfully")
-                        }
-                    }, {})
-        })
-    }
-
-    private fun sendDoorOpenToBot() {
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - DOOR OPEN").doorOpen()
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Sent door open to bot successfully")
-                        }
-                    }, {})
-        })
-    }
-
-    private fun sendResetToBot() {
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - RESET").reset()
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Bot started")
-                            status = BotStatus.FIND
-                        }
-                    }, { error ->
-                        Log.d(TAG, "Unable to start bot, Error: ${error.message}")
-                    })
-        })
     }
 }
 

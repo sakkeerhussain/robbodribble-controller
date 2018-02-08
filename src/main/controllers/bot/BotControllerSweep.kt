@@ -82,9 +82,9 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
                 moveStartPoint = botLocationPoint
                 pathIndex++
                 if (path.get(pathIndex).point.x == -1f) {
-                    sendDoorOpenToBot()
+                    Utils.sendDoorOpenToBot()
                     Thread.sleep(3000)
-                    sendDoorCloseToBot()
+                    Utils.sendDoorCloseToBot()
                     pathIndex++
                 }
                 createPathToPoint(botLocation)
@@ -163,7 +163,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
                 pathList.add(PathRequestItem(Const.PATH_RIGHT, 180 - angle.absoluteValue.toInt()))
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
         }
-        sendPathToBot(pathList)
+        Utils.sendPathToBot(pathList)
 //        Log.d(TAG, "PathVertex list: $pathList")
 //        callBotReachedCallBackForTesting(path.point)
     }
@@ -182,7 +182,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             }
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
         }
-        sendPathToBot(pathList)
+        Utils.sendPathToBot(pathList)
 
 //        Log.d(TAG, "PathVertex list: $pathList")
 //        callBotReachedCallBackForTesting(path.point)
@@ -253,61 +253,4 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
         val frontRight = Point(frontCenter.x, frontCenter.y + 15f)
         botLocationChanged(BotLocation(0.0, backLeft, backRight, frontLeft, frontRight))
     }
-
-    private fun sendDoorOpenToBot() {
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - DOOR OPEN").doorOpen()
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Sent door open to bot successfully")
-                        }
-                    }, { error ->
-                        Log.d(TAG, "Sent door open to bot failed, message:${error.localizedMessage}")
-                    })
-        })
-    }
-
-    private fun sendDoorCloseToBot() {
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - DOOR CLOSE").doorClose()
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Sent door close to bot successfully")
-                        }
-                    }, { error ->
-                        Log.d(TAG, "Sent door close to bot failed, message:${error.localizedMessage}")
-                    })
-        })
-    }
-
-    private fun sendPathToBot(pathList: ArrayList<PathRequestItem>) {
-        Log.d(TAG, "Sending path to point. Data: ${Gson().toJson(pathList)}")
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - PATH").sendPath(pathList)
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Sent path to bot successfully")
-                        }
-                        BotLocationManager.get().startBotLocationRequestForMainSensor()
-                    }, { error ->
-                        Log.d(TAG, "Sent path to bot failed, message:${error.localizedMessage}")
-                        BotLocationManager.get().startBotLocationRequestForMainSensor()
-                    })
-        })
-    }
-
-    private fun sendStopToBot() {
-        Log.d(TAG, "Sending stop to bot...")
-        Executors.newCachedThreadPool().submit({
-            BotCommunicationService.Factory.create("BOT CONTROL - STOP").stop()
-                    .subscribe({ result ->
-                        if (result.status.equals("ok")) {
-                            Log.d(TAG, "Sent stop to bot successfully")
-                        }
-                    }, { error ->
-                        Log.d(TAG, "Sent stop to bot failed, message:${error.localizedMessage}")
-                    })
-        })
-    }
-
 }

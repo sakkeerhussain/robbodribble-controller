@@ -1,5 +1,5 @@
 package main.geometry
 
-class Circle(val center: Point, val radius: Int) {
+class Circle(var center: Point, val radius: Int) {
 
 }

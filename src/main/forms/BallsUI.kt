@@ -52,7 +52,7 @@ class BallsUI : JPanel() {
             g2d.drawLine(convertX(bot!!.frontRight.x), convertY(bot!!.frontRight.y),
                     convertX(bot!!.backRight.x), convertY(bot!!.backRight.y))
         }
-        if (path != null) {
+        if (path.vertices.isNotEmpty()) {
             g2d.color = Color.ORANGE
             g2d.stroke = BasicStroke(5f);
             for (i in 1 until path!!.vertices.size) {

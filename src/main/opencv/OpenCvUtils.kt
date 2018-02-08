@@ -1,5 +1,6 @@
 package main.opencv
 
+import main.controllers.Ball
 import main.controllers.BotLocation
 import main.geometry.Circle
 import main.geometry.Line
@@ -15,10 +16,19 @@ import java.io.ByteArrayInputStream
 import java.io.IOException
 import java.util.*
 import javax.imageio.ImageIO
-
+import org.opencv.core.Mat
 
 object OpenCvUtils {
-    val TAG = "OpenCvUtils"
+    private const val TAG = "OpenCvUtils"
+
+    fun getBallsOnBoard(sensor: Sensor): List<Ball>? {
+        val startTime = Date().time
+        val circles = getBalls(sensor) ?: return null
+        val balls = circles.mapTo(ArrayList()) { Ball(convertPointToBoard(it.center)) }
+        Log.d("Ball detection", "Time taken to detect ball: "
+                + (Date().time - startTime) + "ms")
+        return balls
+    }
 
     fun getBotLocationOnBoard(sensor: Sensor): BotLocation? {
         val location = getBotLocation(sensor) ?: return null
@@ -27,6 +37,17 @@ object OpenCvUtils {
                 convertPointToBoard(location.backRight),
                 convertPointToBoard(location.frontLeft),
                 convertPointToBoard(location.frontRight))
+    }
+
+    private fun getBalls(sensor: Sensor): List<Circle>? {
+        OpenCV.setCamUrl(sensor.getImageUrl())
+        val frame = OpenCV.getFrame()
+        if (frame == null || frame.rows() == 0 || frame.cols() == 0) {
+            Log.d(TAG, "No frame received")
+            return null
+        }
+        return detectCircles(frame, Const.BALL_SCALAR_MIN, Const.BALL_SCALAR_MAX,
+                Const.BALL_RADIUS_MIN, Const.BALL_RADIUS_MAX, Const.BALL_MIN_DISTANCE)
     }
 
     private fun getBotLocation(sensor: Sensor): BotLocation? {

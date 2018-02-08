@@ -63,20 +63,21 @@ class Http {
             })
         }
 
-        fun getBalls(ip: String, port: String, lbMessage: JLabel?, listener: BallsListListener) {
+        fun getBalls(sensor: Sensor, lbMessage: JLabel?, listener: BallsListListener) {
             Executors.newCachedThreadPool().submit({
                 lbMessage?.text = "Loading balls..."
-                ApiService.Factory.create("SENSOR - BALLS           ", ip, port).getBalls()
+                ApiService.Factory.create("SENSOR - BALLS           ", sensor.ip, sensor.port)
+                        .getBalls()
                         .subscribe({ result ->
                             if (result.status.equals("ok")) {
                                 lbMessage?.text = "Success: ${result.message}"
-                                listener.ballsListReceived(ip, port, result.data)
+                                listener.ballsListReceived(sensor, result.data)
                             } else {
-                                listener.ballsListReceived(ip, port,null)
+                                listener.ballsListReceived(sensor,null)
                                 lbMessage?.text = "Failed: ${result.message}"
                             }
                         }, { error ->
-                            listener.ballsListFailed(ip, port)
+                            listener.ballsListFailed(sensor)
                             lbMessage?.text = "Failed: ${error.message}"
                         })
             })

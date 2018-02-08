@@ -5,8 +5,8 @@ import main.controllers.BotLocation
 
 
 interface BallsListListener {
-    fun ballsListReceived(ip: String, port: String, data: List<Ball>?)
-    fun ballsListFailed(ip: String, port: String)
+    fun ballsListReceived(sensor: Sensor, data: List<Ball>?)
+    fun ballsListFailed(sensor: Sensor)
 }
 
 interface BotLocationListener {
