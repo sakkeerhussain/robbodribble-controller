@@ -55,9 +55,9 @@ class BallsUI : JPanel() {
         if (path.vertices.isNotEmpty()) {
             g2d.color = Color.ORANGE
             g2d.stroke = BasicStroke(5f);
-            for (i in 1 until path!!.vertices.size) {
-                val v1 = path!!.get(i - 1)
-                val v2 = path!!.get(i)
+            for (i in 1 until path.vertices.size) {
+                val v1 = path.get(i - 1)
+                val v2 = path.get(i)
                 g2d.drawLine(convertX(v1.point.x), convertY(v1.point.y),
                         convertX(v2.point.x), convertY(v2.point.y))
             }
