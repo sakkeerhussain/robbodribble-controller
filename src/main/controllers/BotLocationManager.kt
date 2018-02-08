@@ -9,17 +9,7 @@ import java.util.concurrent.Executor
 import java.util.concurrent.Executors
 
 
-class BotLocationManager : BotLocationListener, OpponentLocationListener {
-
-    companion object {
-        private var instance: BotLocationManager? = null
-
-        fun get(): BotLocationManager {
-            if (instance == null)
-                instance = BotLocationManager()
-            return instance!!
-        }
-    }
+object BotLocationManager : BotLocationListener, OpponentLocationListener {
 
     private var listeners = ArrayList<Listener>()
     fun addListener(listener: Listener) {

@@ -34,8 +34,8 @@ object BotControlManager : BotLocationManager.Listener {
         }
         botOperatorRunning = true
         Executors.newCachedThreadPool().submit {
-            BotLocationManager.get().addListener(this)
-            BotLocationManager.get().startBotLocationRequestForMainSensor()
+            BotLocationManager.addListener(this)
+            BotLocationManager.startBotLocationRequestForMainSensor()
         }
     }
 
@@ -55,7 +55,7 @@ object BotControlManager : BotLocationManager.Listener {
         }
 
         if (botLocation == null){
-            BotLocationManager.get().startBotLocationRequestForMainSensor()
+            BotLocationManager.startBotLocationRequestForMainSensor()
         }else {
             botOperatorLoop(botLocation)
         }
@@ -100,7 +100,7 @@ object BotControlManager : BotLocationManager.Listener {
         } catch (e: Exception) {
             Log.d(TAG, e.localizedMessage)
         }
-        BotLocationManager.get().startBotLocationRequestForMainSensor()
+        BotLocationManager.startBotLocationRequestForMainSensor()
     }
 
     private fun moveTo(ballModel: BallModel, botLocation:BotLocation) {

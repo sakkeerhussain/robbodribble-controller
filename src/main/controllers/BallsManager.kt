@@ -106,7 +106,7 @@ data class BallModel(val ball: Ball, var sensorRank: Int, var notFoundCount: Int
     }
 
     fun calculateRank(): Double {
-        val botLocation = BotLocationManager.get().getBotLocation() ?: return 0.0;
+        val botLocation = BotLocationManager.getBotLocation() ?: return 0.0;
         val botFrontCenterToBallLine = Line(botLocation.frontSide().mid(), this.ball.center)
         val distancePoint = botFrontCenterToBallLine.length() * Const.BALL_RANK_DISTANCE_CONSTANT
         angleToBot = (botFrontCenterToBallLine.angleInDegree() - botLocation.angle)

@@ -42,10 +42,10 @@ object Utils {
                         if (result.status.equals("ok")) {
                             Log.d(TAG, "Sent path to bot successfully")
                         }
-                        BotLocationManager.get().startBotLocationRequestForMainSensor()
+                        BotLocationManager.startBotLocationRequestForMainSensor()
                     }, { error ->
                         Log.d(TAG, "Sent path to bot failed, message:${error.localizedMessage}")
-                        BotLocationManager.get().startBotLocationRequestForMainSensor()
+                        BotLocationManager.startBotLocationRequestForMainSensor()
                     })
         })
     }

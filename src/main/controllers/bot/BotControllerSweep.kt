@@ -55,8 +55,8 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             Log.d(TAG, "Starting sweeper controller...")
             controllerRunning = true
             init()
-            BotLocationManager.get().addListener(this)
-            BotLocationManager.get().startBotLocationRequestForMainSensor()
+            BotLocationManager.addListener(this)
+            BotLocationManager.startBotLocationRequestForMainSensor()
         }
     }
 
@@ -66,7 +66,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             return
         }
         if (botLocation == null) {
-            BotLocationManager.get().startBotLocationRequestForMainSensor()
+            BotLocationManager.startBotLocationRequestForMainSensor()
             return
         }
         val botLocationPoint = botLocation.point()
