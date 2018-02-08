@@ -61,7 +61,7 @@ object BotControlManager : BotLocationManager.Listener {
         }
     }
 
-    private fun botOperatorLoop(botLocation: BotLocation?) {
+    private fun botOperatorLoop(botLocation: BotLocation) {
         try {
             Log.d("Status: $status")
             when (status) {
@@ -84,6 +84,7 @@ object BotControlManager : BotLocationManager.Listener {
                     checkBotInPathToBallOrNot(botLocation)
                 }
                 BotStatus.BOT_FULL -> {
+                    //TODO - Move with specific post approach path
                     moveTo(Const.POST_LOCATION, true, botLocation)
                     setBotModeMovingToDump()
                 }
@@ -102,18 +103,20 @@ object BotControlManager : BotLocationManager.Listener {
         BotLocationManager.get().startBotLocationRequestForMainSensor()
     }
 
-    private fun moveTo(ballModel: BallModel, botLocation:BotLocation?) {
+    private fun moveTo(ballModel: BallModel, botLocation:BotLocation) {
         status = BotStatus.COLLECT
         targetBall = ballModel
         moveTo(ballModel.ball.center, false, botLocation)
     }
 
-    private fun checkBotInPathToBallOrNot(botLocation: BotLocation?) {
-        if (targetBall == null || moveStartPoint == null || botLocation == null) {
+    private fun checkBotInPathToBallOrNot(botLocation: BotLocation) {
+        if (targetBall == null || moveStartPoint == null) {
             setBotModeFind()
         } else {
             if (botLocation.point().isAt(targetBall!!.ball.center, Const.BOT_WIDTH)) {
-                Log.d(TAG, "Bot reached target ball, Bot:${botLocation.point()}, Ball: ${targetBall!!.ball.center}")
+                Log.d(TAG, "Bot reached target ball, " +
+                        "Bot:${botLocation.point()}, " +
+                        "Ball: ${targetBall!!.ball.center}")
                 collectedBallCount++
                 if (collectedBallCount >= Const.BOT_MAX_BALL_CAPACITY)
                     setBotModeReadyToDump()
@@ -133,8 +136,8 @@ object BotControlManager : BotLocationManager.Listener {
         }
     }
 
-    private fun checkBotInPathToPostOrNot(botLocation: BotLocation?) {
-        if (moveStartPoint == null || botLocation == null) {
+    private fun checkBotInPathToPostOrNot(botLocation: BotLocation) {
+        if (moveStartPoint == null) {
             setBotModeReadyToDump()
         } else {
             when {
@@ -187,38 +190,32 @@ object BotControlManager : BotLocationManager.Listener {
         status = BotStatus.DUMPING
     }
 
-    private fun moveTo(point: Point, reverse: Boolean, botLocation: BotLocation?) {
+    private fun moveTo(point: Point, reverse: Boolean, botLocation: BotLocation) {
         val pathList = ArrayList<PathRequestItem>()
-        if (botLocation == null) {
-            Log.d(TAG, "Bot not found!")
-            if (status == BotStatus.COLLECT)
-                setBotModeFind()
-        } else {
-            moveStartPoint = botLocation.point()
-            val botToPointLine = Line(botLocation.point(), point)
-            var angle = botLocation.midLine().angleBetween(botToPointLine)
+        moveStartPoint = botLocation.point()
+        val botToPointLine = Line(botLocation.point(), point)
+        var angle = botLocation.midLine().angleBetween(botToPointLine)
 
-            if (Line(botLocation.backSide().mid(), point).length() < Line(botLocation.point(), point).length())
-                angle = 180 - angle
+        if (Line(botLocation.backSide().mid(), point).length() < Line(botLocation.point(), point).length())
+            angle = 180 - angle
 
-            if (reverse) {
-                if (angle > 0) {
-                    pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-                } else if (angle < 0) {
-                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-                }
-                pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-            } else {
-                if (angle > 0) {
-                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-                } else if (angle < 0) {
-                    pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-                }
-                pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
+        if (reverse) {
+            if (angle > 0) {
+                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
+            } else if (angle < 0) {
+                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
             }
-            Utils.sendPathToBot(pathList)
-            //TODO(Avoid obstacle)
+            pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
+        } else {
+            if (angle > 0) {
+                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+            } else if (angle < 0) {
+                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
+            }
+            pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
         }
+        Utils.sendPathToBot(pathList)
+        //TODO(Avoid obstacle)
     }
 }
 

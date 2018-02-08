@@ -26,7 +26,7 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     BallsForm() {
         mBallsUI = new BallsUI();
         pBallsDiagram.add(mBallsUI);
-        BallsManager.Companion.get().addListener(this);
+        BallsManager.INSTANCE.addListener(this);
         BotLocationManager.Companion.get().addListener(this);
         PathManager.INSTANCE.addListener(this);
 
@@ -34,19 +34,19 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
             @Override
             public void componentHidden(ComponentEvent e) {
                 super.componentHidden(e);
-                BallsManager.Companion.get().removeListener(BallsForm.this);
+                BallsManager.INSTANCE.removeListener(BallsForm.this);
                 BotLocationManager.Companion.get().removeListener(BallsForm.this);
             }
         });
-        btRefreshBalls.addActionListener(e -> BallsManager.Companion.get().startBallsRequestForAllSensors());
+        btRefreshBalls.addActionListener(e -> BallsManager.INSTANCE.startBallsRequestForAllSensors());
         btRefreshBot.addActionListener(e -> BotLocationManager.Companion.get().startBotLocationRequestForAllSensors());
         btRestartBot.addActionListener(e -> {
             String stopText = "Stop Bot";
             if (btRestartBot.getText().equals(stopText)) {
-                BotControlManager.Companion.get().stopBotOperator();
+                BotControlManager.INSTANCE.stopBotOperator();
                 btStartSweeper.setText("Start Bot");
             } else {
-                BotControlManager.Companion.get().startBotOperator();
+                BotControlManager.INSTANCE.startBotOperator();
                 btStartSweeper.setText(stopText);
             }
         });
