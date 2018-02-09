@@ -4,6 +4,7 @@ import main.controllers.*
 import main.geometry.Line
 import main.geometry.Point
 import main.utils.Log
+import main.utils.PathVertex
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
@@ -85,7 +86,7 @@ object BotControlManager : BotLocationManager.Listener {
                 }
                 BotStatus.BOT_FULL -> {
                     //TODO - Move with specific post approach path
-                    moveTo(Const.POST_LOCATION, true, botLocation)
+                    moveTo(Const.POST_1_PATH, true, botLocation)
                     setBotModeMovingToDump()
                 }
                 BotStatus.MOVING_TO_DUMP -> {
@@ -188,6 +189,9 @@ object BotControlManager : BotLocationManager.Listener {
     private fun setBotModeDumping() {
         Log.d(TAG, "Bot mode changed to 'Dumping'")
         status = BotStatus.DUMPING
+    }
+
+    private fun moveTo(point: List<PathVertex>, reverse: Boolean, botLocation: BotLocation) {
     }
 
     private fun moveTo(point: Point, reverse: Boolean, botLocation: BotLocation) {

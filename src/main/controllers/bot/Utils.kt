@@ -1,12 +1,53 @@
 package main.controllers.bot
 
 import com.google.gson.Gson
+import main.controllers.BotLocation
 import main.controllers.BotLocationManager
+import main.controllers.Const
+import main.geometry.Line
 import main.utils.Log
+import main.utils.PathVertex
 import java.util.concurrent.Executors
+import kotlin.math.absoluteValue
 
 object Utils {
     private const val TAG = "Bot-Utils"
+
+    fun getPathToPoint(botLocation: BotLocation, path: PathVertex) {
+        val botToPointLine = Line(botLocation.point(), path.point)
+        Log.d(TAG, "Finding path from ${botLocation.point()} to ${path.point}")
+        Log.d(TAG, "Bot line angle: ${botLocation.midLine().angleInDegree()}")
+        Log.d(TAG, "Bot to target line angle: ${botToPointLine.angleInDegree()}")
+        var angle = botLocation.midLine().angleBetween(botToPointLine)
+        Log.d(TAG, "Angle between bot line and target: $angle")
+        val pathList = ArrayList<PathRequestItem>()
+        if (path.front) {
+            val distance = botToPointLine.length().toInt()
+            //Left move correction
+            angle += (distance * 0.133333333)
+
+            if (angle > 180) {
+                angle -= 360
+            } else if (angle < -180) {
+                angle += 360
+            }
+
+            when {
+                angle < 0 ->
+                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
+                angle > 0 ->
+                    pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
+            }
+            pathList.add(PathRequestItem(Const.PATH_FORWARD, distance))
+        } else {
+            if (angle > 0)
+                pathList.add(PathRequestItem(Const.PATH_LEFT, 180 - angle.absoluteValue.toInt()))
+            else if (angle < 0)
+                pathList.add(PathRequestItem(Const.PATH_RIGHT, 180 - angle.absoluteValue.toInt()))
+            pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
+        }
+        Utils.sendPathToBot(pathList)
+    }
 
     fun sendDoorOpenToBot() {
         Executors.newCachedThreadPool().submit({

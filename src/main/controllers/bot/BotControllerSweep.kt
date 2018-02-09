@@ -1,11 +1,9 @@
 package main.controllers.bot
 
-import com.google.gson.Gson
 import main.controllers.BotLocation
 import main.controllers.BotLocationManager
 import main.controllers.Const
 import main.controllers.PathManager
-import main.forms.BallsUI
 import main.geometry.Line
 import main.geometry.Point
 import main.utils.Log
@@ -76,6 +74,8 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
         Log.d(TAG, "========Bot Location received($botLocationPoint)=======")
         Log.d(TAG, "========Expected point: ${path.get(pathIndex).point}======")
 
+        val pathVertex = path.get(pathIndex)
+
         when {
             botLocationPoint.isAt(path.get(pathIndex).point, Const.BOT_ALLOWED_DEVIATION) -> {
                 Log.d("Reached at desired point")
@@ -87,7 +87,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
                     Utils.sendDoorCloseToBot()
                     pathIndex++
                 }
-                createPathToPoint(botLocation)
+                Utils.getPathToPoint(botLocation, pathVertex)
 
             }
             botLocationPoint.isOnLine(Line(path.get(pathIndex).point, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
@@ -96,14 +96,14 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
 //                if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
 //                    Log.d("Bot not moving")
 //                    sendStopToBot()
-//                    createPathToPoint(botLocation)
+//                    getPathToPoint(botLocation)
 //                    moveStartPoint = botLocationPoint
 //                } else {
 //                    Log.d("Bot reached at $botLocationPoint")
 //                    moveStartPoint = botLocationPoint
 //                    BotLocationManager.get().startBotLocationRequestForMainSensor()
 //                }
-                createPathToPoint(botLocation)
+                Utils.getPathToPoint(botLocation, pathVertex)
                 moveStartPoint = botLocationPoint
             }
             else -> {
@@ -114,58 +114,14 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
                     if (Line(point, botLocationPoint).length() < 30) {
                         createReversePath(botLocation)
                     } else {
-                        createPathToPoint(botLocation)
+                        Utils.getPathToPoint(botLocation, pathVertex)
                     }
                 } else {
-                    createPathToPoint(botLocation)
+                    Utils.getPathToPoint(botLocation, pathVertex)
                 }
             }
 
         }
-    }
-
-    private fun createPathToPoint(botLocation: BotLocation) {
-        val path = path.get(pathIndex)
-        val botToPointLine = Line(botLocation.point(), path.point)
-        Log.d(TAG, "Finding path from ${botLocation.point()} to ${path.point}")
-        Log.d(TAG, "Bot line angle: ${botLocation.midLine().angleInDegree()}")
-        Log.d(TAG, "Bot to target line angle: ${botToPointLine.angleInDegree()}")
-        var angle = botLocation.midLine().angleBetween(botToPointLine)
-        Log.d(TAG, "Angle between bot line and target: $angle")
-        //val ballInFront = Line(botLocation.frontSide().mid(), path.point).length() < Line(botLocation.backSide().mid(), path.point).length()
-//        if (ballInFront)
-//            Log.d(TAG, "Target is in-front of bot")
-//        else
-//            Log.d(TAG, "Target is behind bot")
-        val pathList = ArrayList<PathRequestItem>()
-        if (path.front) {
-            val distance = botToPointLine.length().toInt()
-            //Left move correction
-            angle += (distance * 0.133333333)
-
-            if (angle > 180) {
-                angle -= 360
-            } else if (angle < -180) {
-                angle += 360
-            }
-
-            when {
-                angle < 0 ->
-                    pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-                angle > 0 ->
-                    pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-            }
-            pathList.add(PathRequestItem(Const.PATH_FORWARD, distance))
-        } else {
-            if (angle > 0)
-                pathList.add(PathRequestItem(Const.PATH_LEFT, 180 - angle.absoluteValue.toInt()))
-            else if (angle < 0)
-                pathList.add(PathRequestItem(Const.PATH_RIGHT, 180 - angle.absoluteValue.toInt()))
-            pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-        }
-        Utils.sendPathToBot(pathList)
-//        Log.d(TAG, "PathVertex list: $pathList")
-//        callBotReachedCallBackForTesting(path.point)
     }
 
     private fun createReversePath(botLocation: BotLocation) {
