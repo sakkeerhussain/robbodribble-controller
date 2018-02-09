@@ -42,19 +42,19 @@ object BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     fun startBotLocationRequestForAllSensors() {
-        for (sensor in SensorsManager.get().getSensorsList()) {
-            Runnable { getBotLocation(sensor) }.run()
+        for (sensor in SensorsManager.getSensorsList()) {
+            Runnable { calculateBotLocation(sensor) }.run()
         }
     }
 
     fun startBotLocationRequestForMainSensor() {
-        val sensor = SensorsManager.get().getSensorsList().get(0)
-        getBotLocation(sensor)
+        val sensor = SensorsManager.getSensorsList().get(0)
+        calculateBotLocation(sensor)
     }
 
-    private fun getBotLocation(sensor: Sensor) {
+    private fun calculateBotLocation(sensor: Sensor) {
         //Http.getBotLocation(ip, port,null, this)
-        val botLocation = OpenCvUtils.getBotLocationOnBoard(sensor)
+        val botLocation = OpenCvUtils.getBotLocationOnBoard()
         updateBotLocation(botLocation)
     }
 
@@ -81,7 +81,7 @@ object BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 }
 
-data class BotLocation(val angle: Double, val backLeft: Point, val backRight: Point, val frontLeft: Point, val frontRight: Point){
+data class BotLocation(val angle: Double, val backLeft: Point, val backRight: Point, val frontLeft: Point, val frontRight: Point) {
     fun frontSide(): Line {
         return Line(frontLeft, frontRight)
     }

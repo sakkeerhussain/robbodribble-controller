@@ -1,9 +1,6 @@
 package main.controllers.bot
 
-import main.controllers.BotLocation
-import main.controllers.BotLocationManager
-import main.controllers.Const
-import main.controllers.PathManager
+import main.controllers.*
 import main.geometry.Line
 import main.geometry.Point
 import main.utils.Log
@@ -21,18 +18,9 @@ import kotlin.math.absoluteValue
 //    }
 //}
 
-class BotControllerSweep private constructor() : BotLocationManager.Listener {
+object BotControllerSweep : BotLocationManager.Listener, BallsManager.Listener {
+
     private val TAG = "BotControllerSweep"
-
-    companion object {
-        private var instance: BotControllerSweep? = null
-
-        fun get(): BotControllerSweep {
-            if (instance == null)
-                instance = BotControllerSweep()
-            return instance!!
-        }
-    }
 
     val path = Path()
     private var pathIndex = 0
@@ -54,8 +42,24 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
             controllerRunning = true
             init()
             BotLocationManager.addListener(this)
-            BotLocationManager.startBotLocationRequestForMainSensor()
+            BallsManager.addListener(this)
+
+            Executors.newCachedThreadPool().submit {
+                BotLocationManager.startBotLocationRequestForMainSensor()
+            }
+
+            Executors.newCachedThreadPool().submit {
+                BallsManager.startBallsRequestForMainSensor()
+            }
         }
+    }
+
+    override fun ballListChanged(balls: List<BallModel>) {
+        if (!controllerRunning) {
+            Log.d(TAG, "Stopped ball request from sweeper controller")
+            return
+        }
+        BallsManager.startBallsRequestForMainSensor()
     }
 
     override fun botLocationChanged(botLocation: BotLocation?) {
@@ -89,24 +93,7 @@ class BotControllerSweep private constructor() : BotLocationManager.Listener {
                 }
                 Utils.getPathToPoint(botLocation, pathVertex)
 
-            }
-            botLocationPoint.isOnLine(Line(path.get(pathIndex).point, moveStartPoint!!), Const.BOT_ALLOWED_DEVIATION) -> {
-                Log.d("Bot is on line to target")
-
-//                if (Line(botLocationPoint, moveStartPoint!!).length() < Const.BOT_MIN_DIST_IN_UNIT_TIME) {
-//                    Log.d("Bot not moving")
-//                    sendStopToBot()
-//                    getPathToPoint(botLocation)
-//                    moveStartPoint = botLocationPoint
-//                } else {
-//                    Log.d("Bot reached at $botLocationPoint")
-//                    moveStartPoint = botLocationPoint
-//                    BotLocationManager.get().startBotLocationRequestForMainSensor()
-//                }
-                Utils.getPathToPoint(botLocation, pathVertex)
-                moveStartPoint = botLocationPoint
-            }
-            else -> {
+            } else -> {
                 Log.d("Bot deviated from desired path")
                 if (path.get(pathIndex).front) {
                     val point = path.get(pathIndex).point

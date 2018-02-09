@@ -44,19 +44,19 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
             String stopText = "Stop Bot";
             if (btRestartBot.getText().equals(stopText)) {
                 BotControlManager.INSTANCE.stopBotOperator();
-                btStartSweeper.setText("Start Bot");
+                btRestartBot.setText("Start Bot");
             } else {
                 BotControlManager.INSTANCE.startBotOperator();
-                btStartSweeper.setText(stopText);
+                btRestartBot.setText(stopText);
             }
         });
         btStartSweeper.addActionListener(e -> {
             String stopText = "Stop Sweeper";
             if (btStartSweeper.getText().equals(stopText)) {
-                BotControllerSweep.Companion.get().stop();
+                BotControllerSweep.INSTANCE.stop();
                 btStartSweeper.setText("Start Sweeper");
             } else {
-                BotControllerSweep.Companion.get().start();
+                BotControllerSweep.INSTANCE.start();
                 btStartSweeper.setText(stopText);
             }
         });

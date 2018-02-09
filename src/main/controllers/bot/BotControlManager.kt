@@ -10,7 +10,7 @@ import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 
 
-object BotControlManager : BotLocationManager.Listener {
+object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private var TAG = "BOT CONTROLLER       "
 
     private var status: BotStatus
@@ -34,9 +34,13 @@ object BotControlManager : BotLocationManager.Listener {
             return
         }
         botOperatorRunning = true
+        BotLocationManager.addListener(this)
+        BallsManager.addListener(this)
         Executors.newCachedThreadPool().submit {
-            BotLocationManager.addListener(this)
             BotLocationManager.startBotLocationRequestForMainSensor()
+        }
+        Executors.newCachedThreadPool().submit {
+            BallsManager.startBallsRequestForMainSensor()
         }
     }
 
@@ -49,15 +53,23 @@ object BotControlManager : BotLocationManager.Listener {
         Log.d(TAG, "Bot operator stopped already")
     }
 
+    override fun ballListChanged(balls: List<BallModel>) {
+        if (!botOperatorRunning) {
+            Log.d(TAG, "Ball request from bot operator stopped")
+            return
+        }
+        BallsManager.startBallsRequestForMainSensor()
+    }
+
     override fun botLocationChanged(botLocation: BotLocation?) {
         if (!botOperatorRunning) {
             Log.d(TAG, "Bot operator stopped")
             return
         }
 
-        if (botLocation == null){
+        if (botLocation == null) {
             BotLocationManager.startBotLocationRequestForMainSensor()
-        }else {
+        } else {
             botOperatorLoop(botLocation)
         }
     }
@@ -86,7 +98,8 @@ object BotControlManager : BotLocationManager.Listener {
                 }
                 BotStatus.BOT_FULL -> {
                     //TODO - Move with specific post approach path
-                    moveTo(Const.POST_1_PATH, true, botLocation)
+//                    moveTo(Const.POST_1_PATH, true, botLocation)
+                    moveTo(Const.POST_LOCATION, true, botLocation)
                     setBotModeMovingToDump()
                 }
                 BotStatus.MOVING_TO_DUMP -> {
@@ -104,7 +117,7 @@ object BotControlManager : BotLocationManager.Listener {
         BotLocationManager.startBotLocationRequestForMainSensor()
     }
 
-    private fun moveTo(ballModel: BallModel, botLocation:BotLocation) {
+    private fun moveTo(ballModel: BallModel, botLocation: BotLocation) {
         status = BotStatus.COLLECT
         targetBall = ballModel
         moveTo(ballModel.ball.center, false, botLocation)
@@ -191,8 +204,11 @@ object BotControlManager : BotLocationManager.Listener {
         status = BotStatus.DUMPING
     }
 
-    private fun moveTo(point: List<PathVertex>, reverse: Boolean, botLocation: BotLocation) {
-    }
+//    private fun moveTo(pathVertices: List<PathVertex>, reverse: Boolean, botLocation: BotLocation) {
+//        for (pathVertex in pathVertices) {
+//            move
+//        }
+//    }
 
     private fun moveTo(point: Point, reverse: Boolean, botLocation: BotLocation) {
         val pathList = ArrayList<PathRequestItem>()

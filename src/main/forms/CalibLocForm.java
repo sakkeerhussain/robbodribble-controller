@@ -157,8 +157,6 @@ public class CalibLocForm {
 
     private void drawFrameToLabel() {
         try {
-            Sensor sensor = SensorsManager.Companion.get().getSensorsList().get(0);
-            OpenCV.INSTANCE.setCamUrl(sensor.getImageUrl());
             Mat frame = OpenCV.INSTANCE.getFrame();
             if (frame == null || frame.rows() == 0|| frame.cols() == 0
                     || jlPreview.getWidth() == 0 || jlPreview.getHeight() == 0) {

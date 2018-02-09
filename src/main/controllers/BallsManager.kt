@@ -7,9 +7,10 @@ import main.sensor.BallsListListener
 import main.sensor.Http
 import main.sensor.Sensor
 import main.sensor.SensorsManager
+import java.util.concurrent.Executors
 
 
-object BallsManager : BallsListListener {
+object BallsManager {
     const val BALL_LOCATION_TOLERANCE = 6
     private const val BALL_NOT_FOUND_TOLERANCE = 1
 
@@ -56,14 +57,15 @@ object BallsManager : BallsListListener {
         ballList.add(ballModel)
     }
 
+    @Deprecated("Call ball request from main sensor")
     fun startBallsRequestForAllSensors() {
-        for (sensor in SensorsManager.get().getSensorsList()) {
+        for (sensor in SensorsManager.getSensorsList()) {
             Runnable { getBallsList(sensor) }.run()
         }
     }
 
     fun startBallsRequestForMainSensor() {
-        val sensor = SensorsManager.get().getSensorsList().get(0)
+        val sensor = SensorsManager.getSensorsList().get(0)
         getBallsList(sensor)
     }
 
@@ -80,19 +82,19 @@ object BallsManager : BallsListListener {
 
     private fun getBallsList(sensor: Sensor) {
         //Http.getBalls(sensor, null, this)
-        val balls = OpenCvUtils.getBallsOnBoard(sensor)
+        val balls = OpenCvUtils.getBallsOnBoard()
         updateBallsList(balls)
     }
 
-    override fun ballsListReceived(sensor: Sensor, data: List<Ball>?) {
-        updateBallsList(data)
-        Thread.sleep(1000)
-        getBallsList(sensor)
-    }
-
-    override fun ballsListFailed(sensor: Sensor) {
-        updateBallsList(null);
-    }
+//    override fun ballsListReceived(sensor: Sensor, data: List<Ball>?) {
+//        updateBallsList(data)
+//        Thread.sleep(1000)
+//        getBallsList(sensor)
+//    }
+//
+//    override fun ballsListFailed(sensor: Sensor) {
+//        updateBallsList(null);
+//    }
 
     interface Listener {
         fun ballListChanged(balls: List<BallModel>)

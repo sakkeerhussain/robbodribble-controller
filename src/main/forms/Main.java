@@ -24,7 +24,7 @@ public class Main {
                 + "\n****************************************************");
 
 
-        for (Sensor sensor : SensorsManager.Companion.get().getSensorsList()) {
+        for (Sensor sensor : SensorsManager.INSTANCE.getSensorsList()) {
             addCalibrationForm(sensor.getIp(), sensor.getPort());
         }
 
@@ -36,6 +36,8 @@ public class Main {
 
     private void initializingOpenCV() {
         OpenCV.INSTANCE.init();
+        Sensor sensor = SensorsManager.INSTANCE.getSensorsList().get(0);
+        OpenCV.INSTANCE.setCamUrl(sensor.getImageUrl());
     }
 
     private void setupLogForm() {

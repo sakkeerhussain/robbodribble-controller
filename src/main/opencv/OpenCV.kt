@@ -2,6 +2,7 @@ package main.opencv
 
 import main.opencv.models.ReferencePoint
 import main.utils.ImageToRealMapper
+import main.utils.Log
 import org.opencv.core.Core
 import org.opencv.core.Mat
 import org.opencv.imgcodecs.Imgcodecs
@@ -10,12 +11,14 @@ import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import org.opencv.core.CvType
 import org.opencv.core.MatOfPoint
+import java.util.concurrent.Executors
 
 
 object OpenCV {
+    private const val TAG = "OpenCV"
 
     private var camera: VideoCapture? = null
-    private var imagePath: String? = null
+    private var mFrame: Mat? = null
 
     var refPoint1: ReferencePoint = ReferencePoint(30f, 1f, -10f, -10f)
     var refPointMid12: ReferencePoint = ReferencePoint(622.5f, 5f, 140f, -10f)
@@ -35,6 +38,17 @@ object OpenCV {
     fun init() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
         camera = VideoCapture()
+
+        Executors.newCachedThreadPool().submit {
+            var lastResult = true
+            while (true) {
+                if (!lastResult) {
+                    Log.d(TAG, "Grab frame error!")
+                    Thread.sleep(1000)
+                }
+                lastResult = grabFrame()
+            }
+        }
     }
 
     fun setCamUrl(camUrl: String) {
@@ -45,25 +59,24 @@ object OpenCV {
         camera!!.open(index)
     }
 
-    fun setImagePath(imagePath: String) {
-        OpenCV.imagePath = imagePath
+    fun getFrame(): Mat? {
+        if (mFrame == null)
+            Thread.sleep(1000)
+        return mFrame
     }
 
-    fun getFrame(): Mat? {
+    private fun grabFrame(): Boolean {
         if (camera!!.isOpened) {
             try {
                 val frame = Mat()
                 camera!!.read(frame)
-                return frame
+                mFrame = frame
+                return true
             } catch (e: Exception) {
                 e.printStackTrace()
-                return null
             }
-
-        } else if (imagePath != null) {
-            return Imgcodecs.imread(imagePath)
         }
-        return null
+        return false
     }
 
     //Functions

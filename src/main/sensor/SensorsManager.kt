@@ -2,17 +2,8 @@ package main.sensor
 
 import main.controllers.Const
 
-class SensorsManager{
+object SensorsManager{
     private val sensorsList:ArrayList<Sensor> by lazy { DataInitializer.sensors }
-    companion object {
-        private var instance: SensorsManager? = null
-
-        fun get(): SensorsManager {
-            if (instance == null)
-                instance = SensorsManager()
-            return instance!!
-        }
-    }
 
     fun getSensorsList(): List<Sensor> {
         return sensorsList
@@ -27,12 +18,12 @@ class SensorsManager{
 //              sensors.add(Sensor("127.0.0.1", "9000", false, false))
 //            sensors.add(Sensor(Const.IP_NEXUS, "8080", false, false))
 //            sensors.add(Sensor("10.7.120.22", "8080", false, false))
-            sensors.add(Sensor(Const.IP_SAKKEER, "8080"))
+            sensors.add(Sensor(Const.IP_SAKKEER, "8000"))
         }
     }
 }
 data class Sensor(val ip: String, val port: String) {
     fun getImageUrl(): String {
-        return "http://$ip:$port/image/"
+        return "http://$ip:$port/video"
     }
 }
