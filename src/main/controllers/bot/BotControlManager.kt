@@ -1,11 +1,13 @@
 package main.controllers.bot
 
+import com.google.gson.GsonBuilder
 import main.controllers.*
 import main.geometry.Line
 import main.geometry.Point
 import main.opencv.OpenCV
 import main.utils.Log
 import main.utils.PathVertex
+import java.io.File
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
@@ -24,9 +26,11 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private var moveStartPoint: Point?
     private var collectedBallCount: Int
     private var botOperatorRunning: Boolean
+    private var mBotStatusAndConfig = BotStatusAndConfig()
 
     init {
-        status = BotStatus.LAZY
+        loadBotConfigFromFile()
+        status = BotStatus.FIND
         targetBall = null
         moveStartPoint = null
         collectedBallCount = 0
@@ -34,7 +38,6 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     }
 
     fun startBotOperator() {
-        setBotModeLazy()
         if (botOperatorRunning) {
             Log.d(TAG, "Bot operator already running.")
             return
@@ -47,23 +50,19 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         Executors.newCachedThreadPool().submit {
             BallsManager.startBallsRequestForMainSensor()
         }
-        Utils.sendPathToBot(pathList, object : Utils.Listener(){
-            override fun botResponded() {
-                Executors.newCachedThreadPool().submit {
-                    BotLocationManager.startBotLocationRequestForMainSensor()
+        if (mBotStatusAndConfig.alreadyRunning) {
+            BotLocationManager.startBotLocationRequestForMainSensor()
+        } else {
+            Utils.sendPathToBot(pathList, object : Utils.Listener() {
+                override fun botResponded() {
+                    Executors.newCachedThreadPool().submit {
+                        BotLocationManager.startBotLocationRequestForMainSensor()
+                    }
                 }
-            }
-        })
-    }
-
-    private fun getFirstMovementPath(): ArrayList<PathRequestItem> {
-        val pathList = ArrayList<PathRequestItem>()
-        pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
-        pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
-        pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
-        pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
-        pathList.add(PathRequestItem(Const.PATH_FORWARD, 80))
-        return pathList
+            })
+            mBotStatusAndConfig.alreadyRunning = true
+            saveBotConfigToFile()
+        }
     }
 
     fun stopBotOperator() {
@@ -73,14 +72,6 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             return
         }
         Log.d(TAG, "Bot operator stopped already")
-    }
-
-    override fun ballListChanged(balls: List<BallModel>) {
-        if (!botOperatorRunning) {
-            Log.d(TAG, "Ball request from bot operator stopped")
-            return
-        }
-        BallsManager.startBallsRequestForMainSensor()
     }
 
     override fun botLocationChanged(botLocation: BotLocation?) {
@@ -130,7 +121,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 BotStatus.DUMPING -> {
                     Utils.sendDoorOpenToBot()
                     Thread.sleep(3000)
-                    setBotModeLazy()
+                    setBotModeFind()
                 }
             }
         } catch (e: Exception) {
@@ -262,6 +253,52 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             }
         })
         //TODO(Avoid obstacle)
+    }
+
+    private fun loadBotConfigFromFile() {
+        try {
+            val file = File(Const.FileName.BOT_STATUS)
+            if (file.exists()) {
+                Log.d(TAG, "Loading bot running status from ${file.name}")
+                val boardReferenceJson = file.readText()
+                val gson = GsonBuilder().create()
+                mBotStatusAndConfig = gson.fromJson(boardReferenceJson, BotStatusAndConfig::class.java)
+                return
+            }
+        } catch (e: Exception) {
+        }
+        mBotStatusAndConfig = BotStatusAndConfig()
+    }
+
+    private fun saveBotConfigToFile() {
+        try {
+            val file = File(Const.FileName.BOT_STATUS)
+            if (!file.exists()) {
+                File(file.parent).mkdir()
+            }
+            val botStatusAndConfigJson = GsonBuilder().create().toJson(mBotStatusAndConfig)
+            file.writeText(botStatusAndConfigJson)
+        } catch (e: Exception) {
+        }
+    }
+
+    private fun getFirstMovementPath(): ArrayList<PathRequestItem> {
+        val pathList = ArrayList<PathRequestItem>()
+        pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
+        pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
+        pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
+        pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
+        pathList.add(PathRequestItem(Const.PATH_FORWARD, 80))
+        pathList.add(PathRequestItem(Const.PATH_RIGHT, 170))
+        return pathList
+    }
+
+    override fun ballListChanged(balls: List<BallModel>) {
+        if (!botOperatorRunning) {
+            Log.d(TAG, "Ball request from bot operator stopped")
+            return
+        }
+        BallsManager.startBallsRequestForMainSensor()
     }
 }
 

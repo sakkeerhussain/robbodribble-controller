@@ -52,4 +52,9 @@ object Const {
         POST_1_PATH.add(PathVertex(Point(-1f, -1f)))
     }
 
+
+    object FileName {
+        const val BOT_STATUS = "config/controllers/bot_status.json"
+    }
+
 }
