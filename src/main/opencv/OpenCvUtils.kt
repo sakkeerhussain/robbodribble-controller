@@ -1,10 +1,13 @@
 package main.opencv
 
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import main.controllers.Ball
 import main.controllers.BotLocation
 import main.geometry.Circle
 import main.geometry.Line
 import main.geometry.Point
+import main.opencv.models.BoardReference
 import main.utils.ImageToRealMapper.convertPointToBoard
 import main.utils.Log
 import org.opencv.core.*
@@ -16,6 +19,7 @@ import java.io.IOException
 import java.util.*
 import javax.imageio.ImageIO
 import org.opencv.core.Mat
+import java.io.File
 
 object OpenCvUtils {
     private const val TAG = "OpenCvUtils"
@@ -24,7 +28,7 @@ object OpenCvUtils {
         val startTime = Date().time
         val circles = getBalls() ?: return null
         val balls = circles.mapTo(ArrayList()) { Ball(convertPointToBoard(it.center)) }
-        Log.d("Ball detection", "Time taken to detect ball: "
+        Log.d("Ball detection", "${balls.size} balls detect with: "
                 + (Date().time - startTime) + "ms")
         return balls
     }
@@ -41,7 +45,7 @@ object OpenCvUtils {
     private fun getBalls(): List<Circle>? {
         var frame = OpenCV.getFrame()
         if (frame == null || frame.rows() == 0 || frame.cols() == 0) {
-            Log.d(TAG, "No frame received")
+            Log.d(TAG, "No frame received for balls")
             return null
         }
         frame = OpenCV.clipFrame(frame)
@@ -53,7 +57,7 @@ object OpenCvUtils {
         val startTime = Date().time
         var frame = OpenCV.getFrame()
         if (frame == null || frame.rows() == 0 || frame.cols() == 0) {
-            Log.d(TAG, "No frame received")
+            Log.d(TAG, "No frame received for balls")
             return null
         }
         frame = OpenCV.clipFrameForBotLocation(frame)
@@ -134,20 +138,20 @@ object OpenCvUtils {
     fun drawBordToFrame(frame: Mat) {
         val boardOutDrawColor = Scalar(0.0, 0.0, 255.0)
         val boardDrawColor = Scalar(0.0, 10.0, 200.0)
-        val refPoint1 = OpenCV.refPoint1.pointImage.cvPoint()
-        val refPointMid12 = OpenCV.refPointMid12.pointImage.cvPoint()
-        val refPoint2 = OpenCV.refPoint2.pointImage.cvPoint()
-        val refPoint3 = OpenCV.refPoint3.pointImage.cvPoint()
-        val refPointMid34 = OpenCV.refPointMid34.pointImage.cvPoint()
-        val refPoint4 = OpenCV.refPoint4.pointImage.cvPoint()
-        val refPointC = OpenCV.refPointC.pointImage.cvPoint()
-        val refPointQ1 = OpenCV.refPointQ1.pointImage.cvPoint()
-        val refPointQ2 = OpenCV.refPointQ2.pointImage.cvPoint()
+        val refPoint1 = OpenCV.boardReference.refPoint1.pointImage.cvPoint()
+        val refPointMid12 = OpenCV.boardReference.refPointMid12.pointImage.cvPoint()
+        val refPoint2 = OpenCV.boardReference.refPoint2.pointImage.cvPoint()
+        val refPoint3 = OpenCV.boardReference.refPoint3.pointImage.cvPoint()
+        val refPointMid34 = OpenCV.boardReference.refPointMid34.pointImage.cvPoint()
+        val refPoint4 = OpenCV.boardReference.refPoint4.pointImage.cvPoint()
+        val refPointC = OpenCV.boardReference.refPointC.pointImage.cvPoint()
+        val refPointQ1 = OpenCV.boardReference.refPointQ1.pointImage.cvPoint()
+        val refPointQ2 = OpenCV.boardReference.refPointQ2.pointImage.cvPoint()
 
-        val refPointO1 = OpenCV.refPointOB1.pointImage.cvPoint()
-        val refPointO2 = OpenCV.refPointOB2.pointImage.cvPoint()
-        val refPointO3 = OpenCV.refPointOB3.pointImage.cvPoint()
-        val refPointO4 = OpenCV.refPointOB4.pointImage.cvPoint()
+        val refPointO1 = OpenCV.boardReference.refPointOB1.pointImage.cvPoint()
+        val refPointO2 = OpenCV.boardReference.refPointOB2.pointImage.cvPoint()
+        val refPointO3 = OpenCV.boardReference.refPointOB3.pointImage.cvPoint()
+        val refPointO4 = OpenCV.boardReference.refPointOB4.pointImage.cvPoint()
 
         Imgproc.line(frame, refPoint1, refPointMid12, boardDrawColor, 3)
         Imgproc.line(frame, refPointMid12, refPoint2, boardDrawColor, 3)
@@ -173,5 +177,25 @@ object OpenCvUtils {
         Imgproc.putText(frame, "C", refPointC, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
         Imgproc.putText(frame, "Q1", refPointQ1, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
         Imgproc.putText(frame, "Q2", refPointQ2, Core.FONT_HERSHEY_PLAIN, 3.0, boardDrawColor, 3)
+    }
+
+    fun saveRefPointsToFile() {
+        val file = File(Const.FileName.REF_POINT)
+        if (!file.exists()) {
+            File(file.parent).mkdir()
+        }
+        val boardReferenceJson = GsonBuilder().create().toJson(OpenCV.boardReference)
+        file.writeText(boardReferenceJson)
+    }
+
+    fun retrieveRefPointsFromFile() : BoardReference? {
+        val file = File(Const.FileName.REF_POINT)
+        if (!file.exists()) {
+            Log.d(TAG, "${file.name} not found")
+            return null
+        }
+        val boardReferenceJson = file.readText()
+        val gson = GsonBuilder().create()
+        return gson.fromJson(boardReferenceJson, BoardReference::class.java)
     }
 }

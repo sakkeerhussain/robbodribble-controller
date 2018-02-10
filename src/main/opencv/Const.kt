@@ -6,9 +6,7 @@ import org.opencv.core.Scalar;
  * Created by sakkeer on 12/12/17.
  */
 
-class Const {
-
-    companion object {
+object Const {
 
         val BALL_RADIUS_MIN = 10
         val BALL_RADIUS_MAX = 26
@@ -40,5 +38,7 @@ class Const {
         val BOT_LOCATOR_ANGLE_45 = 0.785398
         val BOT_LOCATOR_ANGLE_135 = 2.35619
 
+    object FileName {
+        const val REF_POINT = "config/reference_point_values.txt"
     }
 }

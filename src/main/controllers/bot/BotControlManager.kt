@@ -3,12 +3,18 @@ package main.controllers.bot
 import main.controllers.*
 import main.geometry.Line
 import main.geometry.Point
+import main.opencv.OpenCV
 import main.utils.Log
 import main.utils.PathVertex
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
 import kotlin.math.absoluteValue
 
+
+fun main(args: Array<String>) {
+    OpenCV.init()
+    BotControlManager.startBotOperator()
+}
 
 object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private var TAG = "BOT CONTROLLER       "
@@ -37,8 +43,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         BotLocationManager.addListener(this)
         BallsManager.addListener(this)
 
-        val pathList = ArrayList<PathRequestItem>()
-        pathList.add(PathRequestItem(Const.PATH_FORWARD, 180))
+        val pathList = getFirstMovementPath()
         Executors.newCachedThreadPool().submit {
             BallsManager.startBallsRequestForMainSensor()
         }
@@ -49,6 +54,16 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 }
             }
         })
+    }
+
+    private fun getFirstMovementPath(): ArrayList<PathRequestItem> {
+        val pathList = ArrayList<PathRequestItem>()
+        pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
+        pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
+        pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
+        pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
+        pathList.add(PathRequestItem(Const.PATH_FORWARD, 80))
+        return pathList
     }
 
     fun stopBotOperator() {

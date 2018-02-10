@@ -49,40 +49,40 @@ object ImageToRealMapper {
         val yArray = DoubleArray(9)
 
         //Point 1
-        yArray[0] = OpenCV.refPoint1.pointBord.x.toDouble()
-        aArray[0] = getArrayOfPoint(OpenCV.refPoint1.pointImage)
+        yArray[0] = OpenCV.boardReference.refPoint1.pointBord.x.toDouble()
+        aArray[0] = getArrayOfPoint(OpenCV.boardReference.refPoint1.pointImage)
 
         //Point 12
-        yArray[1] = OpenCV.refPointMid12.pointBord.x.toDouble()
-        aArray[1] = getArrayOfPoint(OpenCV.refPointMid12.pointImage)
+        yArray[1] = OpenCV.boardReference.refPointMid12.pointBord.x.toDouble()
+        aArray[1] = getArrayOfPoint(OpenCV.boardReference.refPointMid12.pointImage)
 
         //Point 2
-        yArray[2] = OpenCV.refPoint2.pointBord.x.toDouble()
-        aArray[2] = getArrayOfPoint(OpenCV.refPoint2.pointImage)
+        yArray[2] = OpenCV.boardReference.refPoint2.pointBord.x.toDouble()
+        aArray[2] = getArrayOfPoint(OpenCV.boardReference.refPoint2.pointImage)
 
         //Point 4
-        yArray[3] = OpenCV.refPoint4.pointBord.x.toDouble()
-        aArray[3] = getArrayOfPoint(OpenCV.refPoint4.pointImage)
+        yArray[3] = OpenCV.boardReference.refPoint4.pointBord.x.toDouble()
+        aArray[3] = getArrayOfPoint(OpenCV.boardReference.refPoint4.pointImage)
 
         //Point 34
-        yArray[4] = OpenCV.refPointMid34.pointBord.x.toDouble()
-        aArray[4] = getArrayOfPoint(OpenCV.refPointMid34.pointImage)
+        yArray[4] = OpenCV.boardReference.refPointMid34.pointBord.x.toDouble()
+        aArray[4] = getArrayOfPoint(OpenCV.boardReference.refPointMid34.pointImage)
 
         //Point 3
-        yArray[5] = OpenCV.refPoint3.pointBord.x.toDouble()
-        aArray[5] = getArrayOfPoint(OpenCV.refPoint3.pointImage)
+        yArray[5] = OpenCV.boardReference.refPoint3.pointBord.x.toDouble()
+        aArray[5] = getArrayOfPoint(OpenCV.boardReference.refPoint3.pointImage)
 
         //Point C1
-        yArray[6] = OpenCV.refPointC.pointBord.x.toDouble()
-        aArray[6] = getArrayOfPoint(OpenCV.refPointC.pointImage)
+        yArray[6] = OpenCV.boardReference.refPointC.pointBord.x.toDouble()
+        aArray[6] = getArrayOfPoint(OpenCV.boardReference.refPointC.pointImage)
 
         //Point Q1
-        yArray[7] = OpenCV.refPointQ1.pointBord.x.toDouble()
-        aArray[7] = getArrayOfPoint(OpenCV.refPointQ1.pointImage)
+        yArray[7] = OpenCV.boardReference.refPointQ1.pointBord.x.toDouble()
+        aArray[7] = getArrayOfPoint(OpenCV.boardReference.refPointQ1.pointImage)
 
         //Point Q2
-        yArray[8] = OpenCV.refPointQ2.pointBord.x.toDouble()
-        aArray[8] = getArrayOfPoint(OpenCV.refPointQ2.pointImage)
+        yArray[8] = OpenCV.boardReference.refPointQ2.pointBord.x.toDouble()
+        aArray[8] = getArrayOfPoint(OpenCV.boardReference.refPointQ2.pointImage)
 
 
         //Creating Matrix Objects with arrays
@@ -105,40 +105,40 @@ object ImageToRealMapper {
         val yArray = DoubleArray(9)
 
         //Point 1
-        yArray[0] = OpenCV.refPoint1.pointBord.y.toDouble()
-        aArray[0] = getArrayOfPoint(OpenCV.refPoint1.pointImage)
+        yArray[0] = OpenCV.boardReference.refPoint1.pointBord.y.toDouble()
+        aArray[0] = getArrayOfPoint(OpenCV.boardReference.refPoint1.pointImage)
 
         //Point 12
-        yArray[1] = OpenCV.refPointMid12.pointBord.y.toDouble()
-        aArray[1] = getArrayOfPoint(OpenCV.refPointMid12.pointImage)
+        yArray[1] = OpenCV.boardReference.refPointMid12.pointBord.y.toDouble()
+        aArray[1] = getArrayOfPoint(OpenCV.boardReference.refPointMid12.pointImage)
 
         //Point 2
-        yArray[2] = OpenCV.refPoint2.pointBord.y.toDouble()
-        aArray[2] = getArrayOfPoint(OpenCV.refPoint2.pointImage)
+        yArray[2] = OpenCV.boardReference.refPoint2.pointBord.y.toDouble()
+        aArray[2] = getArrayOfPoint(OpenCV.boardReference.refPoint2.pointImage)
 
         //Point 4
-        yArray[3] = OpenCV.refPoint4.pointBord.y.toDouble()
-        aArray[3] = getArrayOfPoint(OpenCV.refPoint4.pointImage)
+        yArray[3] = OpenCV.boardReference.refPoint4.pointBord.y.toDouble()
+        aArray[3] = getArrayOfPoint(OpenCV.boardReference.refPoint4.pointImage)
 
         //Point 34
-        yArray[4] = OpenCV.refPointMid34.pointBord.y.toDouble()
-        aArray[4] = getArrayOfPoint(OpenCV.refPointMid34.pointImage)
+        yArray[4] = OpenCV.boardReference.refPointMid34.pointBord.y.toDouble()
+        aArray[4] = getArrayOfPoint(OpenCV.boardReference.refPointMid34.pointImage)
 
         //Point 3
-        yArray[5] = OpenCV.refPoint3.pointBord.y.toDouble()
-        aArray[5] = getArrayOfPoint(OpenCV.refPoint3.pointImage)
+        yArray[5] = OpenCV.boardReference.refPoint3.pointBord.y.toDouble()
+        aArray[5] = getArrayOfPoint(OpenCV.boardReference.refPoint3.pointImage)
 
         //Point C1
-        yArray[6] = OpenCV.refPointC.pointBord.y.toDouble()
-        aArray[6] = getArrayOfPoint(OpenCV.refPointC.pointImage)
+        yArray[6] = OpenCV.boardReference.refPointC.pointBord.y.toDouble()
+        aArray[6] = getArrayOfPoint(OpenCV.boardReference.refPointC.pointImage)
 
         //Point Q1
-        yArray[7] = OpenCV.refPointQ1.pointBord.y.toDouble()
-        aArray[7] = getArrayOfPoint(OpenCV.refPointQ1.pointImage)
+        yArray[7] = OpenCV.boardReference.refPointQ1.pointBord.y.toDouble()
+        aArray[7] = getArrayOfPoint(OpenCV.boardReference.refPointQ1.pointImage)
 
         //Point Q2
-        yArray[8] = OpenCV.refPointQ2.pointBord.y.toDouble()
-        aArray[8] = getArrayOfPoint(OpenCV.refPointQ2.pointImage)
+        yArray[8] = OpenCV.boardReference.refPointQ2.pointBord.y.toDouble()
+        aArray[8] = getArrayOfPoint(OpenCV.boardReference.refPointQ2.pointImage)
 
         val a = Matrix(aArray)
         val y = Matrix(yArray, 9)
@@ -175,9 +175,9 @@ object ImageToRealMapper {
 
     //Assumption #1
     fun convertPointToBoard2(centerPoint: Point): Point {
-        val point1 = OpenCV.refPoint1
-        val point2 = OpenCV.refPoint2
-        val point3 = OpenCV.refPoint3
+        val point1 = OpenCV.boardReference.refPoint1
+        val point2 = OpenCV.boardReference.refPoint2
+        val point3 = OpenCV.boardReference.refPoint3
 
         val imageXd = centerPoint.x - point1.pointImage.x
         val imageYd = centerPoint.y - point1.pointImage.y

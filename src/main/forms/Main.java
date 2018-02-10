@@ -36,8 +36,6 @@ public class Main {
 
     private void initializingOpenCV() {
         OpenCV.INSTANCE.init();
-        Sensor sensor = SensorsManager.INSTANCE.getSensorsList().get(0);
-        OpenCV.INSTANCE.setCamUrl(sensor.getImageUrl());
     }
 
     private void setupLogForm() {
