@@ -12,7 +12,7 @@ import java.util.concurrent.Executors
 
 object BallsManager {
     const val BALL_LOCATION_TOLERANCE = 6
-    private const val BALL_NOT_FOUND_TOLERANCE = 1
+    private const val BALL_NOT_FOUND_TOLERANCE = 5
 
     private var listeners = ArrayList<Listener>()
     fun addListener(listener: Listener) {

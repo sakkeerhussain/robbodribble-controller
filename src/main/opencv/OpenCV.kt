@@ -1,7 +1,6 @@
 package main.opencv
 
 import main.opencv.models.BoardReference
-import main.opencv.models.ReferencePoint
 import main.sensor.SensorsManager
 import main.utils.ImageToRealMapper
 import main.utils.Log
@@ -20,8 +19,9 @@ object OpenCV {
 
     private var camera: VideoCapture? = null
     private var mFrame: Mat? = null
+    private var mCameraUrl: String? = null
 
-    val boardReference : BoardReference = OpenCvUtils.retrieveRefPointsFromFile() ?: BoardReference()
+    val boardReference: BoardReference = OpenCvUtils.retrieveRefPointsFromFile() ?: BoardReference()
 
     init {
         ImageToRealMapper.updateMappingConstants()
@@ -32,7 +32,7 @@ object OpenCV {
         camera = VideoCapture()
 
         val sensor = SensorsManager.getSensorsList()[0]
-        setCamUrl(sensor.getImageUrl())
+        setCameraUrl(sensor.getImageUrl())
 
         Executors.newCachedThreadPool().submit {
             var lastResult = true
@@ -46,8 +46,8 @@ object OpenCV {
         }
     }
 
-    fun setCamUrl(camUrl: String) {
-        camera!!.open(camUrl)
+    private fun setCameraUrl(cameraUrl: String) {
+        this.mCameraUrl = cameraUrl
     }
 
     fun setCamIndex(index: Int) {
@@ -61,15 +61,19 @@ object OpenCV {
     }
 
     private fun grabFrame(): Boolean {
-        if (camera!!.isOpened) {
-            try {
+        try {
+            if (mCameraUrl == null) {
+                return false
+            }
+            camera!!.open(mCameraUrl)
+            if (camera!!.isOpened) {
                 val frame = Mat()
                 camera!!.read(frame)
                 mFrame = frame
                 return true
-            } catch (e: Exception) {
-                e.printStackTrace()
             }
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
         return false
     }

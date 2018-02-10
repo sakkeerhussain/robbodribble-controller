@@ -99,12 +99,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 BotStatus.WAIT_BOT_RESPONSE -> {
                 }
                 BotStatus.FIND -> {
-                    val ball = BallsManager.getRankOneBall()
-                    if (ball != null)
-                        moveTo(ball, botLocation)
-                    else {
-                        Log.d(TAG, "No balls found")
-                    }
+                    processFindMode(botLocation)
                 }
                 BotStatus.COLLECT -> {
                     checkBotInPathToBallOrNot(botLocation)
@@ -112,7 +107,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 BotStatus.BOT_FULL -> {
                     //TODO - Move with specific post approach path
 //                    moveTo(Const.POST_1_PATH, true, botLocation)
-                    moveTo(Const.POST_LOCATION, true, botLocation)
+                    moveTo(Const.POST_LOCATION, false, botLocation)
                     setBotModeMovingToDump()
                 }
                 BotStatus.MOVING_TO_DUMP -> {
@@ -130,15 +125,24 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         BotLocationManager.startBotLocationRequestForMainSensor()
     }
 
+    private fun processFindMode(botLocation: BotLocation) {
+        val ball = BallsManager.getRankOneBall()
+        if (ball != null)
+            moveTo(ball, botLocation)
+        else {
+            Log.d(TAG, "No balls found")
+        }
+    }
+
     private fun moveTo(ballModel: BallModel, botLocation: BotLocation) {
         status = BotStatus.COLLECT
         targetBall = ballModel
-        moveTo(ballModel.ball.center, false, botLocation)
+        moveTo(ballModel.ball.center, true, botLocation)
     }
 
     private fun checkBotInPathToBallOrNot(botLocation: BotLocation) {
         if (targetBall == null || moveStartPoint == null) {
-            setBotModeFind()
+            processFindMode(botLocation)
         } else {
             if (botLocation.point().isAt(targetBall!!.ball.center, Const.BOT_WIDTH)) {
                 Log.d(TAG, "Bot reached target ball, " +
@@ -159,7 +163,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                     moveStartPoint = botLocation.point()
                 }
             else
-                setBotModeFind()
+                processFindMode(botLocation)
         }
     }
 
@@ -223,30 +227,9 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
 //        }
 //    }
 
-    private fun moveTo(point: Point, reverse: Boolean, botLocation: BotLocation) {
-        val pathList = ArrayList<PathRequestItem>()
+    private fun moveTo(point: Point, front: Boolean, botLocation: BotLocation) {
         moveStartPoint = botLocation.point()
-        val botToPointLine = Line(botLocation.point(), point)
-        var angle = botLocation.midLine().angleBetween(botToPointLine)
-
-        if (Line(botLocation.backSide().mid(), point).length() < Line(botLocation.point(), point).length())
-            angle = 180 - angle
-
-        if (reverse) {
-            if (angle > 0) {
-                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-            } else if (angle < 0) {
-                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-            }
-            pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
-        } else {
-            if (angle > 0) {
-                pathList.add(PathRequestItem(Const.PATH_LEFT, angle.absoluteValue.toInt()))
-            } else if (angle < 0) {
-                pathList.add(PathRequestItem(Const.PATH_RIGHT, angle.absoluteValue.toInt()))
-            }
-            pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
-        }
+        val pathList = Utils.getPathToPoint(botLocation, PathVertex(point, front))
         Utils.sendPathToBot(pathList, object : Utils.Listener() {
             override fun botResponded() {
                 BotLocationManager.startBotLocationRequestForMainSensor()

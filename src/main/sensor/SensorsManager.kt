@@ -17,13 +17,15 @@ object SensorsManager{
 //              sensors.add(Sensor("10.7.120.3", false, false))
 //              sensors.add(Sensor("127.0.0.1", "9000", false, false))
 //            sensors.add(Sensor(Const.IP_NEXUS, "8080", false, false))
-//            sensors.add(Sensor("10.7.120.22", "8080", false, false))
-            sensors.add(Sensor(Const.IP_SAKKEER, "8000"))
+//            sensors.add(Sensor("10.7.120.22", "8080"))
+            sensors.add(Sensor("10.7.170.19", "8080"))
+//            sensors.add(Sensor(Const.IP_SAKKEER, "8000"))
         }
     }
 }
 data class Sensor(val ip: String, val port: String) {
     fun getImageUrl(): String {
-        return "http://$ip:$port/video"
+        //return "http://$ip:$port/video"
+        return "http://$ip:$port/image"
     }
 }
