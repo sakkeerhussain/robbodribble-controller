@@ -194,6 +194,7 @@ object OpenCvUtils {
             Log.d(TAG, "${file.name} not found")
             return null
         }
+        Log.d(TAG, "Loading reference point configuaration from ${file.name}")
         val boardReferenceJson = file.readText()
         val gson = GsonBuilder().create()
         return gson.fromJson(boardReferenceJson, BoardReference::class.java)
