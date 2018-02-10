@@ -1,6 +1,5 @@
 package main.opencv
 
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import main.controllers.Ball
 import main.controllers.BotLocation
@@ -43,7 +42,7 @@ object OpenCvUtils {
     }
 
     private fun getBalls(): List<Circle>? {
-        var frame = OpenCV.getFrame()
+        var frame = OpenCV.getFrameForBalls()
         if (frame == null || frame.rows() == 0 || frame.cols() == 0) {
             Log.d(TAG, "No frame received for balls")
             return null
@@ -55,7 +54,7 @@ object OpenCvUtils {
 
     private fun getBotLocation(): BotLocation? {
         val startTime = Date().time
-        var frame = OpenCV.getFrame()
+        var frame = OpenCV.getFrameForBotLocation()
         if (frame == null || frame.rows() == 0 || frame.cols() == 0) {
             Log.d(TAG, "No frame received for balls")
             return null
