@@ -229,7 +229,7 @@ public class CalibLocForm {
 
     private void drawFrameToLabel() {
         try {
-            Mat frame = OpenCV.INSTANCE.getFrameForCaliberation();
+            Mat frame = OpenCV.INSTANCE.getFrame();
             if (frame == null || frame.rows() == 0|| frame.cols() == 0
                     || jlPreview.getWidth() == 0 || jlPreview.getHeight() == 0) {
                 jlPreview.setText("Unable to print frame now");
