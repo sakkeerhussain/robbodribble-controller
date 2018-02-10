@@ -10,17 +10,14 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.nio.file.PathMatcher;
 import java.util.List;
 
 public class BallsForm implements BallsManager.Listener, BotLocationManager.Listener, PathManager.Listener {
     JPanel pRoot;
-    private JButton btRefreshBalls;
     private JPanel pBallsDiagram;
     private JList ltBalls;
-    private JButton btRefreshBot;
-    private JButton btRestartBot;
-    private JButton btStartSweeper;
+    private JButton btBotControl;
+    private JButton btSweeperControl;
     private BallsUI mBallsUI;
 
     BallsForm() {
@@ -38,26 +35,24 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
                 BotLocationManager.INSTANCE.removeListener(BallsForm.this);
             }
         });
-        btRefreshBalls.addActionListener(e -> BallsManager.INSTANCE.startBallsRequestForAllSensors());
-        btRefreshBot.addActionListener(e -> BotLocationManager.INSTANCE.startBotLocationRequestForAllSensors());
-        btRestartBot.addActionListener(e -> {
+        btBotControl.addActionListener(e -> {
             String stopText = "Stop Bot";
-            if (btRestartBot.getText().equals(stopText)) {
+            if (btBotControl.getText().equals(stopText)) {
                 BotControlManager.INSTANCE.stopBotOperator();
-                btRestartBot.setText("Start Bot");
+                btBotControl.setText("Start Bot");
             } else {
                 BotControlManager.INSTANCE.startBotOperator();
-                btRestartBot.setText(stopText);
+                btBotControl.setText(stopText);
             }
         });
-        btStartSweeper.addActionListener(e -> {
+        btSweeperControl.addActionListener(e -> {
             String stopText = "Stop Sweeper";
-            if (btStartSweeper.getText().equals(stopText)) {
+            if (btSweeperControl.getText().equals(stopText)) {
                 BotControllerSweep.INSTANCE.stop();
-                btStartSweeper.setText("Start Sweeper");
+                btSweeperControl.setText("Start Sweeper");
             } else {
                 BotControllerSweep.INSTANCE.start();
-                btStartSweeper.setText(stopText);
+                btSweeperControl.setText(stopText);
             }
         });
     }

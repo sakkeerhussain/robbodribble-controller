@@ -36,12 +36,19 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         botOperatorRunning = true
         BotLocationManager.addListener(this)
         BallsManager.addListener(this)
-        Executors.newCachedThreadPool().submit {
-            BotLocationManager.startBotLocationRequestForMainSensor()
-        }
+
+        val pathList = ArrayList<PathRequestItem>()
+        pathList.add(PathRequestItem(Const.PATH_FORWARD, 180))
         Executors.newCachedThreadPool().submit {
             BallsManager.startBallsRequestForMainSensor()
         }
+        Utils.sendPathToBot(pathList, object : Utils.Listener(){
+            override fun botResponded() {
+                Executors.newCachedThreadPool().submit {
+                    BotLocationManager.startBotLocationRequestForMainSensor()
+                }
+            }
+        })
     }
 
     fun stopBotOperator() {
@@ -234,7 +241,11 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             }
             pathList.add(PathRequestItem(Const.PATH_FORWARD, botToPointLine.length().toInt()))
         }
-        Utils.sendPathToBot(pathList)
+        Utils.sendPathToBot(pathList, object : Utils.Listener() {
+            override fun botResponded() {
+                BotLocationManager.startBotLocationRequestForMainSensor()
+            }
+        })
         //TODO(Avoid obstacle)
     }
 }

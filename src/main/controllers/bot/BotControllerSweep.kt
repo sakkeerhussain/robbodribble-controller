@@ -7,7 +7,6 @@ import main.utils.Log
 import main.utils.Path
 import main.utils.PathVertex
 import java.util.concurrent.Executors
-import kotlin.math.absoluteValue
 
 //fun main(args: Array<String>) {
 //    Log.d("Initialising...")
@@ -79,6 +78,7 @@ object BotControllerSweep : BotLocationManager.Listener, BallsManager.Listener {
         Log.d(TAG, "========Expected point: ${path.get(pathIndex).point}======")
 
         val pathVertex = path.get(pathIndex)
+        val pathList: ArrayList<PathRequestItem>
 
         when {
             botLocationPoint.isAt(path.get(pathIndex).point, Const.BOT_ALLOWED_DEVIATION) -> {
@@ -91,27 +91,31 @@ object BotControllerSweep : BotLocationManager.Listener, BallsManager.Listener {
                     Utils.sendDoorCloseToBot()
                     pathIndex++
                 }
-                Utils.getPathToPoint(botLocation, pathVertex)
-
-            } else -> {
+                pathList = Utils.getPathToPoint(botLocation, pathVertex)
+            }
+            else -> {
                 Log.d("Bot deviated from desired path")
                 if (path.get(pathIndex).front) {
                     val point = path.get(pathIndex).point
                     moveStartPoint = botLocationPoint
                     if (Line(point, botLocationPoint).length() < 30) {
-                        createReversePath(botLocation)
+                        pathList = getReversePathToAdjustForewardMotion(botLocation)
                     } else {
-                        Utils.getPathToPoint(botLocation, pathVertex)
+                        pathList = Utils.getPathToPoint(botLocation, pathVertex)
                     }
                 } else {
-                    Utils.getPathToPoint(botLocation, pathVertex)
+                    pathList = Utils.getPathToPoint(botLocation, pathVertex)
                 }
             }
-
         }
+        Utils.sendPathToBot(pathList, object : Utils.Listener() {
+            override fun botResponded() {
+                BotLocationManager.startBotLocationRequestForMainSensor()
+            }
+        })
     }
 
-    private fun createReversePath(botLocation: BotLocation) {
+    private fun getReversePathToAdjustForewardMotion(botLocation: BotLocation): ArrayList<PathRequestItem> {
         val path = path.get(pathIndex)
         val botToPointLine = Line(botLocation.point(), path.point)
         val angle = botLocation.midLine().angleBetween(botToPointLine)
@@ -125,13 +129,10 @@ object BotControllerSweep : BotLocationManager.Listener, BallsManager.Listener {
             }
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
         }
-        Utils.sendPathToBot(pathList)
-
-//        Log.d(TAG, "PathVertex list: $pathList")
-//        callBotReachedCallBackForTesting(path.point)
+        return pathList
     }
 
-    fun init() {
+    private fun init() {
         //Center to post
         path.vertices.add(PathVertex(Point(45f, 140f), true))
         path.vertices.add(PathVertex(Point(85f, 140f), true))

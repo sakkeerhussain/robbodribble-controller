@@ -13,7 +13,7 @@ import kotlin.math.absoluteValue
 object Utils {
     private const val TAG = "Bot-Utils"
 
-    fun getPathToPoint(botLocation: BotLocation, path: PathVertex) {
+    fun getPathToPoint(botLocation: BotLocation, path: PathVertex): ArrayList<PathRequestItem> {
         val botToPointLine = Line(botLocation.point(), path.point)
         Log.d(TAG, "Finding path from ${botLocation.point()} to ${path.point}")
         Log.d(TAG, "Bot line angle: ${botLocation.midLine().angleInDegree()}")
@@ -46,7 +46,7 @@ object Utils {
                 pathList.add(PathRequestItem(Const.PATH_RIGHT, 180 - angle.absoluteValue.toInt()))
             pathList.add(PathRequestItem(Const.PATH_BACKWARD, botToPointLine.length().toInt()))
         }
-        Utils.sendPathToBot(pathList)
+        return pathList
     }
 
     fun sendDoorOpenToBot() {
@@ -75,18 +75,20 @@ object Utils {
         })
     }
 
-    fun sendPathToBot(pathList: ArrayList<PathRequestItem>) {
+    fun sendPathToBot(pathList: ArrayList<PathRequestItem>, listener: Listener) {
         Log.d(TAG, "Sending path to point. Data: ${Gson().toJson(pathList)}")
         Executors.newCachedThreadPool().submit({
             BotCommunicationService.Factory.create("BOT CONTROL - PATH").sendPath(pathList)
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             Log.d(TAG, "Sent path to bot successfully")
+                            listener.botRespondedSuccess()
+                        }else {
+                            listener.botRespondedFailure()
                         }
-                        BotLocationManager.startBotLocationRequestForMainSensor()
                     }, { error ->
                         Log.d(TAG, "Sent path to bot failed, message:${error.localizedMessage}")
-                        BotLocationManager.startBotLocationRequestForMainSensor()
+                        listener.botRespondedFailure()
                     })
         })
     }
@@ -116,5 +118,15 @@ object Utils {
                         Log.d(TAG, "Unable to start bot, Error: ${error.message}")
                     })
         })
+    }
+
+    abstract class Listener {
+        open fun botRespondedSuccess() {
+            botResponded()
+        }
+        open fun botRespondedFailure() {
+            botResponded()
+        }
+        abstract fun botResponded()
     }
 }

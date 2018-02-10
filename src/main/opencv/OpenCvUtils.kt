@@ -5,7 +5,6 @@ import main.controllers.BotLocation
 import main.geometry.Circle
 import main.geometry.Line
 import main.geometry.Point
-import main.sensor.Sensor
 import main.utils.ImageToRealMapper.convertPointToBoard
 import main.utils.Log
 import org.opencv.core.*
@@ -40,11 +39,12 @@ object OpenCvUtils {
     }
 
     private fun getBalls(): List<Circle>? {
-        val frame = OpenCV.getFrame()
+        var frame = OpenCV.getFrame()
         if (frame == null || frame.rows() == 0 || frame.cols() == 0) {
             Log.d(TAG, "No frame received")
             return null
         }
+        frame = OpenCV.clipFrame(frame)
         return detectCircles(frame, Const.BALL_SCALAR_MIN, Const.BALL_SCALAR_MAX,
                 Const.BALL_RADIUS_MIN, Const.BALL_RADIUS_MAX, Const.BALL_MIN_DISTANCE)
     }
@@ -56,7 +56,7 @@ object OpenCvUtils {
             Log.d(TAG, "No frame received")
             return null
         }
-        frame = OpenCV.clipFrame(frame)
+        frame = OpenCV.clipFrameForBotLocation(frame)
         val frontCircles = getBotFront(frame)
         val backCircles = getBotBack(frame)
         if (frontCircles.isEmpty() || backCircles.isEmpty()) {
@@ -132,7 +132,8 @@ object OpenCvUtils {
     }
 
     fun drawBordToFrame(frame: Mat) {
-        val boardDrawColor = Scalar(0.0, 0.0, 255.0)
+        val boardOutDrawColor = Scalar(0.0, 0.0, 255.0)
+        val boardDrawColor = Scalar(0.0, 10.0, 200.0)
         val refPoint1 = OpenCV.refPoint1.pointImage.cvPoint()
         val refPointMid12 = OpenCV.refPointMid12.pointImage.cvPoint()
         val refPoint2 = OpenCV.refPoint2.pointImage.cvPoint()
@@ -143,12 +144,22 @@ object OpenCvUtils {
         val refPointQ1 = OpenCV.refPointQ1.pointImage.cvPoint()
         val refPointQ2 = OpenCV.refPointQ2.pointImage.cvPoint()
 
+        val refPointO1 = OpenCV.refPointOB1.pointImage.cvPoint()
+        val refPointO2 = OpenCV.refPointOB2.pointImage.cvPoint()
+        val refPointO3 = OpenCV.refPointOB3.pointImage.cvPoint()
+        val refPointO4 = OpenCV.refPointOB4.pointImage.cvPoint()
+
         Imgproc.line(frame, refPoint1, refPointMid12, boardDrawColor, 3)
         Imgproc.line(frame, refPointMid12, refPoint2, boardDrawColor, 3)
         Imgproc.line(frame, refPoint1, refPoint3, boardDrawColor, 3)
         Imgproc.line(frame, refPoint4, refPoint2, boardDrawColor, 3)
         Imgproc.line(frame, refPoint3, refPointMid34, boardDrawColor, 3)
         Imgproc.line(frame, refPointMid34, refPoint4, boardDrawColor, 3)
+
+        Imgproc.line(frame, refPointO1, refPointO2, boardOutDrawColor, 3)
+        Imgproc.line(frame, refPointO2, refPointO4, boardOutDrawColor, 3)
+        Imgproc.line(frame, refPointO4, refPointO3, boardOutDrawColor, 3)
+        Imgproc.line(frame, refPointO3, refPointO1, boardOutDrawColor, 3)
 
         Imgproc.circle(frame, refPointC, 6, boardDrawColor, 3)
         Imgproc.circle(frame, refPointQ1, 6, boardDrawColor, 3)
