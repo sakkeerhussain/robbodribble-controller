@@ -3,6 +3,7 @@ package main.forms;
 import main.controllers.bot.BotControllerSweep;
 import main.controllers.*;
 import main.controllers.bot.BotControlManager;
+import main.opencv.OpenCV;
 import main.utils.Path;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -18,6 +19,7 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     private JList ltBalls;
     private JButton btBotControl;
     private JButton btSweeperControl;
+    private JButton btFrameGrab;
     private BallsUI mBallsUI;
 
     BallsForm() {
@@ -53,6 +55,16 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
             } else {
                 BotControllerSweep.INSTANCE.start();
                 btSweeperControl.setText(stopText);
+            }
+        });
+        btFrameGrab.addActionListener(e -> {
+            String stopText = "Stop Frame Grab";
+            if (btFrameGrab.getText().equals(stopText)) {
+                OpenCV.INSTANCE.stopFrameGrabber();
+                btFrameGrab.setText("Start Frame Grab");
+            } else {
+                OpenCV.INSTANCE.startFrameGrabber();
+                btFrameGrab.setText(stopText);
             }
         });
     }

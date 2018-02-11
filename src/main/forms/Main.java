@@ -13,7 +13,7 @@ public class Main {
     private JTabbedPane tabbedPane1;
     private JPanel pRoot;
     private JTabbedPane tpCalibration;
-    private JPanel pBalls;
+    private JPanel pDashboard;
     private JPanel pLog;
     private JPanel pLocalCalibration;
 
@@ -44,7 +44,7 @@ public class Main {
     }
 
     private void setupBallsForm() {
-        pBalls.add(new BallsForm().pRoot);
+        pDashboard.add(new BallsForm().pRoot);
     }
 
     private void setupLocalCalibrationForm() {

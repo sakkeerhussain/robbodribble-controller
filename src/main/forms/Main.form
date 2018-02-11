@@ -17,9 +17,9 @@
         <properties/>
         <border type="none"/>
         <children>
-          <grid id="1dbc9" binding="pBalls" layout-manager="BorderLayout" hgap="0" vgap="0">
+          <grid id="1dbc9" binding="pDashboard" layout-manager="BorderLayout" hgap="0" vgap="0">
             <constraints>
-              <tabbedpane title="Balls"/>
+              <tabbedpane title="Dashboard"/>
             </constraints>
             <properties/>
             <border type="none"/>

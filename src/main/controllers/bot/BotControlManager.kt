@@ -46,13 +46,13 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         BotLocationManager.addListener(this)
         BallsManager.addListener(this)
 
-        val pathList = getFirstMovementPath()
         Executors.newCachedThreadPool().submit {
             BallsManager.startBallsRequestForMainSensor()
         }
         if (mBotStatusAndConfig.alreadyRunning) {
             BotLocationManager.startBotLocationRequestForMainSensor()
         } else {
+            val pathList = getFirstMovementPath()
             Utils.sendPathToBot(pathList, object : Utils.Listener() {
                 override fun botResponded() {
                     Executors.newCachedThreadPool().submit {

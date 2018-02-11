@@ -20,6 +20,7 @@ object OpenCV {
     private var camera: VideoCapture? = null
     private var mFrame: Mat? = null
     private var mCameraUrl: String? = null
+    private var mRunFrameGrabber = false
 
     val boardReference: BoardReference = OpenCvUtils.retrieveRefPointsFromFile() ?: BoardReference()
 
@@ -33,14 +34,36 @@ object OpenCV {
 
         val sensor = SensorsManager.getSensorsList()[0]
         setCameraUrl(sensor.getImageUrl())
+        startFrameGrabber()
+    }
 
+    fun stopFrameGrabber() {
+        if (mRunFrameGrabber) {
+            println("Frame grabbing stopping...")
+            mRunFrameGrabber = false
+            return
+        }
+        println("Frame is not running already")
+    }
+
+    fun startFrameGrabber() {
+        if (mRunFrameGrabber) {
+            Log.d(TAG, "Frame grabber already running")
+            return
+        }
         Executors.newCachedThreadPool().submit {
             var lastResult = true
+            mRunFrameGrabber = true
             while (true) {
+                if (!mRunFrameGrabber) {
+                    Log.d(TAG, "Frame grabbing stopped")
+                    break
+                }
                 if (!lastResult) {
                     Log.d(TAG, "Grab frame error!")
                     Thread.sleep(1000)
                 }
+                Log.d(TAG, "Grabbing frame")
                 lastResult = grabFrame()
             }
         }
