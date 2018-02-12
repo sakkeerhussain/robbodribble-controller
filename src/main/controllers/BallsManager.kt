@@ -11,8 +11,6 @@ import java.util.concurrent.Executors
 
 
 object BallsManager {
-    const val BALL_LOCATION_TOLERANCE = 6
-    private const val BALL_NOT_FOUND_TOLERANCE = 5
 
     private var listeners = ArrayList<Listener>()
     fun addListener(listener: Listener) {
@@ -35,7 +33,7 @@ object BallsManager {
         if (balls != null)
             balls.forEach { ball -> detectBallFromList(ball) }
         ballList.filter { !it.present }.forEach {
-            if (it.notFoundCount >= BALL_NOT_FOUND_TOLERANCE) {
+            if (it.notFoundCount >= Const.BALL_NOT_FOUND_TOLERANCE) {
                 ballList.remove(it)
             } else {
                 it.notFoundCount++
@@ -134,7 +132,7 @@ data class Ball(val center: Point) {
 
         other as Ball
 
-        if (center.distanceTo(other.center) > BallsManager.BALL_LOCATION_TOLERANCE) return false
+        if (center.distanceTo(other.center) > Const.BALL_LOCATION_TOLERANCE) return false
 
         return true
     }

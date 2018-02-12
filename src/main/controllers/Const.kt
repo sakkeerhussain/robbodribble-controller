@@ -4,8 +4,7 @@ import main.geometry.Point
 import main.utils.PathVertex
 
 object Const {
-    val POST = 1
-    //val POST = 2
+
     val BOT_ADDRESS = "10.7.120.81"
     //val BOT_ADDRESS = "192.168.1.55"
     //val BOT_ADDRESS = "127.0.0.1:9000"
@@ -14,10 +13,12 @@ object Const {
     val IP_SAKKEER: String = "10.7.170.6"
     val IP_KOOKKAL: String = "10.7.170.19"
 
+    const val BALL_LOCATION_TOLERANCE = 6
+    const val BALL_NOT_FOUND_TOLERANCE = 2
 
-    val BALL_RANK_DISTANCE_CONSTANT = -1
-    val BALL_RANK_ANGLE_CONSTANT = 1
-    val BALL_RANK_SENSOR_CONSTANT = 1
+    const val BALL_RANK_DISTANCE_CONSTANT = -1
+    const val BALL_RANK_ANGLE_CONSTANT = 1
+    const val BALL_RANK_SENSOR_CONSTANT = 1
 
     val RAD_TO_DEGREE = 57.2958
 
