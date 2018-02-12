@@ -42,10 +42,12 @@ object Const {
 
     private fun initPostPath1() {
         POST_PATH_1.add(PathVertex(Point(30f, 30f)))
+        POST_PATH_1.add(PathVertex(Point(20f, 70f)))
         POST_PATH_1.add(PathVertex(Point(15f, 120f)))
         POST_PATH_1.add(PathVertex(Point(15f, 90f), false))
-        POST_PATH_1.add(PathVertex(Point(20f, 90f)))
-        POST_PATH_1.add(PathVertex(Point(5f, 90f), false))
+        POST_PATH_1.add(PathVertex(PATH_LEFT, 90))
+        POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
+        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
         POST_PATH_1.add(PathVertex(Point(-1f, -1f)))
     }
 
@@ -53,8 +55,9 @@ object Const {
         POST_PATH_2.add(PathVertex(Point(30f, 150f)))
         POST_PATH_2.add(PathVertex(Point(15f, 60f)))
         POST_PATH_2.add(PathVertex(Point(15f, 90f), false))
-        POST_PATH_2.add(PathVertex(Point(20f, 90f)))
-        POST_PATH_2.add(PathVertex(Point(5f, 90f), false))
+        POST_PATH_1.add(PathVertex(PATH_RIGHT, 90))
+        POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
+        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
         POST_PATH_2.add(PathVertex(Point(-1f, -1f)))
     }
 

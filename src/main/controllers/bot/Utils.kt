@@ -22,7 +22,12 @@ object Utils {
         Log.d(TAG, "Angle between bot line and target: $angle")
         val pathList = ArrayList<PathRequestItem>()
         if (path.front) {
-            val distance = botToPointLine.length().toInt()
+            var distance = botToPointLine.length().toInt()
+            //Reducing bot distance to 50 intentionally for increasing accuracy
+            if (distance > 50) {
+                distance = 50
+            }
+
             //Left move correction
             angle += (distance * 0.133333333)
 
@@ -105,7 +110,11 @@ object Utils {
                         }
                     }, { error ->
                         Log.d(TAG, "Sent path to bot failed, message:${error.localizedMessage}")
-                        listener.botRespondedFailure()
+                        sendResetToBot(object: Listener() {
+                            override fun botResponded() {
+                                listener.botRespondedFailure()
+                            }
+                        })
                     })
         })
     }
@@ -124,15 +133,19 @@ object Utils {
         })
     }
 
-    fun sendResetToBot() {
+    fun sendResetToBot(listener: Listener) {
         Executors.newCachedThreadPool().submit({
             BotCommunicationService.Factory.create("BOT CONTROL - RESET").reset()
                     .subscribe({ result ->
                         if (result.status.equals("ok")) {
                             Log.d(TAG, "Bot started")
+                            listener.botRespondedSuccess()
+                        } else {
+                            listener.botRespondedFailure()
                         }
                     }, { error ->
                         Log.d(TAG, "Unable to start bot, Error: ${error.message}")
+                        listener.botRespondedFailure()
                     })
         })
     }

@@ -21,4 +21,12 @@ data class Path(var vertices: ArrayList<PathVertex>, var index: Int) {
 data class PathVertex(var point: Point, val front: Boolean) {
 
     constructor(point: Point) : this(point, true)
+
+    var type: String? = null
+    var value: Int? = null
+
+    constructor(type: String, value: Int) : this(Point(-2f, -2f)) {
+        this.type = type
+        this.value = value
+    }
 }

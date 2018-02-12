@@ -74,11 +74,11 @@ object OpenCV {
         }
 
         //Setting frame grabber stopper
-        Timer().schedule(object: TimerTask() {
+        /*Timer().schedule(object: TimerTask() {
             override fun run() {
                 stopFrameGrabber()
             }
-        }, 10000)
+        }, 10000)*/
     }
 
     private fun setCameraUrl(cameraUrl: String) {

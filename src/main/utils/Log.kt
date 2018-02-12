@@ -8,6 +8,14 @@ class Log {
     companion object {
 
         fun d(tag: String, message: String) {
+            println("$tag *** $message")
+        }
+
+        fun d(message: String) {
+            d("", message)
+        }
+
+        /*fun d(tag: String, message: String) {
             //Executors.newCachedThreadPool().submit {
             try {
                 println("$tag *** $message")
@@ -28,6 +36,6 @@ class Log {
 
         fun d() {
             d("", "\n")
-        }
+        }*/
     }
 }

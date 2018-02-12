@@ -117,6 +117,8 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private fun processBotModeDumping(botLocation: BotLocation) {
         Utils.sendDoorOpenToBot()
         Thread.sleep(3000)
+        Utils.sendStopToBot()
+        Thread.sleep(100)
         path = Path()
         processFindMode(botLocation)
     }
@@ -141,6 +143,10 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         }
         val pathList: ArrayList<PathRequestItem>
         when {
+            path.getActiveVertex().type != null && path.getActiveVertex().value != null -> {
+                pathList = ArrayList()
+                pathList.add(PathRequestItem(path.getActiveVertex().type!!, path.getActiveVertex().value!!))
+            }
             botLocation.point().isAt(path.getActiveVertex().point, Const.BOT_ALLOWED_DEVIATION) -> {
                 Log.d("Reached at desired point")
                 moveStartPoint = botLocation.point()
