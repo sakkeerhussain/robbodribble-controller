@@ -52,12 +52,12 @@ object OpenCV {
             Log.d(TAG, "Frame grabber already running")
             return
         }
+        mFrameGrabberRunning = true
 
         //Starting frame grabber
         Log.d(TAG, "Frame grabber Starting...")
         Executors.newCachedThreadPool().submit {
             var lastResult = true
-            mFrameGrabberRunning = true
             while (true) {
                 if (!mFrameGrabberRunning) {
                     Log.d(TAG, "Frame grabbing stopped")
@@ -66,6 +66,8 @@ object OpenCV {
                 if (!lastResult) {
                     Log.d(TAG, "Grab frame error!")
                     Thread.sleep(1000)
+                } else {
+                    Thread.sleep(10)
                 }
                 lastResult = grabFrame()
             }

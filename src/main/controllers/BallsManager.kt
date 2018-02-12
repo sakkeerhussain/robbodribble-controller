@@ -71,7 +71,7 @@ object BallsManager {
 
     private fun sortBallsListAccordingToRank(): List<BallModel> {
         ballList.forEach { it.calculateRank() }
-        ballList.sortBy { it.rank }
+        ballList.sortByDescending { it.rank }
         return ballList
     }
 
@@ -111,7 +111,7 @@ data class BallModel(val ball: Ball, var sensorRank: Int, var notFoundCount: Int
         val botLocation = BotLocationManager.getBotLocation() ?: return 0.0;
         val botFrontCenterToBallLine = Line(botLocation.frontSide().mid(), this.ball.center)
         val distancePoint = botFrontCenterToBallLine.length() * Const.BALL_RANK_DISTANCE_CONSTANT
-        angleToBot = (botFrontCenterToBallLine.angleInDegree() - botLocation.angle)
+        angleToBot = (botFrontCenterToBallLine.angle() - botLocation.angle)
         val anglePoint = angleToBot * Const.BALL_RANK_ANGLE_CONSTANT
         val sensorPoint = sensorRank * Const.BALL_RANK_SENSOR_CONSTANT
         rank = distancePoint + anglePoint + sensorPoint

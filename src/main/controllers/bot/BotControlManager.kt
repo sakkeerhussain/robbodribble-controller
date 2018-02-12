@@ -36,6 +36,13 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         moveStartPoint = null
         collectedBallCount = 0
         botOperatorRunning = false
+
+        Runtime.getRuntime().addShutdownHook(object : Thread() {
+            override fun run() {
+                Log.d(TAG, "Shutting down bot operator...")
+                stopBotOperator()
+            }
+        })
     }
 
     fun startBotOperator() {
@@ -169,7 +176,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private fun processFindMode(botLocation: BotLocation) {
         val ball = BallsManager.getRankOneBall()
         if (ball != null) {
-            setBotModeFind()
+            setBotModeCollect()
             moveTo(ball, botLocation)
         } else {
             Log.d(TAG, "No balls found")
@@ -208,9 +215,14 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         processFindMode(botLocation)
     }
 
-    private fun setBotModeFind() {
+    /*private fun setBotModeFind() {
         Log.d(TAG, "Bot mode changed to find")
         status = BotStatus.FIND
+    }*/
+
+    private fun setBotModeCollect() {
+        Log.d(TAG, "Bot mode changed to collect")
+        status = BotStatus.COLLECT
     }
 
     private fun setBotModeMovingToDump() {
@@ -261,6 +273,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             Log.d(TAG, "Ball request from bot operator stopped")
             return
         }
+        Thread.sleep(75)
         BallsManager.startBallsRequestForMainSensor()
     }
 }

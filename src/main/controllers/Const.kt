@@ -27,7 +27,7 @@ object Const {
     const val PATH_BACKWARD = "backward"
 
     const val BOT_WIDTH = 30
-    const val BOT_MAX_BALL_CAPACITY = 1
+    const val BOT_MAX_BALL_CAPACITY = 5
     const val BOT_MIN_DIST_IN_UNIT_TIME = 3
     const val BOT_ALLOWED_DEVIATION = 15
     const val BOT_ALLOWED_DEVIATION_FOR_BALLS = 15

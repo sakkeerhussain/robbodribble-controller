@@ -19,8 +19,8 @@ object SensorsManager {
 //            sensors.add(Sensor(Const.IP_NEXUS, "8080", false, false))
 //            sensors.add(Sensor("10.7.120.22", "8080"))
 //            sensors.add(Sensor(Const.IP_KOOKKAL, "8080"))
-            sensors.add(Sensor("192.168.1.50", "8080"))
-//            sensors.add(Sensor(Const.IP_SAKKEER, "8000"))
+//            sensors.add(Sensor("192.168.1.50", "8080"))
+            sensors.add(Sensor(Const.IP_SAKKEER, "8080"))
         }
     }
 }

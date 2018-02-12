@@ -27,15 +27,16 @@ object Const {
     internal val BOT_FRONT_MIN_DISTANCE = 500
 //    internal var BOT_FRONT_SCALAR_MIN = Scalar(150.0, 117.0, 36.0)
 //    internal var BOT_FRONT_SCALAR_MAX = Scalar(163.0, 255.0, 159.0)
-    internal var BOT_FRONT_SCALAR_MIN = Scalar(144.0, 108.0, 175.0)
-    internal var BOT_FRONT_SCALAR_MAX = Scalar(156.0, 159.0, 216.0)
+    internal var BOT_FRONT_SCALAR_MIN = Scalar(144.0, 108.0, 125.0)
+    internal var BOT_FRONT_SCALAR_MAX = Scalar(164.0, 255.0, 216.0)
+
 
     internal val BOT_BACK_RADIUS_MIN = 26
     internal val BOT_BACK_RADIUS_MAX = 50
     internal val BOT_BACK_MIN_DISTANCE = 500
 //    internal var BOT_BACK_SCALAR_MIN = Scalar(57.0, 75.0, 68.0)
 //    internal var BOT_BACK_SCALAR_MAX = Scalar(70.0, 255.0, 199.0)
-    internal var BOT_BACK_SCALAR_MIN = Scalar(66.0, 100.0, 204.0)
+    internal var BOT_BACK_SCALAR_MIN = Scalar(55.0, 83.0, 168.0)
     internal var BOT_BACK_SCALAR_MAX = Scalar(90.0, 191.0, 242.0)
 
 

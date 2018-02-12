@@ -67,6 +67,11 @@ public class CalibLocForm {
             float yImage = Float.valueOf(tfPoint1y.getText());
             OpenCV.INSTANCE.getBoardReference().setRefPoint1(new ReferencePoint(xImage, yImage, 0.01f, 0.01f));
             OpenCV.INSTANCE.getBoardReference().setRefPointOB1(new ReferencePoint(xImage-OB_ADJUST_VAL, yImage-OB_ADJUST_VAL, 0.01f, 0.01f));
+
+            float yImage12 = OpenCV.INSTANCE.getBoardReference().getRefPointMid12().getPointImage().getY();
+            float xImage2 = OpenCV.INSTANCE.getBoardReference().getRefPoint2().getPointImage().getX();
+            OpenCV.INSTANCE.getBoardReference().setRefPointMid12(
+                    new ReferencePoint((xImage+xImage2)/2, yImage12,140f, -10f));
             ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(1);
         });
@@ -75,6 +80,12 @@ public class CalibLocForm {
             float yImage = Float.valueOf(tfPoint2y.getText());
             OpenCV.INSTANCE.getBoardReference().setRefPoint2(new ReferencePoint(xImage, yImage, 280f, 0.01f));
             OpenCV.INSTANCE.getBoardReference().setRefPointOB2(new ReferencePoint(xImage+OB_ADJUST_VAL, yImage-OB_ADJUST_VAL, 280f, 0.01f));
+
+            float yImage12 = OpenCV.INSTANCE.getBoardReference().getRefPointMid12().getPointImage().getY();
+            float xImage1 = OpenCV.INSTANCE.getBoardReference().getRefPoint1().getPointImage().getX();
+            OpenCV.INSTANCE.getBoardReference().setRefPointMid12(
+                    new ReferencePoint((xImage+xImage1)/2, yImage12,140f, -10f));
+
             ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(2);
         });
@@ -83,6 +94,12 @@ public class CalibLocForm {
             float yImage = Float.valueOf(tfPoint3y.getText());
             OpenCV.INSTANCE.getBoardReference().setRefPoint3(new ReferencePoint(xImage, yImage, 0.01f, 180f));
             OpenCV.INSTANCE.getBoardReference().setRefPointOB3(new ReferencePoint(xImage-OB_ADJUST_VAL, yImage+OB_ADJUST_VAL, 0.01f, 180f));
+
+            float yImage34 = OpenCV.INSTANCE.getBoardReference().getRefPointMid34().getPointImage().getY();
+            float xImage4 = OpenCV.INSTANCE.getBoardReference().getRefPoint4().getPointImage().getX();
+            OpenCV.INSTANCE.getBoardReference().setRefPointMid34(
+                    new ReferencePoint((xImage+xImage4)/2, yImage34, 140f, 190f));
+
             ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(3);
         });
@@ -91,6 +108,12 @@ public class CalibLocForm {
             float yImage = Float.valueOf(tfPoint4y.getText());
             OpenCV.INSTANCE.getBoardReference().setRefPoint4(new ReferencePoint(xImage, yImage, 280f, 180f));
             OpenCV.INSTANCE.getBoardReference().setRefPointOB4(new ReferencePoint(xImage+OB_ADJUST_VAL, yImage+OB_ADJUST_VAL, 280f, 180f));
+
+            float yImage34 = OpenCV.INSTANCE.getBoardReference().getRefPointMid34().getPointImage().getY();
+            float xImage3 = OpenCV.INSTANCE.getBoardReference().getRefPoint3().getPointImage().getX();
+            OpenCV.INSTANCE.getBoardReference().setRefPointMid34(
+                    new ReferencePoint((xImage+xImage3)/2, yImage34, 140f, 190f));
+
             ImageToRealMapper.INSTANCE.updateMappingConstants();
             updateRefPointData(4);
         });
@@ -173,7 +196,7 @@ public class CalibLocForm {
             tfPoint1x.setText(OpenCV.INSTANCE.getBoardReference().getRefPoint1().getPointImage().getX() + "");
             tfPoint1y.setText(OpenCV.INSTANCE.getBoardReference().getRefPoint1().getPointImage().getY() + "");
         }
-        if (point == 12 || point == -1) {
+        if (point == 12 || point == -1 || point == 1 || point == 2) {
             tfPoint12x.setText(OpenCV.INSTANCE.getBoardReference().getRefPointMid12().getPointImage().getX() + "");
             tfPoint12y.setText(OpenCV.INSTANCE.getBoardReference().getRefPointMid12().getPointImage().getY() + "");
         }
@@ -185,7 +208,7 @@ public class CalibLocForm {
             tfPoint3x.setText(OpenCV.INSTANCE.getBoardReference().getRefPoint3().getPointImage().getX() + "");
             tfPoint3y.setText(OpenCV.INSTANCE.getBoardReference().getRefPoint3().getPointImage().getY() + "");
         }
-        if (point == 34 || point == -1) {
+        if (point == 34 || point == -1 || point == 3 || point == 4) {
             tfPoint34x.setText(OpenCV.INSTANCE.getBoardReference().getRefPointMid34().getPointImage().getX() + "");
             tfPoint34y.setText(OpenCV.INSTANCE.getBoardReference().getRefPointMid34().getPointImage().getY() + "");
         }
