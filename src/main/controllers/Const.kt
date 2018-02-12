@@ -6,12 +6,13 @@ import main.utils.PathVertex
 object Const {
     val POST = 1
     //val POST = 2
-    val BOT_ADDRESS = "10.7.120.81"
-//        val BOT_ADDRESS = "127.0.0.1:8080"
+//    val BOT_ADDRESS = "10.7.120.81"
+     val BOT_ADDRESS = "192.168.1.55"
 //        val BOT_ADDRESS = "127.0.0.1:9000"
 
     val IP_NEXUS: String = "10.7.120.3"
     val IP_SAKKEER: String = "10.7.170.6"
+    val IP_KOOKKAL: String = "10.7.170.19"
 
 
     val BALL_RANK_DISTANCE_CONSTANT = -1
@@ -29,6 +30,7 @@ object Const {
     val BOT_MAX_BALL_CAPACITY = 1
     val BOT_MIN_DIST_IN_UNIT_TIME = 3
     val BOT_ALLOWED_DEVIATION = 15
+    val BOT_ALLOWED_DEVIATION_FOR_BALLS = 15
 
     val POST_LOCATION: Point
     val POST_1_PATH = ArrayList<PathVertex>()

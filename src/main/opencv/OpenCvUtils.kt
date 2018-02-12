@@ -135,6 +135,25 @@ object OpenCvUtils {
         return ImageIO.read(ByteArrayInputStream(ba))
     }
 
+    fun drawBotToFrame(frame: Mat) {
+        val botLocation = OpenCvUtils.getBotLocation() ?: return
+        val botFrontDrawColor = Scalar(0.0, 0.0, 0.0)
+        val botDrawColor = Scalar(255.0, 0.0, 0.0)
+
+        Imgproc.line(frame, botLocation.frontLeft.cvPoint(), botLocation.frontRight.cvPoint(), botFrontDrawColor, 3)
+        Imgproc.line(frame, botLocation.frontLeft.cvPoint(), botLocation.backLeft.cvPoint(), botDrawColor, 3)
+        Imgproc.line(frame, botLocation.frontRight.cvPoint(), botLocation.backRight.cvPoint(), botDrawColor, 3)
+        Imgproc.line(frame, botLocation.backLeft.cvPoint(), botLocation.backRight.cvPoint(), botDrawColor, 3)
+    }
+
+    fun drawBallsToFrame(frame: Mat) {
+        val balls = OpenCvUtils.getBalls() ?: return
+        val ballDrawColor = Scalar(0.0, 255.0, 255.0)
+        for (ball in balls) {
+            Imgproc.circle(frame, ball.center.cvPoint(), 20, ballDrawColor, 3)
+        }
+    }
+
     fun drawBordToFrame(frame: Mat) {
         val boardOutDrawColor = Scalar(0.0, 0.0, 255.0)
         val boardDrawColor = Scalar(0.0, 10.0, 200.0)

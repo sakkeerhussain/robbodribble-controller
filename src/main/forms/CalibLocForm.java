@@ -237,6 +237,8 @@ public class CalibLocForm {
             }
             jlPreview.setText("");
             OpenCvUtils.INSTANCE.drawBordToFrame(frame);
+            OpenCvUtils.INSTANCE.drawBotToFrame(frame);
+            OpenCvUtils.INSTANCE.drawBallsToFrame(frame);
             Imgproc.resize(frame, frame, new Size(jlPreview.getWidth(), jlPreview.getHeight()));
             BufferedImage buffImage = OpenCvUtils.INSTANCE.mat2BufferedImage(frame);
             jlPreview.setIcon(new ImageIcon(buffImage));

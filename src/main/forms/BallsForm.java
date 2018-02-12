@@ -19,7 +19,7 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
     private JList ltBalls;
     private JButton btBotControl;
     private JButton btSweeperControl;
-    private JButton btFrameGrab;
+    //private JButton btFrameGrab;
     private BallsUI mBallsUI;
 
     BallsForm() {
@@ -57,7 +57,7 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
                 btSweeperControl.setText(stopText);
             }
         });
-        btFrameGrab.addActionListener(e -> {
+        /*btFrameGrab.addActionListener(e -> {
             String stopText = "Stop Frame Grab";
             if (btFrameGrab.getText().equals(stopText)) {
                 OpenCV.INSTANCE.stopFrameGrabber();
@@ -66,7 +66,7 @@ public class BallsForm implements BallsManager.Listener, BotLocationManager.List
                 OpenCV.INSTANCE.startFrameGrabber();
                 btFrameGrab.setText(stopText);
             }
-        });
+        });*/
     }
 
     @Override

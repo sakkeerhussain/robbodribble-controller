@@ -11,6 +11,7 @@ import org.opencv.core.Scalar
 import org.opencv.imgproc.Imgproc
 import org.opencv.core.CvType
 import org.opencv.core.MatOfPoint
+import java.util.*
 import java.util.concurrent.Executors
 
 
@@ -20,7 +21,7 @@ object OpenCV {
     private var camera: VideoCapture? = null
     private var mFrame: Mat? = null
     private var mCameraUrl: String? = null
-    private var mRunFrameGrabber = false
+    private var mFrameGrabberRunning = false
 
     val boardReference: BoardReference = OpenCvUtils.retrieveRefPointsFromFile() ?: BoardReference()
 
@@ -34,28 +35,31 @@ object OpenCV {
 
         val sensor = SensorsManager.getSensorsList()[0]
         setCameraUrl(sensor.getImageUrl())
-        startFrameGrabber()
+        //startFrameGrabber()
     }
 
-    fun stopFrameGrabber() {
-        if (mRunFrameGrabber) {
-            println("Frame grabbing stopping...")
-            mRunFrameGrabber = false
+    private fun stopFrameGrabber() {
+        if (mFrameGrabberRunning) {
+            Log.d(TAG, "Frame grabbing stopping...")
+            mFrameGrabberRunning = false
             return
         }
-        println("Frame is not running already")
+        Log.d(TAG, "Frame grabber stop failed. grabber is not running already")
     }
 
-    fun startFrameGrabber() {
-        if (mRunFrameGrabber) {
+    private fun startFrameGrabber() {
+        if (mFrameGrabberRunning) {
             Log.d(TAG, "Frame grabber already running")
             return
         }
+
+        //Starting frame grabber
+        Log.d(TAG, "Frame grabber Starting...")
         Executors.newCachedThreadPool().submit {
             var lastResult = true
-            mRunFrameGrabber = true
+            mFrameGrabberRunning = true
             while (true) {
-                if (!mRunFrameGrabber) {
+                if (!mFrameGrabberRunning) {
                     Log.d(TAG, "Frame grabbing stopped")
                     break
                 }
@@ -63,10 +67,16 @@ object OpenCV {
                     Log.d(TAG, "Grab frame error!")
                     Thread.sleep(1000)
                 }
-                Log.d(TAG, "Grabbing frame")
                 lastResult = grabFrame()
             }
         }
+
+        //Setting frame grabber stopper
+        Timer().schedule(object: TimerTask() {
+            override fun run() {
+                stopFrameGrabber()
+            }
+        }, 10000)
     }
 
     private fun setCameraUrl(cameraUrl: String) {
@@ -78,6 +88,10 @@ object OpenCV {
     }
 
     fun getFrame(): Mat? {
+        if (!mFrameGrabberRunning) {
+            startFrameGrabber()
+        }
+
         if (mFrame == null)
             Thread.sleep(1000)
         return mFrame
@@ -96,7 +110,9 @@ object OpenCV {
                 return true
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            Log.d(TAG, "Exception: ${e.localizedMessage}")
+        } catch (e: Error) {
+            Log.d(TAG, "Error: ${e.localizedMessage}")
         }
         return false
     }
