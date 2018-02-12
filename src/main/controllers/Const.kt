@@ -53,6 +53,7 @@ object Const {
 
     private fun initPostPath2() {
         POST_PATH_2.add(PathVertex(Point(30f, 150f)))
+        POST_PATH_2.add(PathVertex(Point(20f, 110f)))
         POST_PATH_2.add(PathVertex(Point(15f, 60f)))
         POST_PATH_2.add(PathVertex(Point(15f, 90f), false))
         POST_PATH_1.add(PathVertex(PATH_RIGHT, 90))
