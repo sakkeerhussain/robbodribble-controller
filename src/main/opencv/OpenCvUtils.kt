@@ -49,8 +49,10 @@ object OpenCvUtils {
             return null
         }
         frame = OpenCV.clipFrame(frame)
-        return detectCircles(frame, Const.BALL_SCALAR_MIN, Const.BALL_SCALAR_MAX,
+        val circles = detectCircles(frame, Const.BALL_SCALAR_MIN, Const.BALL_SCALAR_MAX,
                 Const.BALL_RADIUS_MIN, Const.BALL_RADIUS_MAX, Const.BALL_MIN_DISTANCE)
+        frame.release()
+        return circles
     }
 
     private fun getBotLocation(): BotLocation? {
@@ -63,6 +65,7 @@ object OpenCvUtils {
         frame = OpenCV.clipFrameForBotLocation(frame)
         val frontCircles = getBotFront(frame)
         val backCircles = getBotBack(frame)
+        frame.release()
         if (frontCircles.isEmpty() || backCircles.isEmpty()) {
             Log.d(TAG, "Bot not found")
             return null

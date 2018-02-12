@@ -31,6 +31,7 @@ object OpenCV {
 
     fun init() {
         System.loadLibrary(Core.NATIVE_LIBRARY_NAME)
+        mFrame = Mat()
         camera = VideoCapture()
 
         val sensor = SensorsManager.getSensorsList()[0]
@@ -106,9 +107,7 @@ object OpenCV {
             }
             camera!!.open(mCameraUrl)
             if (camera!!.isOpened) {
-                val frame = Mat()
-                camera!!.read(frame)
-                mFrame = frame
+                camera!!.read(mFrame)
                 return true
             }
         } catch (e: Exception) {

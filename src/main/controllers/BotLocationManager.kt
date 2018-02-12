@@ -23,7 +23,7 @@ object BotLocationManager : BotLocationListener, OpponentLocationListener {
     }
 
     private fun notifyListeners() {
-        listeners.forEach { it.botLocationChanged(botLocation) }
+        listeners.forEach { Runnable { it.botLocationChanged(botLocation) }.run() }
     }
 
     private var botLocation: BotLocation? = null

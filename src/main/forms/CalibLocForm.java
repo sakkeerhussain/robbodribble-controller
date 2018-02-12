@@ -258,6 +258,7 @@ public class CalibLocForm {
                 jlPreview.setText("Unable to print frame now");
                 return;
             }
+            frame = frame.clone();
             jlPreview.setText("");
             OpenCvUtils.INSTANCE.drawBordToFrame(frame);
             OpenCvUtils.INSTANCE.drawBotToFrame(frame);
@@ -265,6 +266,7 @@ public class CalibLocForm {
             Imgproc.resize(frame, frame, new Size(jlPreview.getWidth(), jlPreview.getHeight()));
             BufferedImage buffImage = OpenCvUtils.INSTANCE.mat2BufferedImage(frame);
             jlPreview.setIcon(new ImageIcon(buffImage));
+            frame.release();
         } catch (Exception e) {
             e.printStackTrace();
         }

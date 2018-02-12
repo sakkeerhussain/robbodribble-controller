@@ -279,7 +279,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             Log.d(TAG, "Ball request from bot operator stopped")
             return
         }
-        Thread.sleep(200)
+        Thread.sleep(500)
         BallsManager.startBallsRequestForMainSensor()
     }
 }

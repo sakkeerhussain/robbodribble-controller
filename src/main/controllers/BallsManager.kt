@@ -24,7 +24,7 @@ object BallsManager {
     }
 
     private fun notifyListeners() {
-        listeners.forEach { it.ballListChanged(ballList) }
+        listeners.forEach { Runnable { it.ballListChanged(ballList) }.run() }
     }
 
     private val ballList = ArrayList<BallModel>()
