@@ -6,9 +6,9 @@ import main.utils.PathVertex
 object Const {
     val POST = 1
     //val POST = 2
-//    val BOT_ADDRESS = "10.7.120.81"
-     val BOT_ADDRESS = "192.168.1.55"
-//        val BOT_ADDRESS = "127.0.0.1:9000"
+    val BOT_ADDRESS = "10.7.120.81"
+    //val BOT_ADDRESS = "192.168.1.55"
+    //val BOT_ADDRESS = "127.0.0.1:9000"
 
     val IP_NEXUS: String = "10.7.120.3"
     val IP_SAKKEER: String = "10.7.170.6"
@@ -21,37 +21,41 @@ object Const {
 
     val RAD_TO_DEGREE = 57.2958
 
-    val PATH_LEFT = "left"
-    val PATH_RIGHT = "right"
-    val PATH_FORWARD = "forward"
-    val PATH_BACKWARD = "backward"
+    const val PATH_LEFT = "left"
+    const val PATH_RIGHT = "right"
+    const val PATH_FORWARD = "forward"
+    const val PATH_BACKWARD = "backward"
 
-    val BOT_WIDTH = 30
-    val BOT_MAX_BALL_CAPACITY = 1
-    val BOT_MIN_DIST_IN_UNIT_TIME = 3
-    val BOT_ALLOWED_DEVIATION = 15
-    val BOT_ALLOWED_DEVIATION_FOR_BALLS = 15
+    const val BOT_WIDTH = 30
+    const val BOT_MAX_BALL_CAPACITY = 1
+    const val BOT_MIN_DIST_IN_UNIT_TIME = 3
+    const val BOT_ALLOWED_DEVIATION = 15
+    const val BOT_ALLOWED_DEVIATION_FOR_BALLS = 15
 
-    val POST_LOCATION: Point
-    val POST_1_PATH = ArrayList<PathVertex>()
+    val POST_PATH_1 = ArrayList<PathVertex>()
+    val POST_PATH_2 = ArrayList<PathVertex>()
 
     init {
-        if (POST == 1)
-            POST_LOCATION = Point(0f, 90f)
-        else
-            POST_LOCATION = Point(280f, 90f)
-
-
-        initPost1Path()
+        initPostPath1()
+        initPostPath2()
     }
 
-    private fun initPost1Path() {
-        POST_1_PATH.add(PathVertex(Point(30f, 30f)))
-        POST_1_PATH.add(PathVertex(Point(15f, 120f)))
-        POST_1_PATH.add(PathVertex(Point(15f, 90f), false))
-        POST_1_PATH.add(PathVertex(Point(20f, 120f)))
-        POST_1_PATH.add(PathVertex(Point(5f, 90f), false))
-        POST_1_PATH.add(PathVertex(Point(-1f, -1f)))
+    private fun initPostPath1() {
+        POST_PATH_1.add(PathVertex(Point(30f, 30f)))
+        POST_PATH_1.add(PathVertex(Point(15f, 120f)))
+        POST_PATH_1.add(PathVertex(Point(15f, 90f), false))
+        POST_PATH_1.add(PathVertex(Point(20f, 90f)))
+        POST_PATH_1.add(PathVertex(Point(5f, 90f), false))
+        POST_PATH_1.add(PathVertex(Point(-1f, -1f)))
+    }
+
+    private fun initPostPath2() {
+        POST_PATH_2.add(PathVertex(Point(30f, 150f)))
+        POST_PATH_2.add(PathVertex(Point(15f, 60f)))
+        POST_PATH_2.add(PathVertex(Point(15f, 90f), false))
+        POST_PATH_2.add(PathVertex(Point(20f, 90f)))
+        POST_PATH_2.add(PathVertex(Point(5f, 90f), false))
+        POST_PATH_2.add(PathVertex(Point(-1f, -1f)))
     }
 
 

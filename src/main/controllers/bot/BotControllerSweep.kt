@@ -21,7 +21,7 @@ object BotControllerSweep : BotLocationManager.Listener, BallsManager.Listener {
 
     private val TAG = "BotControllerSweep"
 
-    val path = Path()
+    private val path = Path()
     private var pathIndex = 0
     private var moveStartPoint: Point? = null
     private var controllerRunning = false
@@ -99,7 +99,7 @@ object BotControllerSweep : BotLocationManager.Listener, BallsManager.Listener {
                     val point = path.get(pathIndex).point
                     moveStartPoint = botLocationPoint
                     if (Line(point, botLocationPoint).length() < 30) {
-                        pathList = getReversePathToAdjustForewardMotion(botLocation)
+                        pathList = Utils.getReversePathToAdjustForwardMotion(botLocation, path.get(pathIndex))
                     } else {
                         pathList = Utils.getPathToPoint(botLocation, pathVertex)
                     }
@@ -113,23 +113,6 @@ object BotControllerSweep : BotLocationManager.Listener, BallsManager.Listener {
                 BotLocationManager.startBotLocationRequestForMainSensor()
             }
         })
-    }
-
-    private fun getReversePathToAdjustForewardMotion(botLocation: BotLocation): ArrayList<PathRequestItem> {
-        val path = path.get(pathIndex)
-        val botToPointLine = Line(botLocation.point(), path.point)
-        val angle = botLocation.midLine().angleBetween(botToPointLine)
-        val pathList = ArrayList<PathRequestItem>()
-        if (path.front) {
-            when {
-                angle < 0 ->
-                    pathList.add(PathRequestItem(Const.PATH_LEFT, 10))
-                angle > 0 ->
-                    pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
-            }
-            pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
-        }
-        return pathList
     }
 
     private fun init() {

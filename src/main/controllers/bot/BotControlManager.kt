@@ -6,11 +6,11 @@ import main.geometry.Line
 import main.geometry.Point
 import main.opencv.OpenCV
 import main.utils.Log
+import main.utils.Path
 import main.utils.PathVertex
 import java.io.File
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
-import kotlin.math.absoluteValue
 
 
 fun main(args: Array<String>) {
@@ -27,6 +27,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private var collectedBallCount: Int
     private var botOperatorRunning: Boolean
     private var mBotStatusAndConfig = BotStatusAndConfig()
+    private var path = Path()
 
     init {
         loadBotConfigFromFile()
@@ -98,7 +99,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                     checkBotInPathToBallOrNot(botLocation)
                 }
                 BotStatus.MOVING_TO_DUMP -> {
-                    checkBotInPathToPostOrNot(botLocation)
+                    processBotModeMovingToDump(botLocation)
                 }
             }
         } catch (e: Exception) {
@@ -109,13 +110,60 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private fun processBotModeDumping(botLocation: BotLocation) {
         Utils.sendDoorOpenToBot()
         Thread.sleep(3000)
+        path = Path()
         processFindMode(botLocation)
     }
 
     private fun processBotModeFull(botLocation: BotLocation) {
-        //TODO - Move with specific post approach path
         setBotModeMovingToDump()
-        moveTo(Const.POST_LOCATION, false, botLocation)
+        path.index = 0
+        if (botLocation.point().y < 90) {
+            path.vertices = Const.POST_PATH_1
+        } else {
+            path.vertices = Const.POST_PATH_2
+        }
+        moveStartPoint = botLocation.point()
+        processBotModeMovingToDump(botLocation)
+    }
+
+    private fun processBotModeMovingToDump(botLocation: BotLocation) {
+        //TODO -- change
+        if (moveStartPoint == null) {
+            processBotModeFull(botLocation)
+            return
+        }
+        val pathList: ArrayList<PathRequestItem>
+        when {
+            botLocation.point().isAt(path.getActiveVertex().point, Const.BOT_ALLOWED_DEVIATION) -> {
+                Log.d("Reached at desired point")
+                moveStartPoint = botLocation.point()
+                path.index++
+                if (path.getActiveVertex().point.x == -1f) {
+                    processBotModeDumping(botLocation)
+                    return
+                }
+                pathList = Utils.getPathToPoint(botLocation, path.getActiveVertex())
+            }
+            else -> {
+                Log.d("Bot deviated from desired path")
+                if (path.getActiveVertex().front) {
+                    val point = path.getActiveVertex().point
+                    moveStartPoint = botLocation.point()
+                    if (Line(point, botLocation.point()).length() < 30) {
+                        pathList = Utils.getReversePathToAdjustForwardMotion(botLocation, path.getActiveVertex())
+                    } else {
+                        pathList = Utils.getPathToPoint(botLocation, path.getActiveVertex())
+                    }
+                } else {
+                    pathList = Utils.getPathToPoint(botLocation, path.getActiveVertex())
+                }
+            }
+        }
+        Utils.sendPathToBot(pathList, object : Utils.Listener() {
+            override fun botResponded() {
+                BotLocationManager.startBotLocationRequestForMainSensor()
+            }
+        })
     }
 
     private fun processFindMode(botLocation: BotLocation) {
@@ -135,36 +183,29 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         moveTo(ballModel.ball.center, true, botLocation)
     }
 
-    private fun checkBotInPathToBallOrNot(botLocation: BotLocation) {
-        if (targetBall == null || moveStartPoint == null) {
-            processFindMode(botLocation)
-        } else {
-            if (botLocation.point().isAt(targetBall!!.ball.center, Const.BOT_ALLOWED_DEVIATION_FOR_BALLS)) {
-                Log.d(TAG, "Bot reached target ball, " +
-                        "Bot:${botLocation.point()}, " +
-                        "Ball: ${targetBall!!.ball.center}")
-                collectedBallCount++
-                if (collectedBallCount >= Const.BOT_MAX_BALL_CAPACITY) {
-                    processBotModeFull(botLocation)
-                    return
-                }
+    private fun moveTo(point: Point, front: Boolean, botLocation: BotLocation) {
+        val pathList = Utils.getPathToPoint(botLocation, PathVertex(point, front))
+        Utils.sendPathToBot(pathList, object : Utils.Listener() {
+            override fun botResponded() {
+                BotLocationManager.startBotLocationRequestForMainSensor()
             }
-            processFindMode(botLocation)
-        }
+        })
+        //TODO(Avoid obstacle)
     }
 
-    private fun checkBotInPathToPostOrNot(botLocation: BotLocation) {
-        if (moveStartPoint == null) {
-            processBotModeFull(botLocation)
-        } else {
-            when {
-                botLocation.point().isAt(Const.POST_LOCATION, Const.BOT_WIDTH) -> {
-                    Log.d(TAG, "Bot reached target post, Post: ${Const.POST_LOCATION}")
-                    processBotModeDumping(botLocation)
-                }
-                else -> processBotModeFull(botLocation)
+    private fun checkBotInPathToBallOrNot(botLocation: BotLocation) {
+        if (targetBall != null
+                && botLocation.point().isAt(targetBall!!.ball.center, Const.BOT_ALLOWED_DEVIATION_FOR_BALLS)) {
+            Log.d(TAG, "Bot reached target ball, " +
+                    "Bot:${botLocation.point()}, " +
+                    "Ball: ${targetBall!!.ball.center}")
+            collectedBallCount++
+            if (collectedBallCount >= Const.BOT_MAX_BALL_CAPACITY) {
+                processBotModeFull(botLocation)
+                return
             }
         }
+        processFindMode(botLocation)
     }
 
     private fun setBotModeFind() {
@@ -175,23 +216,6 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private fun setBotModeMovingToDump() {
         Log.d(TAG, "Bot mode changed to 'Moving To dump'")
         status = BotStatus.MOVING_TO_DUMP
-    }
-
-//    private fun moveTo(pathVertices: List<PathVertex>, reverse: Boolean, botLocation: BotLocation) {
-//        for (pathVertex in pathVertices) {
-//            move
-//        }
-//    }
-
-    private fun moveTo(point: Point, front: Boolean, botLocation: BotLocation) {
-        moveStartPoint = botLocation.point()
-        val pathList = Utils.getPathToPoint(botLocation, PathVertex(point, front))
-        Utils.sendPathToBot(pathList, object : Utils.Listener() {
-            override fun botResponded() {
-                BotLocationManager.startBotLocationRequestForMainSensor()
-            }
-        })
-        //TODO(Avoid obstacle)
     }
 
     private fun loadBotConfigFromFile() {

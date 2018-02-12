@@ -25,11 +25,11 @@
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar:///usr/local/Cellar/opencv/3.4.0/share/OpenCV/java/opencv-340.jar!/" />
+          <root url="jar:///usr/local/Cellar/opencv/3.3.1_1/share/OpenCV/java/opencv-331.jar!/" />
         </CLASSES>
         <JAVADOC />
         <SOURCES>
-          <root url="jar:///usr/local/Cellar/opencv/3.4.0/share/OpenCV/java/opencv-340.jar!/" />
+          <root url="jar:///usr/local/Cellar/opencv/3.3.1_1/share/OpenCV/java/opencv-331.jar!/" />
         </SOURCES>
       </library>
     </orderEntry>

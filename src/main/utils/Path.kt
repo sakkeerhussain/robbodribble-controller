@@ -2,8 +2,8 @@ package main.utils
 
 import main.geometry.Point
 
-data class Path(var vertices: ArrayList<PathVertex>) {
-    constructor() : this(ArrayList())
+data class Path(var vertices: ArrayList<PathVertex>, var index: Int) {
+    constructor() : this(ArrayList(), 0)
 
     fun size(): Int {
         return vertices.size
@@ -11,6 +11,10 @@ data class Path(var vertices: ArrayList<PathVertex>) {
 
     fun get(i: Int): PathVertex {
         return vertices[i]
+    }
+
+    fun getActiveVertex(): PathVertex {
+        return vertices[index]
     }
 }
 

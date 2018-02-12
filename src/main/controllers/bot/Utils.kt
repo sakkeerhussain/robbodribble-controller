@@ -49,6 +49,23 @@ object Utils {
         return pathList
     }
 
+    fun getReversePathToAdjustForwardMotion(botLocation: BotLocation, pathVertex: PathVertex): ArrayList<PathRequestItem> {
+
+        val botToPointLine = Line(botLocation.point(), pathVertex.point)
+        val angle = botLocation.midLine().angleBetween(botToPointLine)
+        val pathList = ArrayList<PathRequestItem>()
+        if (pathVertex.front) {
+            when {
+                angle < 0 ->
+                    pathList.add(PathRequestItem(Const.PATH_LEFT, 10))
+                angle > 0 ->
+                    pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
+            }
+            pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
+        }
+        return pathList
+    }
+
     fun sendDoorOpenToBot() {
         Executors.newCachedThreadPool().submit({
             BotCommunicationService.Factory.create("BOT CONTROL - DOOR OPEN").doorOpen()
