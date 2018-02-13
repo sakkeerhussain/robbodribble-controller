@@ -65,6 +65,10 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 val pathList = getFirstMovementPath()
                 Utils.sendPathToBot(pathList, object : Utils.Listener() {
                     override fun botResponded() {
+                        Utils.sendDoorOpenToBot()
+                        Thread.sleep(3000)
+                        Utils.sendDoorCloseToBot()
+                        Thread.sleep(3000)
                         BotLocationManager.startBotLocationRequestForMainSensor()
                     }
                 })
@@ -290,8 +294,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
         pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
         pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
-        pathList.add(PathRequestItem(Const.PATH_FORWARD, 80))
-        pathList.add(PathRequestItem(Const.PATH_LEFT, 170))
+        pathList.add(PathRequestItem(Const.PATH_BACKWARD, 140))
         return pathList
     }
 

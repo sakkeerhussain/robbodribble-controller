@@ -49,9 +49,8 @@ object Const {
         POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
         POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
         POST_PATH_1.add(PathVertex(Point(-1f, -1f)))*/
-        POST_PATH_2.add(PathVertex(Point(30f, 90f)))
-        POST_PATH_1.add(PathVertex(PATH_LEFT, 180))
-        POST_PATH_1.add(PathVertex(Point(6f, 90f), false))
+        POST_PATH_2.add(PathVertex(Point(10f, 90f)))
+        POST_PATH_1.add(PathVertex(Point(1f, 90f), false))
         POST_PATH_1.add(PathVertex(Point(-1f, -1f)))
     }
 
@@ -63,9 +62,8 @@ object Const {
         POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
         POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
         POST_PATH_2.add(PathVertex(Point(-1f, -1f)))*/
-        POST_PATH_2.add(PathVertex(Point(30f, 90f)))
-        POST_PATH_1.add(PathVertex(PATH_LEFT, 180))
-        POST_PATH_2.add(PathVertex(Point(6f, 90f), false))
+        POST_PATH_2.add(PathVertex(Point(10f, 90f)))
+        POST_PATH_2.add(PathVertex(Point(1f, 90f), false))
         POST_PATH_2.add(PathVertex(Point(-1f, -1f)))
     }
 
