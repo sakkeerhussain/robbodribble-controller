@@ -24,7 +24,7 @@ object Utils {
         if (path.front) {
             var distance = botToPointLine.length().toInt()
             //Reducing bot distance to 50 intentionally for increasing accuracy
-            if (distance > 50) {
+            if (distance > 80) {
                 distance = 50
             }
 

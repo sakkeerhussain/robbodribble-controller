@@ -17,8 +17,8 @@ object Const {
     const val BALL_NOT_FOUND_TOLERANCE = 2
 
     const val BALL_RANK_DISTANCE_CONSTANT = -1
-    const val BALL_RANK_ANGLE_CONSTANT = 1
-    const val BALL_RANK_SENSOR_CONSTANT = 1
+    const val BALL_RANK_ANGLE_CONSTANT = -60
+    const val BALL_RANK_SENSOR_CONSTANT = 0.05
 
     val RAD_TO_DEGREE = 57.2958
 

@@ -8,6 +8,7 @@ import main.sensor.Http
 import main.sensor.Sensor
 import main.sensor.SensorsManager
 import java.util.concurrent.Executors
+import kotlin.math.absoluteValue
 
 
 object BallsManager {
@@ -109,7 +110,7 @@ data class BallModel(val ball: Ball, var sensorRank: Int, var notFoundCount: Int
         val botLocation = BotLocationManager.getBotLocation() ?: return 0.0;
         val botFrontCenterToBallLine = Line(botLocation.frontSide().mid(), this.ball.center)
         val distancePoint = botFrontCenterToBallLine.length() * Const.BALL_RANK_DISTANCE_CONSTANT
-        angleToBot = (botFrontCenterToBallLine.angle() - botLocation.angle)
+        angleToBot = (botFrontCenterToBallLine.angle() - botLocation.angle).absoluteValue
         val anglePoint = angleToBot * Const.BALL_RANK_ANGLE_CONSTANT
         val sensorPoint = sensorRank * Const.BALL_RANK_SENSOR_CONSTANT
         rank = distancePoint + anglePoint + sensorPoint
