@@ -153,7 +153,7 @@ object OpenCvUtils {
         val balls = OpenCvUtils.getBalls() ?: return
         val ballDrawColor = Scalar(0.0, 255.0, 255.0)
         for (ball in balls) {
-            Imgproc.circle(frame, ball.center.cvPoint(), 20, ballDrawColor, 3)
+            Imgproc.circle(frame, ball.center.cvPoint(), ball.radius, ballDrawColor, 3)
         }
     }
 

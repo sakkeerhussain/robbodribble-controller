@@ -28,6 +28,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private var botOperatorRunning: Boolean
     private var mBotStatusAndConfig = BotStatusAndConfig()
     private var path = Path()
+    private var mBotNotFoundMotionBackCompleted = false
 
     init {
         loadBotConfigFromFile()
@@ -89,7 +90,21 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         }
 
         if (botLocation == null) {
-            BotLocationManager.startBotLocationRequestForMainSensor()
+            val pathList = ArrayList<PathRequestItem>()
+            if (mBotNotFoundMotionBackCompleted) {
+                pathList.add(PathRequestItem(Const.PATH_LEFT, 40))
+                pathList.add(PathRequestItem(Const.PATH_FORWARD, 30))
+                mBotNotFoundMotionBackCompleted = false
+            }else {
+                pathList.add(PathRequestItem(Const.PATH_RIGHT, 40))
+                pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
+                mBotNotFoundMotionBackCompleted = true
+            }
+            Utils.sendPathToBot(pathList, object : Utils.Listener() {
+                override fun botResponded() {
+                    BotLocationManager.startBotLocationRequestForMainSensor()
+                }
+            })
         } else {
             botOperatorLoop(botLocation)
         }
@@ -270,7 +285,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
         pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
         pathList.add(PathRequestItem(Const.PATH_FORWARD, 80))
-        pathList.add(PathRequestItem(Const.PATH_RIGHT, 170))
+        pathList.add(PathRequestItem(Const.PATH_LEFT, 170))
         return pathList
     }
 
@@ -279,7 +294,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             Log.d(TAG, "Ball request from bot operator stopped")
             return
         }
-        Thread.sleep(500)
+        Thread.sleep(100)
         BallsManager.startBallsRequestForMainSensor()
     }
 }

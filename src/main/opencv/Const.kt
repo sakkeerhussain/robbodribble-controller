@@ -11,10 +11,8 @@ object Const {
     val BALL_RADIUS_MIN = 10
     val BALL_RADIUS_MAX = 26
     val BALL_MIN_DISTANCE = 13
-//    var BALL_SCALAR_MIN = Scalar(20.0, 100.0, 100.0)
-//    var BALL_SCALAR_MAX = Scalar(35.0, 255.0, 255.0)
-    val BALL_SCALAR_MIN = Scalar(19.0, 190.0, 102.0)
-    val BALL_SCALAR_MAX = Scalar(30.0, 255.0, 212.0)
+    var BALL_SCALAR_MIN = Scalar(20.0, 100.0, 100.0)
+    var BALL_SCALAR_MAX = Scalar(35.0, 255.0, 255.0)
 
     val REFERENCE_RADIUS_MIN = 10
     val REFERENCE_RADIUS_MAX = 30
