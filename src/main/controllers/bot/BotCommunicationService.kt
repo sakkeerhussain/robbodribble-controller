@@ -36,8 +36,8 @@ interface BotCommunicationService{
             logging.setLevel(HttpLoggingInterceptor.Level.BODY)
             val client = OkHttpClient()
             client.interceptors().add(logging)
-            client.setReadTimeout(125, TimeUnit.SECONDS)
-            client.setWriteTimeout(125, TimeUnit.SECONDS)
+            client.setReadTimeout(5, TimeUnit.SECONDS)
+            client.setWriteTimeout(5, TimeUnit.SECONDS)
 
             val retrofit = Retrofit.Builder()
                     .addCallAdapterFactory(RxJavaCallAdapterFactory.create())

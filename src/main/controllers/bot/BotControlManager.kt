@@ -95,7 +95,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 pathList.add(PathRequestItem(Const.PATH_LEFT, 40))
                 pathList.add(PathRequestItem(Const.PATH_FORWARD, 30))
                 mBotNotFoundMotionBackCompleted = false
-            }else {
+            } else {
                 pathList.add(PathRequestItem(Const.PATH_RIGHT, 40))
                 pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
                 mBotNotFoundMotionBackCompleted = true
@@ -132,7 +132,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
     private fun processBotModeDumping(botLocation: BotLocation) {
         Utils.sendDoorOpenToBot()
         Thread.sleep(3000)
-        Utils.sendStopToBot()
+        Utils.sendDoorCloseToBot()
         Thread.sleep(100)
         path = Path()
         processFindMode(botLocation)
@@ -161,7 +161,13 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             path.getActiveVertex().type != null && path.getActiveVertex().value != null -> {
                 pathList = ArrayList()
                 pathList.add(PathRequestItem(path.getActiveVertex().type!!, path.getActiveVertex().value!!))
+                path.index++
             }
+            /*path.getActiveVertex().angle != null -> {
+                pathList = ArrayList()
+                pathList.add(PathRequestItem(Const.PATH_LEFT, botLocation.angle * Const.RAD_TO_DEGREE))
+                path.index++
+            }*/
             botLocation.point().isAt(path.getActiveVertex().point, Const.BOT_ALLOWED_DEVIATION) -> {
                 Log.d("Reached at desired point")
                 moveStartPoint = botLocation.point()

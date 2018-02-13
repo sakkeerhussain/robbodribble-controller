@@ -30,7 +30,7 @@ object Const {
     const val BOT_WIDTH = 30
     const val BOT_MAX_BALL_CAPACITY = 5
     const val BOT_MIN_DIST_IN_UNIT_TIME = 3
-    const val BOT_ALLOWED_DEVIATION = 15
+    const val BOT_ALLOWED_DEVIATION = 25
     const val BOT_ALLOWED_DEVIATION_FOR_BALLS = 15
 
     val POST_PATH_1 = ArrayList<PathVertex>()
@@ -42,24 +42,30 @@ object Const {
     }
 
     private fun initPostPath1() {
-        POST_PATH_1.add(PathVertex(Point(30f, 30f)))
-        POST_PATH_1.add(PathVertex(Point(20f, 70f)))
-        POST_PATH_1.add(PathVertex(Point(15f, 120f)))
-        POST_PATH_1.add(PathVertex(Point(15f, 90f), false))
+        /*POST_PATH_1.add(PathVertex(Point(30f, 30f)))
+        POST_PATH_1.add(PathVertex(Point(10f, 70f)))
+        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 15))
         POST_PATH_1.add(PathVertex(PATH_LEFT, 90))
         POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
         POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
+        POST_PATH_1.add(PathVertex(Point(-1f, -1f)))*/
+        POST_PATH_2.add(PathVertex(Point(30f, 90f)))
+        POST_PATH_1.add(PathVertex(PATH_LEFT, 180))
+        POST_PATH_1.add(PathVertex(Point(6f, 90f), false))
         POST_PATH_1.add(PathVertex(Point(-1f, -1f)))
     }
 
     private fun initPostPath2() {
-        POST_PATH_2.add(PathVertex(Point(30f, 150f)))
-        POST_PATH_2.add(PathVertex(Point(20f, 110f)))
-        POST_PATH_2.add(PathVertex(Point(15f, 60f)))
-        POST_PATH_2.add(PathVertex(Point(15f, 90f), false))
+        /*POST_PATH_2.add(PathVertex(Point(30f, 150f)))
+        POST_PATH_2.add(PathVertex(Point(10f, 110f)))
+        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 15))
         POST_PATH_1.add(PathVertex(PATH_RIGHT, 90))
         POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
         POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
+        POST_PATH_2.add(PathVertex(Point(-1f, -1f)))*/
+        POST_PATH_2.add(PathVertex(Point(30f, 90f)))
+        POST_PATH_1.add(PathVertex(PATH_LEFT, 180))
+        POST_PATH_2.add(PathVertex(Point(6f, 90f), false))
         POST_PATH_2.add(PathVertex(Point(-1f, -1f)))
     }
 

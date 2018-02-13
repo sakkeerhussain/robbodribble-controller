@@ -3,11 +3,8 @@ package main.controllers
 import main.geometry.Line
 import main.geometry.Point
 import main.opencv.OpenCvUtils
-import main.sensor.BallsListListener
-import main.sensor.Http
 import main.sensor.Sensor
 import main.sensor.SensorsManager
-import java.util.concurrent.Executors
 import kotlin.math.absoluteValue
 
 
