@@ -31,8 +31,8 @@ object Const {
     const val BOT_WIDTH = 30
     const val BOT_MAX_BALL_CAPACITY = 5
     const val BOT_MIN_DIST_IN_UNIT_TIME = 3
-    const val BOT_ALLOWED_DEVIATION = 25
-    const val BOT_ALLOWED_DEVIATION_FOR_BALLS = 15
+    const val BOT_ALLOWED_DEVIATION = 15
+    const val BOT_ALLOWED_DEVIATION_FOR_BALLS = 20
 
     val POST_PATH_1 = ArrayList<PathVertex>()
     val POST_PATH_2 = ArrayList<PathVertex>()
@@ -45,11 +45,13 @@ object Const {
     private fun initPostPath1() {
 
         POST_PATH_1.add(PathVertex(Point(60f, 50f), true))
-        POST_PATH_1.add(PathVertex(Point(20f, 50f), true))
+        POST_PATH_1.add(PathVertex(Point(18f, 50f), true))
         POST_PATH_1.add(PathVertex(Point(10f, 95f), true))
-        POST_PATH_1.add(PathVertex(Point(40f, 90f), true))
-        POST_PATH_1.add(PathVertex(Point(4f, 90f), false))
-        POST_PATH_1.add(PathVertex(Const.PATH_BACKWARD, 20))
+        /*POST_PATH_1.add(PathVertex(Point(30f, 95f), true))
+        POST_PATH_1.add(PathVertex(Point(0f, 95f), false))
+        POST_PATH_1.add(PathVertex(Const.PATH_BACKWARD, 20))*/
+        POST_PATH_1.add(PathVertex(Const.PATH_LEFT, 95))
+        POST_PATH_1.add(PathVertex(Const.PATH_BACKWARD, 30))
         POST_PATH_1.add(PathVertex(Point(-1f, -1f), true)) //Open Door
 
         /*POST_PATH_2.add(PathVertex(Point(10f, 90f)))
@@ -64,7 +66,7 @@ object Const {
         POST_PATH_2.add(PathVertex(Point(10f, 85f), true))
         POST_PATH_2.add(PathVertex(Point(40f, 90f), true))
         POST_PATH_2.add(PathVertex(Point(4f, 90f), false))
-        POST_PATH_1.add(PathVertex(Const.PATH_BACKWARD, 20))
+        POST_PATH_2.add(PathVertex(Const.PATH_BACKWARD, 20))
         POST_PATH_2.add(PathVertex(Point(-1f, -1f), true)) //Open Door
     }
 

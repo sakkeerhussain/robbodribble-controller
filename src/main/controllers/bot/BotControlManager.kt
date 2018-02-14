@@ -11,6 +11,7 @@ import main.utils.PathVertex
 import java.io.File
 import java.util.concurrent.Executors
 import kotlin.collections.ArrayList
+import kotlin.math.absoluteValue
 
 
 fun main(args: Array<String>) {
@@ -68,7 +69,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                         Utils.sendDoorOpenToBot()
                         Thread.sleep(3000)
                         Utils.sendDoorCloseToBot()
-                        Thread.sleep(3000)
+                        Thread.sleep(1000)
                         BotLocationManager.startBotLocationRequestForMainSensor()
                     }
                 })
@@ -96,12 +97,12 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         if (botLocation == null) {
             val pathList = ArrayList<PathRequestItem>()
             if (mBotNotFoundMotionBackCompleted) {
-                pathList.add(PathRequestItem(Const.PATH_LEFT, 40))
-                pathList.add(PathRequestItem(Const.PATH_FORWARD, 30))
+                pathList.add(PathRequestItem(Const.PATH_LEFT, 4))
+                pathList.add(PathRequestItem(Const.PATH_FORWARD, 3))
                 mBotNotFoundMotionBackCompleted = false
             } else {
-                pathList.add(PathRequestItem(Const.PATH_RIGHT, 40))
-                pathList.add(PathRequestItem(Const.PATH_BACKWARD, 30))
+                pathList.add(PathRequestItem(Const.PATH_RIGHT, 4))
+                pathList.add(PathRequestItem(Const.PATH_BACKWARD, 3))
                 mBotNotFoundMotionBackCompleted = true
             }
             Utils.sendPathToBot(pathList, object : Utils.Listener() {
@@ -110,6 +111,13 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 }
             })
         } else {
+            /*when (status) {
+                BotStatus.MOVING_TO_DUMP -> {
+                    processBotModeMovingToDump(botLocation)
+                }
+                else ->
+                    processBotModeFull(botLocation)
+            }*/
             botOperatorLoop(botLocation)
         }
     }
@@ -150,6 +158,8 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         } else {
             path.vertices = Const.POST_PATH_2
         }
+        //TODO - remove after
+        path.vertices = Const.POST_PATH_1
         moveStartPoint = botLocation.point()
         processBotModeMovingToDump(botLocation)
     }
@@ -161,31 +171,52 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             return
         }
         val pathList: ArrayList<PathRequestItem>
+        val botAngle = botLocation.angle * Const.RAD_TO_DEGREE
         when {
-            path.getActiveVertex().type != null && path.getActiveVertex().value != null -> {
+        /*path.getActiveVertex().angle != null -> {
+            pathList = ArrayList()
+            pathList.add(PathRequestItem(Const.PATH_LEFT, botLocation.angle * Const.RAD_TO_DEGREE))
+            path.index++
+        }*/
+
+            botLocation.point().isAt(Point(-3f, 112f), Const.BOT_ALLOWED_DEVIATION)
+                    && botAngle.absoluteValue < 200 && botAngle.absoluteValue > 120 -> {
+                processBotModeDumping(botLocation)
+                return
+            }
+            path.getActiveVertex().point.x == -1f -> {
+                if (botAngle.absoluteValue < 200 && botAngle.absoluteValue > 120) {
+                    processBotModeDumping(botLocation)
+                } else {
+                    processBotModeFull(botLocation)
+                }
+                return
+            }
+            path.getActiveVertex().point.x == -2f -> {
                 pathList = ArrayList()
                 pathList.add(PathRequestItem(path.getActiveVertex().type!!, path.getActiveVertex().value!!))
                 path.index++
             }
-            /*path.getActiveVertex().angle != null -> {
-                pathList = ArrayList()
-                pathList.add(PathRequestItem(Const.PATH_LEFT, botLocation.angle * Const.RAD_TO_DEGREE))
-                path.index++
-            }*/
             botLocation.point().isAt(path.getActiveVertex().point, Const.BOT_ALLOWED_DEVIATION) -> {
                 Log.d("Reached at desired point")
                 moveStartPoint = botLocation.point()
                 path.index++
                 if (path.getActiveVertex().point.x == -1f) {
-                    val botAngle = botLocation.angle/Const.RAD_TO_DEGREE
-                    if (botAngle < 20 && botAngle > -20) {
+                    if (botAngle.absoluteValue < 200 && botAngle.absoluteValue > 120) {
                         processBotModeDumping(botLocation)
-                    }else {
+                    } else {
                         processBotModeFull(botLocation)
                     }
                     return
                 }
-                pathList = Utils.getPathToPoint(botLocation, path.getActiveVertex())
+
+                if (path.getActiveVertex().point.x == -2f) {
+                    pathList = ArrayList()
+                    pathList.add(PathRequestItem(path.getActiveVertex().type!!, path.getActiveVertex().value!!))
+                    path.index++
+                } else {
+                    pathList = Utils.getPathToPoint(botLocation, path.getActiveVertex())
+                }
             }
             else -> {
                 Log.d("Bot deviated from desired path")
@@ -300,6 +331,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
         pathList.add(PathRequestItem(Const.PATH_FORWARD, 50))
         pathList.add(PathRequestItem(Const.PATH_RIGHT, 10))
         pathList.add(PathRequestItem(Const.PATH_BACKWARD, 140))
+        pathList.add(PathRequestItem(Const.PATH_BACKWARD, 3))
         return pathList
     }
 
@@ -308,7 +340,7 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
             Log.d(TAG, "Ball request from bot operator stopped")
             return
         }
-        Thread.sleep(100)
+        Thread.sleep(200)
         BallsManager.startBallsRequestForMainSensor()
     }
 }
