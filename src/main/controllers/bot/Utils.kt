@@ -22,11 +22,11 @@ object Utils {
         Log.d(TAG, "Angle between bot line and target: $angle")
         val pathList = ArrayList<PathRequestItem>()
         if (path.front) {
-            var distance = botToPointLine.length().toInt()
+            val distance = botToPointLine.length().toInt()
             //Reducing bot distance to 50 intentionally for increasing accuracy
-            if (distance > 80) {
+            /*if (distance > 80) {
                 distance = 50
-            }
+            }*/
 
             //Left move correction
             angle += (distance * 0.133333333)

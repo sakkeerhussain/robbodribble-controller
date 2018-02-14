@@ -1,5 +1,6 @@
 package main.controllers
 
+import main.controllers.bot.BotControllerSweep
 import main.geometry.Point
 import main.utils.PathVertex
 
@@ -42,29 +43,29 @@ object Const {
     }
 
     private fun initPostPath1() {
-        /*POST_PATH_1.add(PathVertex(Point(30f, 30f)))
-        POST_PATH_1.add(PathVertex(Point(10f, 70f)))
-        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 15))
-        POST_PATH_1.add(PathVertex(PATH_LEFT, 90))
-        POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
-        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
-        POST_PATH_1.add(PathVertex(Point(-1f, -1f)))*/
-        POST_PATH_2.add(PathVertex(Point(10f, 90f)))
+
+        POST_PATH_1.add(PathVertex(Point(60f, 50f), true))
+        POST_PATH_1.add(PathVertex(Point(20f, 50f), true))
+        POST_PATH_1.add(PathVertex(Point(10f, 95f), true))
+        POST_PATH_1.add(PathVertex(Point(40f, 90f), true))
+        POST_PATH_1.add(PathVertex(Point(4f, 90f), false))
+        POST_PATH_1.add(PathVertex(Const.PATH_BACKWARD, 20))
+        POST_PATH_1.add(PathVertex(Point(-1f, -1f), true)) //Open Door
+
+        /*POST_PATH_2.add(PathVertex(Point(10f, 90f)))
         POST_PATH_1.add(PathVertex(Point(1f, 90f), false))
-        POST_PATH_1.add(PathVertex(Point(-1f, -1f)))
+        POST_PATH_1.add(PathVertex(Point(-1f, -1f)))*/
     }
 
     private fun initPostPath2() {
-        /*POST_PATH_2.add(PathVertex(Point(30f, 150f)))
-        POST_PATH_2.add(PathVertex(Point(10f, 110f)))
-        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 15))
-        POST_PATH_1.add(PathVertex(PATH_RIGHT, 90))
-        POST_PATH_1.add(PathVertex(PATH_FORWARD, 10))
-        POST_PATH_1.add(PathVertex(PATH_BACKWARD, 20))
-        POST_PATH_2.add(PathVertex(Point(-1f, -1f)))*/
-        POST_PATH_2.add(PathVertex(Point(10f, 90f)))
-        POST_PATH_2.add(PathVertex(Point(1f, 90f), false))
-        POST_PATH_2.add(PathVertex(Point(-1f, -1f)))
+
+        POST_PATH_2.add(PathVertex(Point(60f, 130f), true))
+        POST_PATH_2.add(PathVertex(Point(20f, 130f), true))
+        POST_PATH_2.add(PathVertex(Point(10f, 85f), true))
+        POST_PATH_2.add(PathVertex(Point(40f, 90f), true))
+        POST_PATH_2.add(PathVertex(Point(4f, 90f), false))
+        POST_PATH_1.add(PathVertex(Const.PATH_BACKWARD, 20))
+        POST_PATH_2.add(PathVertex(Point(-1f, -1f), true)) //Open Door
     }
 
 

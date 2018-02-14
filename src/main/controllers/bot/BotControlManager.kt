@@ -177,7 +177,12 @@ object BotControlManager : BotLocationManager.Listener, BallsManager.Listener {
                 moveStartPoint = botLocation.point()
                 path.index++
                 if (path.getActiveVertex().point.x == -1f) {
-                    processBotModeDumping(botLocation)
+                    val botAngle = botLocation.angle/Const.RAD_TO_DEGREE
+                    if (botAngle < 20 && botAngle > -20) {
+                        processBotModeDumping(botLocation)
+                    }else {
+                        processBotModeFull(botLocation)
+                    }
                     return
                 }
                 pathList = Utils.getPathToPoint(botLocation, path.getActiveVertex())
